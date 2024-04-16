@@ -16,7 +16,7 @@ export default async function Banner() {
   }
   const profile = await getUserProfile(session?.user.token);
   const role = profile.data.role;
-  // const isAdmin = role === "admin" ? true : false;
+  const isAdmin = role === "admin" ? true : false;
 
   const imgList = [
     "https://www.brandbuffet.in.th/wp-content/uploads/2019/08/Samyan-COOP-1.jpg",
@@ -31,19 +31,19 @@ export default async function Banner() {
     <div className="pt-[130px] pb-40">
       <div className="flex flex-col justify-center gap-7 w-full">
         <span className="px-4 py-2 bg-blue-100 mx-auto max-w-max rounded-full text-blue-600">
-          {/* {isAdmin ? "You are the admin of Caramel- Macchiato" : "caramel macchiato"} */}
+          {isAdmin ? "You are the admin of Caramel- Macchiato" : "caramel macchiato"}
         </span>{" "}
         <h1 className="max-w-5xl text-8xl font-extrabold text-center mx-auto">
           <span className="bg-gradient-to-b from-blue-700 to-blue-400 bg-clip-text text-transparent">
             Co-working{" "}
           </span>
-          {/* {isAdmin ? "Space Manage System " : "Space Reservation"} */}
+          {isAdmin ? "Space Manage System " : "Space Reservation"}
         </h1>
         <p className="max-w-xl text-center mx-auto">
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et alias
           assumenda
         </p>
-        {/* {isAdmin ? (
+        {isAdmin ? (
           <Link
             href="/adminpage"
             className="bg-black max-w-max text-white px-6 py-3 mx-auto rounded-full"
@@ -57,7 +57,7 @@ export default async function Banner() {
           >
             จองเลย
           </Link>
-        )} */}
+        )}
         <Marquee speed={50} className="py-10">
           {imgList.map((item) => (
             <div
