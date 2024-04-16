@@ -5,7 +5,7 @@ export default async function userLogIn(
   userPassword: string
 ) {
   const response = await fetch(
-    "https://presentation-day-1-caramel-macchiato.vercel.app/api/v1/auth/login",
+    `${process.env.BACKEND_URI}/auth/login`,
     {
       method: "POST",
       headers: {
