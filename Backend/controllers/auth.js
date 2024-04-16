@@ -22,7 +22,7 @@ exports.register = async (req, res, next) => {
   }
 };
 
-exports.EditUser = async (req, res, next) => {
+exports.editUser = async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
