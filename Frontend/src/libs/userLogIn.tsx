@@ -5,7 +5,7 @@ export default async function userLogIn(
   userPassword: string
 ) {
   const response = await fetch(
-    `${process.env.BACKEND_URI}/auth/login`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/auth/login`,
     {
       method: "POST",
       headers: {

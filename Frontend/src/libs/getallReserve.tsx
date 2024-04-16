@@ -1,6 +1,6 @@
 export default async function getAllReservation(token: string) {
   const response = await fetch(
-    `${process.env.BACKEND_URI}/reservation`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation`,
     {
       method: "GET",
       headers: {

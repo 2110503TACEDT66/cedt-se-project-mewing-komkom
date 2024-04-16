@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
 
 export default async function registerUser(data: Object) {
-  const response = await fetch(`${process.env.BACKEND_URI}/auth/register`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

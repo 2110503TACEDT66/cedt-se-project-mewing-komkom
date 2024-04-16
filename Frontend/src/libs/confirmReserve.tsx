@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 
 export default async function Reserve(id: string, token: string, date: string) {
   const response = await fetch(
-    `${process.env.BACKEND_URI}/workingspace/${id}/reservation`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/workingspace/${id}/reservation`,
     {
       method: "POST",
       headers: {
