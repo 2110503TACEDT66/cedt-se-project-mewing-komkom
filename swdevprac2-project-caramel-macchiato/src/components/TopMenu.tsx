@@ -15,6 +15,8 @@ export default async function TopMenu() {
     profile = await getUserProfile(session.user.token);
   }
 
+  const isAdmin = profile.data.role === "admin" ? true : false;
+
   return (
     <div className="flex justify-between items-center px-7 py-4 top-0 fixed z-10 bg-bg w-full">
       <div className="flex gap-5 items-center">
@@ -22,7 +24,7 @@ export default async function TopMenu() {
           <SiStarship className="text-blue-500" size={40} />
         </Link>
 
-        {/* <TopMenuItem title="จองเลย" href="/booking" /> */}
+        {isAdmin ? <TopMenuItem title="Dashboard" href="/adminpage" /> : ""}
       </div>
       <div className="flex gap-4 items-center">
         {session ? (
