@@ -1,3 +1,4 @@
+import PreviewCard from "@/components/admin/PreviewCard";
 import React from "react";
 
 export default function page() {
@@ -11,6 +12,9 @@ export default function page() {
           </span>
           Space
         </div>
+      </div>
+      <div>
+        <PreviewCard name="test" desc="test" img="test" seat="test" />
       </div>
     </div>
   );
