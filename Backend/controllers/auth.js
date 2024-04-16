@@ -22,6 +22,25 @@ exports.register = async (req, res, next) => {
   }
 };
 
+exports.EditUser = async(req,res,next) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!user) {
+      return res.status(400).json({ success: false });
+    }
+
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    return res.status(400).json({
+      success: false
+    });
+  }
+
+}
+
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
