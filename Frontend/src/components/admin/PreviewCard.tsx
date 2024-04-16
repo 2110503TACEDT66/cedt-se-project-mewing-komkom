@@ -16,6 +16,8 @@ export default function PreviewCard({
   seat?: string;
   time?: Time | null;
 }) {
+  const descc =
+    "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fuga obcaecati nemo veniam minus, omnis, nam, labore sint ab dolor quisquam ipsa possimus. Itaque reprehenderit temporibus animi minima repellendus distinctio similique.";
   return (
     <div className="relative flex flex-col text-gray-700 bg-white shadow-xl bg-clip-border rounded-xl w-96 p-3">
       {img ? (
@@ -45,7 +47,8 @@ export default function PreviewCard({
         </div>
         <hr />
         <div className=" mt-2 text-lg font-medium text-black">รายละเอียด</div>
-        <div className="block  text-base antialiased font-light leading-relaxed text-inherit">
+        <div className=" break-words text-base antialiased font-light leading-relaxed text-inherit">
+          <p>
           {desc ? (
             desc
           ) : (
@@ -53,6 +56,8 @@ export default function PreviewCard({
               . <br />. <br /> . <br />
             </div>
           )}
+          </p>
+          
         </div>
         <div className="mt-2">จำนวนที่นั่ง : {seat}</div>
       </div>

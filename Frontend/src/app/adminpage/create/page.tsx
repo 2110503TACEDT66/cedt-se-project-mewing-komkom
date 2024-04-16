@@ -1,8 +1,11 @@
+"use client";
 import CoWorkForm from "@/components/admin/CoWorkForm";
 import PreviewCard from "@/components/admin/PreviewCard";
 import React from "react";
+import { useCardContext } from "@/context/CardContext";
 
 export default function page() {
+  const { name, desc, previewImage } = useCardContext();
   return (
     <div className="p-10">
       <div className="mt-10 mb-10 text-5xl font-medium">
@@ -14,9 +17,11 @@ export default function page() {
           <CoWorkForm />
         </div>
         <div>
-          <div className="font-bold text-2xl flex justify-end mb-5">Preview</div>
+          <div className="font-bold text-2xl flex justify-end mb-5">
+            Preview
+          </div>
           <div className="flex justify-end">
-            <PreviewCard />
+            <PreviewCard name={name} desc={desc} img={previewImage} />
           </div>
         </div>
       </div>
