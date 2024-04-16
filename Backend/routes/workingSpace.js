@@ -19,12 +19,12 @@ router.use("/:workingSpaceId/reservation/", reservationRouter);
 router
   .route("/")
   .get(getAllWorkingSpace)
-  .post(protect, authorize("admin"), createWorkingSpace);
+  .post(protect, authorize("admin", "moderator"), createWorkingSpace);
 router
   .route("/:id")
   .get(getWorkingSpace)
-  .put(protect, authorize("admin"), updateWorkingSpace)
-  .delete(protect, authorize("admin"), deleteWorkingSpace);
+  .put(protect, authorize("admin", "moderator"), updateWorkingSpace)
+  .delete(protect, authorize("admin", "moderator"), deleteWorkingSpace);
 
 module.exports = router;
 
