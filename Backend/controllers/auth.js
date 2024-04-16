@@ -22,7 +22,7 @@ exports.register = async (req, res, next) => {
   }
 };
 
-exports.EditUser = async(req,res,next) => {
+exports.EditUser = async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -35,11 +35,10 @@ exports.EditUser = async(req,res,next) => {
     res.status(200).json({ success: true, data: user });
   } catch (error) {
     return res.status(400).json({
-      success: false
+      success: false,
     });
   }
-
-}
+};
 
 exports.login = async (req, res, next) => {
   try {
@@ -111,6 +110,45 @@ exports.getMe = async (req, res, next) => {
     success: true,
     data: user,
   });
+};
+
+// implement get all user
+exports.getAllUser = async (req, res, next) => {
+  const user = await User.find();
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+};
+
+// delete user
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: `No User with the id of ${req.params.id}`,
+      });
+    }
+    //Make sure user role is the moderator
+    if (req.user.role !== "moderator") {
+      return res.status(401).json({
+        success: false,
+        message: `User ${req.user.id} is not authorized to delete this user`,
+      });
+    }
+    await user.deleteOne();
+    res.status(200).json({
+      success: true,
+      data: {},
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Cannot delete user" });
+  }
 };
 
 exports.logout = async (req, res, next) => {
