@@ -34,3 +34,8 @@ export interface SpaceJson {
   pagination: Object;
   data: SpaceItem[];
 }
+
+export interface Time {
+  start: string;
+  end: string;
+}
