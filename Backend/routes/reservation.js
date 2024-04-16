@@ -16,16 +16,16 @@ const { protect, authorize } = require("../middleware/auth");
 router
   .route("/")
   .get(protect, getAllReservation)
-  .post(protect, authorize("admin", "user"), addReservation);
+  .post(protect, authorize("admin", "user", "moderator"), addReservation);
 router
   .route("/:id")
   .get(protect, getReservation)
-  .put(protect, authorize("admin", "user"), updateReservation)
-  .delete(protect, authorize("admin", "user"), deleteReservation);
+  .put(protect, authorize("admin", "user", "moderator"), updateReservation)
+  .delete(protect, authorize("admin", "user", "moderator"), deleteReservation);
 router
   .route("/user/:id")
   .get(protect, getUserReservation)
 
-router.route("/clear/:id").delete(protect, authorize("admin"), clearSpace);
+router.route("/clear/:id").delete(protect, authorize("admin", "moderator"), clearSpace);
 
 module.exports = router;
