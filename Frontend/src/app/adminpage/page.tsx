@@ -15,6 +15,7 @@ export default function page() {
       </div>
       <div>
         <PreviewCard name="test" desc="test" img="test" seat="test" />
+        test 2
       </div>
     </div>
   );
