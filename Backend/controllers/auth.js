@@ -68,12 +68,18 @@ exports.login = async (req, res, next) => {
         .status(401)
         .json({ success: false, msg: "Invalid credentials" });
     }
-
-    //   Create token
-    //   const token = user.getSignedJwtToken();
-
-    //   res.status(200).json({ success: true, token });
-
+    if (user.banUntil) {
+      const banUntil = user.banUntil;
+      const now = new Date();
+      if (now < banUntil) {
+        return res.status(401).json({
+          success: false,
+          msg: "You are banned until " + banUntil,
+          ban: true,
+          banUntil: banUntil
+        });
+      }
+    }
     sendTokenResponse(user, 200, res);
   } catch (error) {
     return res.status(401).json({
