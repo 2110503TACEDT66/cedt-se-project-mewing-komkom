@@ -121,6 +121,36 @@ exports.getAllUser = async (req, res, next) => {
   });
 };
 
+// delete user
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: `No User with the id of ${req.params.id}`,
+      });
+    }
+    //Make sure user role is the moderator
+    if (req.user.role !== "moderator") {
+      return res.status(401).json({
+        success: false,
+        message: `User ${req.user.id} is not authorized to delete this user`,
+      });
+    }
+    await user.deleteOne();
+    res.status(200).json({
+      success: true,
+      data: {},
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Cannot delete user" });
+  }
+};
+
 exports.logout = async (req, res, next) => {
   res.cookie("token", "none", {
     expires: new Date(Date.now() + 10 * 1000),
