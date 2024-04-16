@@ -4,7 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
-
+/presentation-day-1-caramel-macchiato/node_modules/*
+/swdevprac2-project-caramel-macchiato/node_modules/*
 # testing
 /coverage
 
