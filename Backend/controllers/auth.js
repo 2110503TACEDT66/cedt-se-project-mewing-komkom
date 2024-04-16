@@ -22,7 +22,7 @@ exports.register = async (req, res, next) => {
   }
 };
 
-exports.EditUser = async(req,res,next) => {
+exports.EditUser = async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -35,11 +35,10 @@ exports.EditUser = async(req,res,next) => {
     res.status(200).json({ success: true, data: user });
   } catch (error) {
     return res.status(400).json({
-      success: false
+      success: false,
     });
   }
-
-}
+};
 
 exports.login = async (req, res, next) => {
   try {
@@ -107,6 +106,15 @@ const sendTokenResponse = (user, statusCode, res) => {
 
 exports.getMe = async (req, res, next) => {
   const user = await User.findById(req.user.id);
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+};
+
+// implement get all user
+exports.getAllUser = async (req, res, next) => {
+  const user = await User.find();
   res.status(200).json({
     success: true,
     data: user,
