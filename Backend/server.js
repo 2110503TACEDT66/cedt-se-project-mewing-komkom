@@ -14,6 +14,7 @@ const swaggerUI = require("swagger-ui-express");
 // Route files
 const workingSpace = require("./routes/workingSpace");
 const reservation = require("./routes/reservation");
+const user = require("./routes/user");
 const auth = require("./routes/auth");
 
 // Load env vars
@@ -75,6 +76,7 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 app.use("/api/v1/workingspace", workingSpace);
 app.use("/api/v1/reservation", reservation);
 app.use("/api/v1/auth", auth);
+app.use("/api/v1/user", user);
 
 const PORT = process.env.PORT || 5000;
 
