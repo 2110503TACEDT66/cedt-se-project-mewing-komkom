@@ -2,7 +2,7 @@ export default async function getSpace(id: String) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   
     const response = await fetch(
-      `${process.env.BACKEND_URI}/workingspace/` + id
+      `${process.env.NEXT_PUBLIC_BACKEND_URI}/workingspace/` + id
     );
   
     if (!response.ok) {

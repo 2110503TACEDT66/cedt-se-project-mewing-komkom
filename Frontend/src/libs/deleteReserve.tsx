@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 
 export default async function DeleteReservation(id: string, token: string) {
   const response = await fetch(
-    `${process.env.BACKEND_URI}/reservation/` +
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation/` +
       id,
     {
       method: "Delete",

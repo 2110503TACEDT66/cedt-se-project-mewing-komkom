@@ -2,7 +2,7 @@ export default async function getReservation(id: String,token:string) {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const response = await fetch(
-   `${process.env.BACKEND_URI}/reservation/` +
+   `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation/` +
       id,
     {
       method: "GET",
