@@ -39,3 +39,12 @@ export interface Time {
   start: string;
   end: string;
 }
+
+export interface SetPreviewCard {
+  img: any;
+  name: string;
+  open: string;
+  close: string;
+  desc: string;
+  seat: string;
+}
