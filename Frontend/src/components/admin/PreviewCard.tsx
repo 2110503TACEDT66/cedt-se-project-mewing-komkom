@@ -2,25 +2,19 @@ import React from "react";
 import { MdOutlinePhotoLibrary } from "react-icons/md";
 import { AiFillClockCircle } from "react-icons/ai";
 import { Time } from "../../../interface";
-
+import { SetPreviewCard } from "../../../interface";
 export default function PreviewCard({
-  img,
-  name,
-  desc,
-  seat,
+  card,
   time,
 }: {
-  img?: string;
-  name?: string;
-  desc?: string;
-  seat?: string;
+  card?: SetPreviewCard;
   time?: Time | null;
 }) {
   const descc =
     "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fuga obcaecati nemo veniam minus, omnis, nam, labore sint ab dolor quisquam ipsa possimus. Itaque reprehenderit temporibus animi minima repellendus distinctio similique.";
   return (
     <div className="relative flex flex-col text-gray-700 bg-white shadow-xl bg-clip-border rounded-xl w-96 p-3">
-      {img ? (
+      {card?.img ? (
         <div className="relative h-48 mx-4 -mt-6 overflow-hidden text-white shadow-lg bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
           <img src="" alt="card-image" />
         </div>
@@ -33,13 +27,13 @@ export default function PreviewCard({
       <div className="p-4">
         <div></div>
         <h5 className="block text-xl antialiased font-semibold leading-snug tracking-normal text-black mt-1">
-          {name ? name : "ชื่อ"}
+          {card?.name ? card?.name : "ชื่อ"}
         </h5>
         <div className="flex gap-2">
           <AiFillClockCircle className="mb-2" color="black" size={20} />
           <div>
             {time ? (
-              <div> {`${time.start} - ${time.end}`} </div>
+              <div> {`${card?.open} - ${card?.close}`} </div>
             ) : (
               "เวลาเปิด - เวลาปิด"
             )}
@@ -48,18 +42,17 @@ export default function PreviewCard({
         <hr />
         <div className=" mt-2 text-lg font-medium text-black">รายละเอียด</div>
         <div className=" break-words text-base antialiased font-light leading-relaxed text-inherit">
-          <p>
-          {desc ? (
-            desc
-          ) : (
-            <div className="text-xl">
-              . <br />. <br /> . <br />
-            </div>
-          )}
-          </p>
-          
+          <>
+            {card?.desc ? (
+              card?.desc
+            ) : (
+              <div className="text-xl">
+                . <br />. <br /> . <br />
+              </div>
+            )}
+          </>
         </div>
-        <div className="mt-2">จำนวนที่นั่ง : {seat}</div>
+        <div className="mt-2">จำนวนที่นั่ง : {card?.seat}</div>
       </div>
 
       <div className=" flex justify-end ">

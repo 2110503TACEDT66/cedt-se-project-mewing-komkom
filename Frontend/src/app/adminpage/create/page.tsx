@@ -5,7 +5,7 @@ import React from "react";
 import { useCardContext } from "@/context/CardContext";
 
 export default function page() {
-  const { name, desc, previewImage } = useCardContext();
+  const { name, desc, previewImage, num, card } = useCardContext();
   return (
     <div className="p-10">
       <div className="mt-10 mb-10 text-5xl font-medium">
@@ -21,7 +21,7 @@ export default function page() {
             Preview
           </div>
           <div className="flex justify-end">
-            <PreviewCard name={name} desc={desc} img={previewImage} />
+            <PreviewCard card={card} />
           </div>
         </div>
       </div>
