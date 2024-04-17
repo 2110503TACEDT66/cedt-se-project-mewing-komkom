@@ -2,9 +2,7 @@ import Swal from "sweetalert2";
 
 export default async function Reserve(id: string, token: string, date: string) {
   const response = await fetch(
-    "https://presentation-day-1-caramel-macchiato.vercel.app/api/v1/workingspace/" +
-      id +
-      "/reservation",
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/workingspace/${id}/reservation`,
     {
       method: "POST",
       headers: {
@@ -17,14 +15,13 @@ export default async function Reserve(id: string, token: string, date: string) {
     }
   );
   if (!response.ok) {
-    const ans = await  response.json();
+    const ans = await response.json();
 
     Swal.fire({
       title: "Error!",
       text: ans.message || "Register Failed",
       icon: "error",
     });
-
   } else {
     Swal.fire({
       title: "Success!",

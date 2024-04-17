@@ -1,6 +1,6 @@
 export default async function getAllReservation(token: string) {
   const response = await fetch(
-    "https://presentation-day-1-caramel-macchiato.vercel.app/api/v1/reservation",
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation`,
     {
       method: "GET",
       headers: {
