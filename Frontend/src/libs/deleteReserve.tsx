@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 
 export default async function DeleteReservation(id: string, token: string) {
   const response = await fetch(
-    "https://presentation-day-1-caramel-macchiato.vercel.app/api/v1/reservation/" +
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation/` +
       id,
     {
       method: "Delete",
