@@ -7,7 +7,7 @@ export default async function UpdateReservation(
   const body = JSON.stringify({ reserveDate: date }); // Construct the request body
 
   const response = await fetch(
-   `${process.env.BACKEND_URI}/reservation/` +
+   `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation/` +
       id,
     {
       method: "PUT",
