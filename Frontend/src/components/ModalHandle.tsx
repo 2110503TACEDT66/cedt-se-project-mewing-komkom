@@ -24,6 +24,7 @@ export default function ModalHandle({
         <button
           className="bg-black px-5 py-2 rounded-full text-white max-w-max "
           onClick={() => {
+
             if (!session.data) {
               router.push("/api/auth/signin");
             } else {
