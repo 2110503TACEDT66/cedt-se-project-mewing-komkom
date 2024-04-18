@@ -8,11 +8,11 @@ import { SpaceItem } from "../../interface";
 export default function ModalupdateHandle({
   space,
   context,
-  id
+  id,
 }: {
   space: SpaceItem;
   context?: string;
-  id:string
+  id: string;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -21,19 +21,18 @@ export default function ModalupdateHandle({
 
   return (
     <div>
-        <button
-          className="bg-black px-5 py-2 rounded-full text-white max-w-max "
-          onClick={() => {
-            /* if (!session.data) {
-              router.push("/api/auth/signin");
-            } else {
-            } */
+      <button
+        className="bg-black px-5 py-2 rounded-full text-white max-w-max "
+        onClick={() => {
+          if (!session.data) {
+            router.push("/api/auth/signin");
+          } else {
             setOpen(true);
-          }}
-        >
-          {context}
-        </button>
-     
+          }
+        }}
+      >
+        {context}
+      </button>
 
       <Modalupdate
         isOpen={open}
