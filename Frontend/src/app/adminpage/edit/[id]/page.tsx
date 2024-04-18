@@ -10,6 +10,7 @@ import getUserProfile from "@/libs/getUserProfile";
 import getSpace from "@/libs/getSpace";
 export default async function page({ params }: { params: { id: string } }) {
 
+  
   const space = await getSpace(params.id);
 
   return (
