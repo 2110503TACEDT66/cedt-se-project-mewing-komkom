@@ -48,3 +48,12 @@ export interface SetPreviewCard {
   desc: string;
   seat: number;
 }
+export interface User {
+  _id: string;
+  name:string;
+  role:string;
+  email:string;
+  password:string;
+  createdAt: string;
+  __v: number;
+}
