@@ -1,5 +1,5 @@
 const User = require("../models/User");
-
+const generator = require("generate-password");
 exports.register = async (req, res, next) => {
   try {
     const { name, email, password, tel } = req.body;
@@ -120,7 +120,15 @@ exports.getMe = async (req, res, next) => {
 };
 
 // implement get all user
-exports.getAllUser = async (req, res, next) => {
+exports.getAllUsers = async (req, res, next) => {
+  const user = await User.find({ role: "user" });
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+};
+
+exports.getAllRoles = async (req, res, next) => {
   const user = await User.find();
   res.status(200).json({
     success: true,
@@ -167,4 +175,34 @@ exports.logout = async (req, res, next) => {
     success: true,
     data: {},
   });
+};
+
+exports.createAdmin = async (req, res, next) => {
+  try {
+    const password = generator.generate({
+      length: 10,
+      numbers: true,
+    });
+    const { name, email, tel } = req.body;
+    const role = "admin";
+    // Create user
+    const user = await User.create({
+      name,
+      tel,
+      email,
+      password,
+      role,
+    });
+    // Create token
+    // const token = user.getSignedJwtToken();
+    // res.status(200).json({ success: true, token });
+    res.status(200).json({
+      success: true,
+      user:user,
+      password: password
+    });
+  } catch (error) {
+    res.status(400).json({ success: false });
+    console.log(error.stack);
+  }
 };
