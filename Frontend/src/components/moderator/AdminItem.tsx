@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import getAllAdmins from "@/libs/getallAdmins";
-import { User } from "../../interface";
+import { User } from "../../../interface";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
