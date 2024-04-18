@@ -9,7 +9,7 @@ export default function PreviewCard({ card }: { card?: SetPreviewCard }) {
   return (
     <div className="relative flex flex-col text-gray-700 bg-white shadow-xl bg-clip-border rounded-xl w-96 p-3">
       {card?.img ? (
-        <div className="relative h-48 mx-4 -mt-6 overflow-hidden text-white shadow-lg bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
+        <div className="relative h-[180px] mx-4 mt-4 overflow-hidden text-white shadow-lg bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
           <img src={card?.img} alt="card-image" />
         </div>
       ) : (
