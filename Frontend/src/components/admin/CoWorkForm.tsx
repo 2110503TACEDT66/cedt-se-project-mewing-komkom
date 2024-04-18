@@ -24,12 +24,12 @@ export default function CoWorkForm() {
     createCoWorkingSpace(
       {
         name: card.name,
-        address: "CHIANGMAI",
+        address: card.address,
         tel: "081530",
-        openTime: card.open,
-        closeTime: card.close,
-        remaining: card.seat,
-        image : ""
+        openTime: card.openTime,
+        closeTime: card.closeTime,
+        remaining: card.remaining,
+        image: card.image,
       },
       session.data!.user.token
     );
@@ -39,15 +39,23 @@ export default function CoWorkForm() {
     <div className=" bg-white rounded-2xl shadow-2xl">
       <form className="p-20 grid grid-cols-4 gap-10 ">
         <label htmlFor="image-upload">รูปภาพ:</label>
+        {/* <Input
+            type="file"
+            className="col-span-1 max-w-60 text-gray-400"
+            id="image-upload"
+            name="image"
+            accept="image/*"
+            onChange={handleFileChange}
+          /> */}
         <Input
-          type="file"
-          className="col-span-2 max-w-60 text-gray-400"
-          id="image-upload"
-          name="image"
-          accept="image/*"
-          onChange={handleFileChange}
+          type="text"
+          className="col-span-2 text-xs max-w-60 text-gray-400"
+          placeholder="Image Url"
+          id="inputImage"
+          onChange={handleFormChange}
         />
         <div className="col-span-1"></div>
+
         {/* <label className="cursor-pointer col-span-3">
           <input type="file" className="hidden" />
           <span className=" text-sm underline text-[#9CA3AF] hover:underline-offset-2 bg-[#E1E7EA] px-6 py-1 rounded-lg top-0">
