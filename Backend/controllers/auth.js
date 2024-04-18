@@ -1,5 +1,5 @@
 const User = require("../models/User");
-
+const generator = require("generate-password");
 exports.register = async (req, res, next) => {
   try {
     const { name, email, password, tel } = req.body;
@@ -168,4 +168,32 @@ exports.logout = async (req, res, next) => {
     success: true,
     data: {},
   });
+};
+
+exports.createAdmin = async (req, res, next) => {
+  try {
+    const password = generator.generate({
+      length: 10,
+      numbers: true,
+    });
+    const { name, email, tel } = req.body;
+    // Create user
+    const user = await User.create({
+      name,
+      tel,
+      email,
+      password,
+    });
+    // Create token
+    // const token = user.getSignedJwtToken();
+    // res.status(200).json({ success: true, token });
+    res.status(200).json({
+      success: true,
+      password: password,
+    });
+    
+  } catch (error) {
+    res.status(400).json({ success: false });
+    console.log(error.stack);
+  }
 };
