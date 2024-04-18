@@ -4,7 +4,8 @@ export default async function banUser(
   id: string,
   banUntil: string,
   banReason: string,
-  token: string
+  token: string,
+  isSubmitBan: Function
 ) {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -38,6 +39,7 @@ export default async function banUser(
       text: "Banned successfully",
       icon: "success",
     });
+    isSubmitBan();
     return await response.json();
   }
 }

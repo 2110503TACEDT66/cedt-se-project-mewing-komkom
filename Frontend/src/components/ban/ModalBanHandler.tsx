@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ModalBan from "./ModalBan";
 
-export default function ModalBanHandle({ data }: { data: any }) {
+export default function ModalBanHandle({ data, isSubmitBan }: { data: any, isSubmitBan:Function }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -29,7 +29,7 @@ export default function ModalBanHandle({ data }: { data: any }) {
         </button>
       )}
 
-      <ModalBan isOpen={open} data={data} handleClose={() => setOpen(false)} />
+      <ModalBan isOpen={open} data={data} handleClose={() => setOpen(false)} isSubmitBan={isSubmitBan} />
     </div>
   );
 }
