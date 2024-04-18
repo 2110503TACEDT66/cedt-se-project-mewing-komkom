@@ -2,7 +2,7 @@ export default async function getReservation(id: String,token:string) {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const response = await fetch(
-    "https://presentation-day-1-caramel-macchiato.vercel.app/api/v1/reservation/" +
+   `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation/` +
       id,
     {
       method: "GET",
