@@ -177,21 +177,23 @@ exports.createAdmin = async (req, res, next) => {
       numbers: true,
     });
     const { name, email, tel } = req.body;
+    const role = "admin";
     // Create user
     const user = await User.create({
       name,
       tel,
       email,
       password,
+      role,
     });
     // Create token
     // const token = user.getSignedJwtToken();
     // res.status(200).json({ success: true, token });
     res.status(200).json({
       success: true,
-      password: password,
+      user:user,
+      password: password
     });
-    
   } catch (error) {
     res.status(400).json({ success: false });
     console.log(error.stack);
