@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
@@ -6,6 +8,7 @@ import AdminItem from "@/components/moderator/AdminItem";
 import { User } from "../../../interface";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
+import { useRouter } from "next/navigation";
 
 interface Props{
   params: {id: string};
@@ -16,6 +19,12 @@ export default async function ModeratorPage() {
   if (!session || !session.user.token) return null;
   const allUsers_obeject = await getAllAdmins(session.user.token);
   const usersdata = allUsers_obeject.data;
+  const router = useRouter();
+  const addButton = (e: React.MouseEvent<HTMLButtonElement>)=>{
+    e.preventDefault();
+
+    router.push(`/moderator/add`);
+  };
 
   return (
     <div className="p-4"> {/* Add padding for spacing */}
@@ -29,7 +38,7 @@ export default async function ModeratorPage() {
           size="small"
           fullWidth 
         />
-        <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+        <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" onClick={()=>{addButton}}>
           +Add
         </button>
       </Stack>
