@@ -15,7 +15,7 @@ export default async function TopMenu() {
     profile = await getUserProfile(session.user.token);
   }
 
-  const isAdmin = profile.data.role === "admin" ? true : false;
+  const isAdmin = profile?.data.role === "admin" ? true : false;
 
   return (
     <div className="flex justify-between items-center px-7 py-4 top-0 fixed z-10 bg-bg w-full">
