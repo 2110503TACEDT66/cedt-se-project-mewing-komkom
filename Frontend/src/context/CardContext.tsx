@@ -12,7 +12,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
     open: "",
     close: "",
     desc: "",
-    seat: "",
+    seat : 1,
   };
 
   const [card, setCard] = useState<SetPreviewCard>(newCard);
