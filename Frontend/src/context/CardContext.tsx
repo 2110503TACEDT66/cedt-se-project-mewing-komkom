@@ -2,6 +2,7 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { SetPreviewCard } from "../../interface";
 import type { TimePickerProps } from "antd";
+import moment from "moment";
 const CardContext = createContext<any>(undefined);
 
 export function CardProvider({ children }: { children: React.ReactNode }) {
@@ -21,9 +22,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
   const [desc, setDesc] = useState<string>("");
   const [num, setNum] = useState<string>(""); */
 
-  const handleFormChange = (
-    e: React.ChangeEvent<HTMLInputElement> | any | TimePickerProps["onChange"]
-  ) => {
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
     if (e.target.id === "inputName") {
       setCard((prevCard) => ({
         ...prevCard,
@@ -42,20 +41,45 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
         seat: e.target.value,
       }));
     }
-    if (e.target.id === "inputOpen") {
-      setCard((prevCard) => ({
-        ...prevCard,
-        open: e,
-      }));
-    }
   };
-  const handleOpenChange: TimePickerProps["onChange"] = (timeString) => {};
+  const handleOpenChange: TimePickerProps["onChange"] = (time: any) => {
+    const hour = time.$H;
+    const minute = time.$m;
+    const m = moment(`${hour}-${minute}`, "hh:mm a");
+    const formattedTime = m.format("hh:mm a");
+    console.log(formattedTime);
+    setCard((prevCard) => ({
+      ...prevCard,
+      open: formattedTime,
+    }));
+  };
+
+  const handleCloseChange: TimePickerProps["onChange"] = (time: any) => {
+    const hour = time.$H;
+    const minute = time.$m;
+    const m = moment(`${hour}-${minute}`, "hh:mm a");
+    const formattedTime = m.format("hh:mm a");
+    console.log(formattedTime);
+    setCard((prevCard) => ({
+      ...prevCard,
+      close: formattedTime,
+    }));
+  };
+
+  /*   const [file, setFile] = useState<any>();
+  function getfile(e: any) {
+    console.log(e.target.files[0]);
+    setFile(e.target.files[0]);
+  } */
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
     const reader = new FileReader();
     reader.onload = () => {
       if (reader.readyState === 2) {
-        setPreviewImage(reader.result);
+        setCard((prevCard) => ({
+          ...prevCard,
+          img: reader.result,
+        }));
       }
     };
     reader.readAsDataURL(e.target.files[0]);
@@ -78,10 +102,11 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
   return (
     <CardContext.Provider
       value={{
-        previewImage,
-        handleFileChange,
         card,
         handleFormChange,
+        handleOpenChange,
+        handleCloseChange,
+        handleFileChange,
       }}
     >
       {children}
