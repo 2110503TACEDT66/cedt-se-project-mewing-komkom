@@ -3,20 +3,14 @@ import { MdOutlinePhotoLibrary } from "react-icons/md";
 import { AiFillClockCircle } from "react-icons/ai";
 import { Time } from "../../../interface";
 import { SetPreviewCard } from "../../../interface";
-export default function PreviewCard({
-  card,
-  time,
-}: {
-  card?: SetPreviewCard;
-  time?: Time | null;
-}) {
+export default function PreviewCard({ card }: { card?: SetPreviewCard }) {
   const descc =
     "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fuga obcaecati nemo veniam minus, omnis, nam, labore sint ab dolor quisquam ipsa possimus. Itaque reprehenderit temporibus animi minima repellendus distinctio similique.";
   return (
     <div className="relative flex flex-col text-gray-700 bg-white shadow-xl bg-clip-border rounded-xl w-96 p-3">
       {card?.img ? (
-        <div className="relative h-48 mx-4 -mt-6 overflow-hidden text-white shadow-lg bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
-          <img src="" alt="card-image" />
+        <div className="relative h-[180px] mx-4 mt-4 overflow-hidden text-white shadow-lg bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
+          <img src={card?.img} alt="card-image" />
         </div>
       ) : (
         <div className="h-48 flex justify-center items-center shadow-lg bg-slate-200 bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40 overflow-hidden">
@@ -32,7 +26,7 @@ export default function PreviewCard({
         <div className="flex gap-2">
           <AiFillClockCircle className="mb-2" color="black" size={20} />
           <div>
-            {time ? (
+            {card?.open || card?.close ? (
               <div> {`${card?.open} - ${card?.close}`} </div>
             ) : (
               "เวลาเปิด - เวลาปิด"
@@ -42,17 +36,18 @@ export default function PreviewCard({
         <hr />
         <div className=" mt-2 text-lg font-medium text-black">รายละเอียด</div>
         <div className=" break-words text-base antialiased font-light leading-relaxed text-inherit">
-          <>
-            {card?.desc ? (
-              card?.desc
-            ) : (
-              <div className="text-xl">
-                . <br />. <br /> . <br />
-              </div>
-            )}
-          </>
+          {card?.desc ? (
+            card?.desc
+          ) : (
+            <div className="text-xl">
+              . <br />. <br /> . <br />
+            </div>
+          )}
         </div>
-        <div className="mt-2">จำนวนที่นั่ง : {card?.seat}</div>
+        <div className="mt-2 flex gap-3 ">
+          <div>จำนวนที่นั่ง :</div>
+          <div>{card?.seat}</div>
+        </div>
       </div>
 
       <div className=" flex justify-end ">

@@ -8,7 +8,12 @@ import { useCardContext } from "@/context/CardContext";
 
 export default function CoWorkForm() {
   const format = "HH:mm";
-  const { handleFileChange, handleFormChange } = useCardContext();
+  const {
+    handleFormChange,
+    handleOpenChange,
+    handleCloseChange,
+    handleFileChange,
+  } = useCardContext();
   return (
     <div className=" bg-white rounded-2xl shadow-2xl">
       <form className="p-20 grid grid-cols-4 gap-10 ">
@@ -39,9 +44,19 @@ export default function CoWorkForm() {
         />
         <label>เวลาเปิด:</label>
         <div className="col-span-3 flex gap-3">
-          <TimePicker format={format} className=" " id="inputOpen" onChange={handleFormChange}/>
+          <TimePicker
+            format={format}
+            className=" "
+            id="inputTimeOpen"
+            onChange={handleOpenChange}
+          />
           <div className="text-center self-center">ถึง</div>
-          <TimePicker format={format} className=" " id="inputClose" />
+          <TimePicker
+            format={format}
+            className=" "
+            id="inputTimeClose"
+            onChange={handleCloseChange}
+          />
         </div>
         <label>รายละเอียด:</label>
         <Textarea
@@ -60,6 +75,7 @@ export default function CoWorkForm() {
           min={1}
           onChange={handleFormChange}
           id="inputNumber"
+          defaultValue={1}
         />
 
         <div className="col-span-2"></div>
