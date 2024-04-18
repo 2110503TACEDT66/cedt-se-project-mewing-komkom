@@ -6,7 +6,7 @@ export default async function getSpaces() {
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch hospitals");
+    throw new Error("Failed to fetch Spaces");
   }
 
   return await response.json();
