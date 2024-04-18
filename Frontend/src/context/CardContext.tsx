@@ -1,21 +1,21 @@
 "use client";
 import React, { createContext, useState, useContext, ReactNode } from "react";
-import { SetPreviewCard } from "../../interface";
+import { SetPreviewCard, SpaceItem } from "../../interface";
 import type { TimePickerProps } from "antd";
 import moment from "moment";
 const CardContext = createContext<any>(undefined);
 
 export function CardProvider({ children }: { children: React.ReactNode }) {
-  const newCard: SetPreviewCard = {
-    img: "",
+  const newCard: SpaceItem = {
+    image: "",
     name: "",
-    open: "",
-    close: "",
-    desc: "",
-    seat : 1,
+    openTime: "",
+    closeTime: "",
+    address: "",
+    remaining: 1,
   };
 
-  const [card, setCard] = useState<SetPreviewCard>(newCard);
+  const [card, setCard] = useState<SpaceItem>(newCard);
   const [previewImage, setPreviewImage] = useState<any>(null);
 
   /*   const [name, setName] = useState<string>("");
@@ -32,13 +32,19 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
     if (e.target.id === "inputDesc") {
       setCard((prevCard) => ({
         ...prevCard,
-        desc: e.target.value,
+        address: e.target.value,
       }));
     }
     if (e.target.id === "inputNumber") {
       setCard((prevCard) => ({
         ...prevCard,
-        seat: e.target.value,
+        remaining: e.target.value,
+      }));
+    }
+    if (e.target.id === "inputImage") {
+      setCard((prevCard) => ({
+        ...prevCard,
+        image: e.target.value,
       }));
     }
   };
@@ -50,7 +56,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
     console.log(formattedTime);
     setCard((prevCard) => ({
       ...prevCard,
-      open: formattedTime,
+      openTime: formattedTime,
     }));
   };
 
@@ -62,7 +68,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
     console.log(formattedTime);
     setCard((prevCard) => ({
       ...prevCard,
-      close: formattedTime,
+      closeTime: formattedTime,
     }));
   };
 
