@@ -6,6 +6,8 @@ import { useSession } from "next-auth/react";
 import Reserve from "@/libs/confirmReserve";
 import { SpaceItem } from "../../../interface";
 import DateReserve from "../DateReserve";
+import banUser from "@/libs/banUser";
+import unbanUser from "@/libs/unbanUser";
 interface Props {
   isOpen: boolean;
   handleClose: any;
@@ -13,10 +15,19 @@ interface Props {
 }
 
 export default function ModalBan({ isOpen, handleClose, data }: Props) {
-  const [date, setDate] = useState();
+  const session = useSession();
+  const [date, setDate] = useState<any>();
   const [reason, setReason] = useState("");
 
-  const handleSubmit = () => {
+  const ban = () => {
+    banUser(data._id, date!.$d as string, reason, session.data!.user.token);
+
+    handleClose();
+  };
+
+  const unBan = () => {
+    unbanUser(data._id, session.data!.user.token);
+
     handleClose();
   };
 
@@ -53,46 +64,73 @@ export default function ModalBan({ isOpen, handleClose, data }: Props) {
                 >
                   <RxCross1 />
                 </a>
-                <div className="px-5 pt-8 pb-3 ">
-                  <h1 className="font-bold text-4xl">Ban {data.name}</h1>
-                  <hr className="my-3" />
 
-                  <div className="flex gap-3 mb-3">
-                    <div className="flex flex-col">
-                      <label>Ban Reasons *</label>
-                      <textarea
-                        name=""
-                        id=""
-                        cols={30}
-                        rows={1}
-                        className="rounded p-3 border border-slate-500"
-                        required
-                      ></textarea>
-                    </div>
+                {data.banUntil ? (
+                  <div className="px-5 pt-8 pb-3 ">
+                    <h1 className="font-bold text-4xl">Unban {data.name}</h1>
+                    <hr className="my-3" />
 
-                    <div className="flex flex-col">
-                      <label>Ban Until *</label>
-                      <DateReserve date={(value: any) => setDate(value)} />
-                    </div>
+                    <button
+                      className="bg-blue-500 px-5 py-2 mr-2 rounded-xl text-white max-w-max "
+                      onClick={() => {
+                        unBan();
+                      }}
+                    >
+                      Unban
+                    </button>
+                    <button
+                      className="bg-slate-300 px-5 py-2 rounded-xl  max-w-max "
+                      onClick={() => {
+                        handleClose();
+                      }}
+                    >
+                      Cancel
+                    </button>
                   </div>
+                ) : (
+                  <div className="px-5 pt-8 pb-3 ">
+                    <h1 className="font-bold text-4xl">Ban {data.name}</h1>
+                    <hr className="my-3" />
 
-                  <button
-                    className="bg-rose-500 px-5 py-2 mr-2 rounded-xl text-white max-w-max "
-                    onClick={() => {
-                      handleSubmit();
-                    }}
-                  >
-                    Ban
-                  </button>
-                  <button
-                    className="bg-slate-300 px-5 py-2 rounded-xl  max-w-max "
-                    onClick={() => {
-                      handleClose();
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
+                    <div className="flex gap-3 mb-3">
+                      <div className="flex flex-col">
+                        <label>Ban Reasons *</label>
+                        <textarea
+                          name=""
+                          id=""
+                          cols={30}
+                          rows={1}
+                          className="rounded p-3 border border-slate-500"
+                          required
+                          value={reason}
+                          onChange={(e) => setReason(e.target.value)}
+                        ></textarea>
+                      </div>
+
+                      <div className="flex flex-col">
+                        <label>Ban Until *</label>
+                        <DateReserve date={(value: any) => setDate(value)} />
+                      </div>
+                    </div>
+
+                    <button
+                      className="bg-rose-500 px-5 py-2 mr-2 rounded-xl text-white max-w-max "
+                      onClick={() => {
+                        ban();
+                      }}
+                    >
+                      Ban
+                    </button>
+                    <button
+                      className="bg-slate-300 px-5 py-2 rounded-xl  max-w-max "
+                      onClick={() => {
+                        handleClose();
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
               </Dialog.Panel>
             </Transition.Child>
           </div>
