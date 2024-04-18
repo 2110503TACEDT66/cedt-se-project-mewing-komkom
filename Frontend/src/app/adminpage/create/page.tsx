@@ -7,10 +7,9 @@ import { useSession } from "next-auth/react";
 import { Route } from "lucide-react";
 import { useRouter } from "next/navigation";
 import layout from "../layout";
+import getUserProfile from "@/libs/getUserProfile";
 export default function page() {
-  const { name, desc, previewImage, num, card } = useCardContext();
-  const session = useSession() ; 
-
+  const { card } = useCardContext();
   return (
     <div className="p-10">
       <div className="mt-10 mb-10 text-5xl font-medium">
@@ -31,5 +30,3 @@ export default function page() {
     </div>
   );
 }
-
-
