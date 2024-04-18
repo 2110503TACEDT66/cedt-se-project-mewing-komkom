@@ -2,8 +2,12 @@
 import { TextField } from "@mui/material";
 import { Input } from "@/components/ui/input";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import getAllUser from "@/libs/getUsers";
+import getAllAdmins from "@/libs/getallAdmins";
+import AdminItem from "./AdminItem";
 
-export default function EditAdminForm(){
+export default function EditAdminForm({adminID,adminData}:{adminID:string,adminData:any}){
     
     return(
         <div>
@@ -41,6 +45,7 @@ export default function EditAdminForm(){
                             className="col-span-3 "
                             maxLength={25}
                             id="admin_name"
+                            value={adminData[0].name}
                             />
                     </td>
                 </tr>
@@ -58,6 +63,7 @@ export default function EditAdminForm(){
                             className="col-span-3 "
                             maxLength={10}
                             id="admin_tel"
+                            value={adminData ? adminData[0].tel:''}
                             />
                         
                     </td>
@@ -76,6 +82,7 @@ export default function EditAdminForm(){
                             className="col-span-3 "
                             maxLength={25}
                             id="admin_email"
+                            value={adminData ? adminData[0].email:''}
                             />
                     </td>
                 </tr>
