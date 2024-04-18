@@ -1,9 +1,15 @@
 import PreviewCard from "@/components/admin/PreviewCard";
+import getSpaces from "@/libs/getSpaces";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
+import { SpaceJson } from "../../../interface";
 
-export default function page() {
-  const data = [1, 2, 3, 4, 5, 6, 7];
+export default async function page() {
+  /* const data = [1, 2, 3, 4, 5, 6, 7]; */
+  const data: SpaceJson = await getSpaces();
+  const ready = data.data;
   return (
     <div className="p-10">
       <div className="flex justify-center mt-10 mb-5 text-5xl font-bold">
@@ -24,8 +30,8 @@ export default function page() {
         </div>
       </div>
       <div className="grid grid-cols-4 justify-items-center gap-10">
-        {data.map((i: any) => (
-          <PreviewCard key={i} />
+        {data.data.map((i: any) => (
+          <PreviewCard card={i} />
         ))}
       </div>
     </div>
