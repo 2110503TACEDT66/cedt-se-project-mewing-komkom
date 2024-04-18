@@ -1,5 +1,5 @@
 const User = require("../models/User");
-
+const generator = require("generate-password");
 exports.register = async (req, res, next) => {
   try {
     const { name, email, password, tel } = req.body;
@@ -19,6 +19,24 @@ exports.register = async (req, res, next) => {
   } catch (error) {
     res.status(400).json({ success: false });
     console.log(error.stack);
+  }
+};
+
+exports.editUser = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!user) {
+      return res.status(400).json({ success: false });
+    }
+
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+    });
   }
 };
 
@@ -50,12 +68,19 @@ exports.login = async (req, res, next) => {
         .status(401)
         .json({ success: false, msg: "Invalid credentials" });
     }
-
-    //   Create token
-    //   const token = user.getSignedJwtToken();
-
-    //   res.status(200).json({ success: true, token });
-
+    if (user.banUntil) {
+      const banUntil = user.banUntil;
+      const now = new Date();
+      if (now < banUntil) {
+        return res.status(401).json({
+          success: false,
+          msg: "You are banned until " + banUntil,
+          ban: true,
+          banUntil: banUntil,
+          banReason: user.banReason
+        });
+      }
+    }
     sendTokenResponse(user, 200, res);
   } catch (error) {
     return res.status(401).json({
@@ -94,6 +119,53 @@ exports.getMe = async (req, res, next) => {
   });
 };
 
+// implement get all user
+exports.getAllUsers = async (req, res, next) => {
+  const user = await User.find({ role: "user" });
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+};
+
+exports.getAllRoles = async (req, res, next) => {
+  const user = await User.find();
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+};
+
+// delete user
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: `No User with the id of ${req.params.id}`,
+      });
+    }
+    //Make sure user role is the moderator
+    if (req.user.role !== "moderator") {
+      return res.status(401).json({
+        success: false,
+        message: `User ${req.user.id} is not authorized to delete this user`,
+      });
+    }
+    await user.deleteOne();
+    res.status(200).json({
+      success: true,
+      data: {},
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Cannot delete user" });
+  }
+};
+
 exports.logout = async (req, res, next) => {
   res.cookie("token", "none", {
     expires: new Date(Date.now() + 10 * 1000),
@@ -103,4 +175,34 @@ exports.logout = async (req, res, next) => {
     success: true,
     data: {},
   });
+};
+
+exports.createAdmin = async (req, res, next) => {
+  try {
+    const password = generator.generate({
+      length: 10,
+      numbers: true,
+    });
+    const { name, email, tel } = req.body;
+    const role = "admin";
+    // Create user
+    const user = await User.create({
+      name,
+      tel,
+      email,
+      password,
+      role,
+    });
+    // Create token
+    // const token = user.getSignedJwtToken();
+    // res.status(200).json({ success: true, token });
+    res.status(200).json({
+      success: true,
+      user:user,
+      password: password
+    });
+  } catch (error) {
+    res.status(400).json({ success: false });
+    console.log(error.stack);
+  }
 };

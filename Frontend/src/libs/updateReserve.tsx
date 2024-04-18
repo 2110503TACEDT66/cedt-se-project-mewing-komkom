@@ -7,7 +7,7 @@ export default async function UpdateReservation(
   const body = JSON.stringify({ reserveDate: date }); // Construct the request body
 
   const response = await fetch(
-    "https://presentation-day-1-caramel-macchiato.vercel.app/api/v1/reservation/" +
+   `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation/` +
       id,
     {
       method: "PUT",

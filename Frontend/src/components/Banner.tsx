@@ -30,7 +30,6 @@ export default async function Banner() {
             ? "You are the admin of Caramel- Macchiato"
             : "caramel macchiato"}
         </span>{" "}
-        :
         <h1 className="max-w-5xl text-8xl font-extrabold text-center mx-auto">
           <span className="bg-gradient-to-b from-blue-700 to-blue-400 bg-clip-text text-transparent">
             Co-working{" "}
