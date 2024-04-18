@@ -18,7 +18,7 @@ export default async function Banner() {
     "https://p16-va.lemon8cdn.com/tos-alisg-v-a3e477-sg/c8c10f6c3a4c4a969c9b6c967fe6b8f8~tplv-tej9nj120t-origin.webp",
     "https://assets.brandinside.asia/uploads/2022/07/KLOUD-27.jpeg",
     "https://morphosis-staging.s3.ap-southeast-1.amazonaws.com/wpuploads/2022-front-co-working-inside.jpg",
-    "https://sgp1.digitaloceanspaces.com/adaybulletin/2019/10/WEB_Space_truedigitalpark.jpg",
+    "https://img.wongnai.com/p/1920x0/2018/08/27/851c40685e014dc591da65384e66b5b4.jpg",
     "https://www.terrabkk.com/images/upload/af178899ca2cc98fcf8a7114450d17a7.jpg",
   ];
 
