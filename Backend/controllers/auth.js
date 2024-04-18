@@ -76,7 +76,8 @@ exports.login = async (req, res, next) => {
           success: false,
           msg: "You are banned until " + banUntil,
           ban: true,
-          banUntil: banUntil
+          banUntil: banUntil,
+          banReason: user.banReason
         });
       }
     }
