@@ -5,6 +5,9 @@ import dayjs from "dayjs";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "../ui/input";
 import { useCardContext } from "@/context/CardContext";
+import createCoWorkingSpace from "@/libs/createWorkingSpace";
+import { SetPreviewCard } from "../../../interface";
+import { useSession } from "next-auth/react";
 
 export default function CoWorkForm() {
   const format = "HH:mm";
@@ -13,7 +16,25 @@ export default function CoWorkForm() {
     handleOpenChange,
     handleCloseChange,
     handleFileChange,
+    card,
   } = useCardContext();
+
+  const session = useSession();
+  const onSubmit = () => {
+    createCoWorkingSpace(
+      {
+        name: card.name,
+        address: "CHIANGMAI",
+        tel: "081530",
+        openTime: card.open,
+        closeTime: card.close,
+        remaining: card.seat,
+        image : ""
+      },
+      session.data!.user.token
+    );
+  };
+
   return (
     <div className=" bg-white rounded-2xl shadow-2xl">
       <form className="p-20 grid grid-cols-4 gap-10 ">
@@ -80,7 +101,10 @@ export default function CoWorkForm() {
 
         <div className="col-span-2"></div>
         <div className="col-span-3"></div>
-        <button className="align-middle select-none text-lg font-semibold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none py-2 px-12 rounded-full bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none">
+        <button
+          onClick={onSubmit}
+          className="align-middle select-none text-lg font-semibold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none py-2 px-12 rounded-full bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+        >
           Submit
         </button>
       </form>
