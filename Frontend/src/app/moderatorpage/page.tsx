@@ -2,7 +2,7 @@ import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import getAllAdmins from "@/libs/getallAdmins";
-import AdminItem from "@/components/AdminItem";
+import AdminItem from "@/components/moderator/AdminItem";
 import { User } from "../../../interface";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
