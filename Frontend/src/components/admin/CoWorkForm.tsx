@@ -5,8 +5,9 @@ import dayjs from "dayjs";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "../ui/input";
 import { useCardContext } from "@/context/CardContext";
+import { SpaceItem } from "../../../interface";
 
-export default function CoWorkForm() {
+export default function CoWorkForm({data}: {data?:SpaceItem}) {
   const format = "HH:mm";
   const { handleFileChange, handleFormChange } = useCardContext();
   return (
@@ -36,10 +37,12 @@ export default function CoWorkForm() {
           onChange={handleFormChange}
           maxLength={25}
           id="inputName"
+          value={data?.name}
+
         />
         <label>เวลาเปิด:</label>
         <div className="col-span-3 flex gap-3">
-          <TimePicker format={format} className=" " id="inputOpen" onChange={handleFormChange}/>
+          <TimePicker format={format} className=" " id="inputOpen" onChange={handleFormChange} />
           <div className="text-center self-center">ถึง</div>
           <TimePicker format={format} className=" " id="inputClose" />
         </div>
@@ -50,6 +53,7 @@ export default function CoWorkForm() {
           onChange={handleFormChange}
           maxLength={180}
           id="inputDesc"
+          value={data?.address}
         />
         <label>จำนวนที่นั่ง:</label>
 
@@ -60,6 +64,7 @@ export default function CoWorkForm() {
           min={1}
           onChange={handleFormChange}
           id="inputNumber"
+          value={data?.remaining}
         />
 
         <div className="col-span-2"></div>
