@@ -32,10 +32,14 @@ const UserSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
-  banUntil: {
-    type: Date,
-    default: null
-  },
+    banUntil: {
+      type: Date,
+      default: null
+    },
+    banReason: {
+      type: String,
+      default: null
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     createdAt: {
