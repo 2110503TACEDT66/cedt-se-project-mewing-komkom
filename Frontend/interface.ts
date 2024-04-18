@@ -46,5 +46,5 @@ export interface SetPreviewCard {
   open: string;
   close: string;
   desc: string;
-  seat: string;
+  seat: number;
 }
