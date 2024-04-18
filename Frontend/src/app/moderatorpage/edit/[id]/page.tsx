@@ -17,7 +17,6 @@ export default async function managePage({ params }: Props) {
   return (
     <main>
       <div className="mt-4 mx-auto max-w-md">
-        <div className="text-center text-2xl font-bold py-3">Edit Admin</div>
         <EditAdminForm adminID={params.id} adminData={usersdata}></EditAdminForm>
       </div>
     </main>

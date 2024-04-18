@@ -7,7 +7,7 @@ import { User } from "../../../interface";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
-import AddButtonAdmin from "@/components/admin/AddButtonAdmin";
+import AddButtonAdmin from "@/components/moderator/AddButtonAdmin";
 
 interface Props{
   params: {id: string};
