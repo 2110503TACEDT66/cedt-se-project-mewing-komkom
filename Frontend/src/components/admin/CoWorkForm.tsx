@@ -8,6 +8,7 @@ import { useCardContext } from "@/context/CardContext";
 import createCoWorkingSpace from "@/libs/createWorkingSpace";
 import { SetPreviewCard } from "../../../interface";
 import { useSession } from "next-auth/react";
+import updateWorkingSpace from "@/libs/updateWorkingSpace";
 
 interface Props {
   data?: any;
@@ -26,9 +27,10 @@ export default function CoWorkForm({ data }: Props) {
 
 
   const session = useSession();
-  const onSubmit = () => {
-    createCoWorkingSpace(
-      {
+  const onSubmit = (e : any) => {
+    e.preventDefault();
+    if(data){
+      updateWorkingSpace(data.id,session.data!.user.token,{
         name: card.name,
         address: card.address,
         tel: "081530",
@@ -36,10 +38,25 @@ export default function CoWorkForm({ data }: Props) {
         closeTime: card.closeTime,
         remaining: card.remaining,
         image: card.image,
-      },
-      session.data!.user.token
-    );
-  };
+      });
+    }
+    else{
+      createCoWorkingSpace(
+        {
+          name: card.name,
+          address: card.address,
+          tel: "081530",
+          openTime: card.openTime,
+          closeTime: card.closeTime,
+          remaining: card.remaining,
+          image: card.image,
+        },
+        session.data!.user.token
+      );
+    };
+    }
+    
+
 
 
   return (
