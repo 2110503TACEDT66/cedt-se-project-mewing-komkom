@@ -9,7 +9,11 @@ import createCoWorkingSpace from "@/libs/createWorkingSpace";
 import { SetPreviewCard } from "../../../interface";
 import { useSession } from "next-auth/react";
 
-export default function CoWorkForm() {
+interface Props {
+  data?: any;
+}
+
+export default function CoWorkForm({ data }: Props) {
   const format = "HH:mm";
   const {
     handleFormChange,
@@ -18,6 +22,8 @@ export default function CoWorkForm() {
     handleFileChange,
     card,
   } = useCardContext();
+
+
 
   const session = useSession();
   const onSubmit = () => {
@@ -34,6 +40,7 @@ export default function CoWorkForm() {
       session.data!.user.token
     );
   };
+
 
   return (
     <div className=" bg-white rounded-2xl shadow-2xl">
@@ -53,6 +60,7 @@ export default function CoWorkForm() {
           placeholder="Image Url"
           id="inputImage"
           onChange={handleFormChange}
+          defaultValue={data?.image}
         />
         <div className="col-span-1"></div>
 
@@ -70,6 +78,7 @@ export default function CoWorkForm() {
           onChange={handleFormChange}
           maxLength={25}
           id="inputName"
+          defaultValue={data?.name}
         />
         <label>เวลาเปิด:</label>
         <div className="col-span-3 flex gap-3">
@@ -78,6 +87,7 @@ export default function CoWorkForm() {
             className=" "
             id="inputTimeOpen"
             onChange={handleOpenChange}
+            defaultValue={dayjs(data?.openTime, 'HH:mm')}
           />
           <div className="text-center self-center">ถึง</div>
           <TimePicker
@@ -85,6 +95,7 @@ export default function CoWorkForm() {
             className=" "
             id="inputTimeClose"
             onChange={handleCloseChange}
+            defaultValue={dayjs(data?.closeTime, 'HH:mm')}
           />
         </div>
         <label>รายละเอียด:</label>
@@ -94,6 +105,7 @@ export default function CoWorkForm() {
           onChange={handleFormChange}
           maxLength={180}
           id="inputDesc"
+          defaultValue={data?.address}
         />
         <label>จำนวนที่นั่ง:</label>
 
@@ -101,10 +113,10 @@ export default function CoWorkForm() {
           type="number"
           placeholder="Max seats"
           className=" rounded-lg p-3"
-          min={1}
           onChange={handleFormChange}
-          id="inputNumber"
-          defaultValue={1}
+          id="inputNumber"  
+          min={1}
+          defaultValue={data?.remaining}
         />
 
         <div className="col-span-2"></div>
