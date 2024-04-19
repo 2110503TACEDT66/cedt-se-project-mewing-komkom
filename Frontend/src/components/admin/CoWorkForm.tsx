@@ -92,7 +92,7 @@ export default function CoWorkForm() {
           className="col-span-3 "
           placeholder="co-working space's detail"
           onChange={handleFormChange}
-          maxLength={180}
+          maxLength={120}
           id="inputDesc"
         />
         <label>จำนวนที่นั่ง:</label>
