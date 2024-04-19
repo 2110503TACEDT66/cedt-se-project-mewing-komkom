@@ -60,6 +60,7 @@ export default function PreviewCard({ card }: { card?: SpaceItem }) {
           </Link>
         </div>
       </div>
+      
     </div>
   );
 }
