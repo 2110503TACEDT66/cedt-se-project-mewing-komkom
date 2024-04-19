@@ -30,6 +30,9 @@ const WorkingStationSchema = new Schema(
       required: [true, "Please add remaining spaces"],
       default: 20,
     },
+    image: {
+      type: String,
+    },
   },
   {
     toJSON: { virtuals: true },
