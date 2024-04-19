@@ -5,6 +5,13 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import updateAdmin from "@/libs/updateAdmin";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectItem,
+  SelectContent,
+} from "../ui/select";
 
 export default function EditAdminForm({
   adminID,
@@ -16,9 +23,9 @@ export default function EditAdminForm({
   const [name, setName] = useState(adminData[0].name);
   const [tel, setTel] = useState(adminData[0].tel);
   const [email, setEmail] = useState(adminData[0].email);
-  const [role, setRole] = useState('admin');
+  const [role, setRole] = useState(adminData[0].role);
   const session = useSession();
-  const router = useRouter()
+  const router = useRouter();
   const handlerSave = async (e: any) => {
     try {
       e.preventDefault();
@@ -30,14 +37,15 @@ export default function EditAdminForm({
         role,
         session.data!.user.token
       );
-      router.push('/moderatorpage')
+      router.push("/moderatorpage");
+      router.refresh();
     } catch (error) {
       console.log("Error for update" + error);
     }
   };
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+    <div className="flex items-center justify-center">
       <form
         action=""
         className="flex flex-col justify-between p-5 bg-white w-[1042px] h-[588px] rounded-2xl shadow-2xl"
@@ -97,19 +105,20 @@ export default function EditAdminForm({
 
         <div className="flex items-center">
           <label className="w-32">Role:</label>
-          <select
+          <Select
             name="Role"
-            id="role"
-            className="col-span-3"
-            onChange={(e) => {
-              console.log(e.target.value);
-              setRole(e.target.value);
-            }}
+            onValueChange={(s) => setRole(s)}
+            defaultValue={role}
           >
-            {" "}
-            <option value="admin">Admin</option>
-            <option value="moderator">Moderator</option>
-          </select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={role} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="user" className="bg-white">User</SelectItem>
+              <SelectItem value="admin" className="bg-white">Admin</SelectItem>
+              <SelectItem value="moderator" className="bg-white">Moderator</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="flex justify-center mt-4">
