@@ -22,9 +22,9 @@ export default async function ModeratorPage() {
 
   return (
     <div className="p-4"> {/* Add padding for spacing */}
-      <div className="text-2xl font-bold mb-4">List of Admins</div>
+      <div className="text-2xl font-bold mb-4">Manage Account</div>
       {/* Search box and Add button */}
-      {/* <Stack direction="row" spacing={2} alignItems="center" mb={4}>
+      <Stack direction="row" spacing={2} alignItems="center" mb={4}>
         <TextField
           id="outlined-basic"
           label="Search"
@@ -33,7 +33,7 @@ export default async function ModeratorPage() {
           fullWidth 
         />
         <AddButtonAdmin/>
-      </Stack> */}
+      </Stack>
 
       {/* Table */}
       <div className="overflow-x-auto">
