@@ -17,16 +17,12 @@ export default async function userLogIn(
       }),
     }
   );
+
   if (!response.ok) {
     const ans = await response.json();
-    
-   Swal.fire({
-      title: "Error!",
-      text: ans.message || "Failed to Login",
-      icon: "error",
-    });
+    throw new Error(ans.msg || "Failed to Login");
   }
+  
   const profileData = await response.json();
-
   return profileData;
 }
