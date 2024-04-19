@@ -16,6 +16,7 @@ export default async function TopMenu() {
   }
 
   const isAdminOrModerator = profile?.data.role === "admin" || profile?.data.role === "moderator" ? true : false;
+  const isModerator = profile?.data.role === "moderator" ? true : false;
 
   return (
     <div className="flex justify-between items-center px-7 py-4 top-0 fixed z-10 bg-bg w-full">
@@ -25,6 +26,7 @@ export default async function TopMenu() {
         </Link>
 
         {isAdminOrModerator ? <TopMenuItem title="Dashboard" href="/adminpage" /> : ""}
+        {isModerator ? <TopMenuItem title="manage admin" href="/moderatorpage" /> : ""}
       </div>
       <div className="flex gap-4 items-center">
         {session ? (
