@@ -11,7 +11,7 @@ export default function Ban() {
   if(!session) return null
   const [users, setUsers] = useState([]);
   const [checkBan,setCheckBan] = useState<boolean>(false)
-
+  const [search, setSearch] = useState('')
   useEffect(() => {
     const fetchData = async () => {
       const userData = await getAllUser((session as any).data?.user.token);
@@ -25,7 +25,6 @@ export default function Ban() {
     fetchData();
   }, [checkBan]);
   
-  
   return (
     <div className="container mx-auto mt-10">
       <h1 className="text-4xl font-bold">List of users</h1>
@@ -34,6 +33,7 @@ export default function Ban() {
         type="text"
         className="bg-[#E1E7EA] rounded-lg py-2 px-4 w-80 mt-3 mb-10"
         placeholder="Search"
+        onChange={(e)=>{setSearch(e.target.value);}}
       />
       
       <div className="flex flex-col bg-white p-4 rounded-2xl">
@@ -63,7 +63,7 @@ export default function Ban() {
                 <tbody>
                   
                   {users
-                    .filter((item: any) => item.role == "user")
+                    .filter((item: any) => {return (item.role == "user" &&(item.name.includes(search)||item.email.includes(search)))})
                     .map((item: any) => (
                       <tr key={item.id} className="border-b border-neutral-200">
                         <td className="whitespace-nowrap px-6 py-4 font-medium">
