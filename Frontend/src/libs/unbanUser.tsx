@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 
-export default async function unbanUser(id: string, token: string) {
+export default async function unbanUser(id: string, token: string, isSubmitBan:Function) {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const response = await fetch(
@@ -31,6 +31,7 @@ export default async function unbanUser(id: string, token: string) {
       text: "Unbanned successfully",
       icon: "success",
     });
+    isSubmitBan();
     return await response.json();
   }
 }
