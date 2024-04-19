@@ -31,7 +31,10 @@ export default async function page() {
       </div>
       <div className="grid grid-cols-4 justify-items-center gap-10">
         {data.data.map((i: any) => (
+          <Link href={"adminpage/edit/" + i._id}>
+          
           <PreviewCard card={i} />
+          </Link>
         ))}
       </div>
     </div>
