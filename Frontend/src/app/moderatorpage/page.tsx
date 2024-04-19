@@ -2,10 +2,12 @@ import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import getAllAdmins from "@/libs/getallAdmins";
-import AdminItem from "@/components/AdminItem";
+import AdminItem from "@/components/moderator/AdminItem";
 import { User } from "../../../interface";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
+import AddButtonAdmin from "@/components/moderator/AddButtonAdmin";
 
 interface Props{
   params: {id: string};
@@ -17,11 +19,12 @@ export default async function ModeratorPage() {
   const allUsers_obeject = await getAllAdmins(session.user.token);
   const usersdata = allUsers_obeject.data;
 
+
   return (
     <div className="p-4"> {/* Add padding for spacing */}
       <div className="text-2xl font-bold mb-4">List of Admins</div>
       {/* Search box and Add button */}
-      <Stack direction="row" spacing={2} alignItems="center" mb={4}>
+      {/* <Stack direction="row" spacing={2} alignItems="center" mb={4}>
         <TextField
           id="outlined-basic"
           label="Search"
@@ -29,10 +32,8 @@ export default async function ModeratorPage() {
           size="small"
           fullWidth 
         />
-        <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-          +Add
-        </button>
-      </Stack>
+        <AddButtonAdmin/>
+      </Stack> */}
 
       {/* Table */}
       <div className="overflow-x-auto">

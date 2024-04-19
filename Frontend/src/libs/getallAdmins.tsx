@@ -1,6 +1,6 @@
 export default async function getAllAdmins(token:string) {
     const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URI}/auth/alluser`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URI}/auth/allroles`,
         {
             method: "GET",
              headers: {
