@@ -104,7 +104,7 @@ export default function CoWorkForm({ data }: Props) {
             className=" "
             id="inputTimeOpen"
             onChange={handleOpenChange}
-            defaultValue={dayjs(data?.openTime, 'HH:mm')}
+            /* defaultValue={dayjs(data?.openTime, 'HH:mm')} */
           />
           <div className="text-center self-center">ถึง</div>
           <TimePicker
@@ -112,7 +112,7 @@ export default function CoWorkForm({ data }: Props) {
             className=" "
             id="inputTimeClose"
             onChange={handleCloseChange}
-            defaultValue={dayjs(data?.closeTime, 'HH:mm')}
+            /* defaultValue={dayjs(data?.closeTime, 'HH:mm')} */
           />
         </div>
         <label>รายละเอียด:</label>
