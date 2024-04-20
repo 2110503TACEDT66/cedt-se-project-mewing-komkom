@@ -17,16 +17,25 @@ export default function SpaceDetail({ params }: Props) {
   const format = "HH:mm";
   const [date, setDate] = useState<Dayjs>();
   const [space, setSpace] = useState<SpaceItem>();
-  const [time, setTime] = useState<Dayjs | null>(null);
+  const [starttime, setStartTime] = useState<Dayjs | null>(null);
+  const [endtime, setEndTime] = useState<Dayjs | null>(null);
+
+
 
   const onChangeDate: DatePickerProps["onChange"] = (date, dateString) => {
     setDate(date);
     console.log(dateString);
   };
 
-  const onChangeTime = (time: Dayjs) => {
-    setTime(time);
-    console.log(time);
+  const onChangeTime = (time: Dayjs, timeType:string) => {
+    if(timeType==='start'){
+      console.log("this is start time");
+      setStartTime(time);
+    }else if(timeType ==='end'){
+      console.log("this is end time");
+      setEndTime(time);
+
+    }
   };
 
   
@@ -95,7 +104,7 @@ export default function SpaceDetail({ params }: Props) {
                   format={format}
                   className="w-[150px] border-[#979797]"
                   id="inputTimeOpen"
-                  onChange={onChangeTime}
+                  onChange={(time)=>onChangeTime(time, 'start')}
                   // defaultValue={dayjs(space.data?.openTime, 'HH:mm')}
                 />
                 <div className="text-center self-center text-[#736868] font-semibold text-base">
@@ -105,7 +114,7 @@ export default function SpaceDetail({ params }: Props) {
                   format={format}
                   className="w-[150px] border-[#979797] "
                   id="inputTimeClose"
-                  onChange={onChangeTime}
+                  onChange={(time)=>onChangeTime(time, 'end')}
                   // defaultValue={dayjs(space.data?.closeTime, 'HH:mm')}
                 />
               </div>
