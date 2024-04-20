@@ -106,7 +106,7 @@ export default function SpaceDetail({ params }: Props) {
                   id="inputTimeOpen"
                   onChange={(time)=>onChangeTime(time, 'start')}
                   // defaultValue={dayjs(space.data?.openTime, 'HH:mm')}
-                  minuteStep={60}
+                  minuteStep={30}
                 />
                 <div className="text-center self-center text-[#736868] font-semibold text-base">
                   To
@@ -116,7 +116,7 @@ export default function SpaceDetail({ params }: Props) {
                   className="w-[150px] border-[#979797] "
                   id="inputTimeClose"
                   onChange={(time)=>onChangeTime(time, 'end')}
-                  minuteStep={60}
+                  minuteStep={30}
                   // defaultValue={dayjs(space.data?.closeTime, 'HH:mm')}
                 />
               </div>
