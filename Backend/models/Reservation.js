@@ -5,6 +5,14 @@ const ReservationSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  startTime: {
+    type: String,
+    required: true
+  },
+  endTime: {
+    type: String,
+    required: true
+  },
   user: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
