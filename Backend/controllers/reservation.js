@@ -90,6 +90,12 @@ exports.addReservation = async (req, res, next) => {
         message: `User does not provided end time`,
       });
     }
+    if(req.body.endTime<=req.body.startTime) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid end time`,
+      });
+    }
     req.body.workingSpace = req.params.workingSpaceId;
 
     const workingspace = await WorkingSpace.findById(req.params.workingSpaceId);

@@ -6,11 +6,11 @@ const ReservationSchema = new mongoose.Schema({
     required: true,
   },
   startTime: {
-    type: String,
+    type: Number,
     required: true
   },
   endTime: {
-    type: String,
+    type: Number,
     required: true
   },
   user: {
