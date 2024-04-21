@@ -91,7 +91,7 @@ export default function EditAdminForm({
         <div className="flex items-center">
           <label className="w-32">อีเมล:</label>
           <Input
-            type="text"
+            type="email"
             placeholder="email"
             className="col-span-3"
             maxLength={25}
