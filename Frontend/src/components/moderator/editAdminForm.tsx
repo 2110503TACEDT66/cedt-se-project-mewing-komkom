@@ -74,10 +74,11 @@ export default function EditAdminForm({
         <div className="flex items-center">
           <label className="w-32">เบอร์โทร:</label>
           <Input
-            type="text"
+            type="tel"
             placeholder="tel"
             className="col-span-3"
             maxLength={10}
+            pattern="[0-9]{10}"
             id="admin_tel"
             onChange={(e) => {
               console.log(e.target.value);
