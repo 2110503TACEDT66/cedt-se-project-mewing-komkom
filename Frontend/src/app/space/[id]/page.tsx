@@ -1,46 +1,22 @@
-"use client";
+'use client'
 import React, { useEffect, useState } from "react";
 import { FaClock } from "react-icons/fa";
 import { DatePicker, DatePickerProps, TimePicker } from "antd";
 import getSpace from "@/libs/getSpace";
-import ModalHandle from "@/components/ModalHandle";
-import DateReserve from "@/components/DateReserve";
-import dayjs, { Dayjs } from "dayjs";
-import { useCardContext } from "@/context/CardContext";
 import { SpaceItem } from "../../../../interface";
-import { TimePickerProps } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+import TimeSelection from "@/components/ui/TimeSelectionProps";
+
 interface Props {
   params: { id: string };
 }
 
-export default function SpaceDetail({ params }: Props) {
+const SpaceDetail = ({ params }: Props) => {
   const format = "HH:mm";
-  const [date, setDate] = useState<Dayjs>();
   const [space, setSpace] = useState<SpaceItem>();
-  const [starttime, setStartTime] = useState<Dayjs | null>(null);
-  const [endtime, setEndTime] = useState<Dayjs | null>(null);
-
-
-
-  const onChangeDate: DatePickerProps["onChange"] = (date, dateString) => {
-    setDate(date);
-    console.log(dateString);
-  };
-
-  const onChangeTime = (time: Dayjs, timeType:string) => {
-    if(timeType==='start'){
-      console.log("this is start time");
-      setStartTime(time);
-    }else if(timeType ==='end'){
-      console.log("this is end time");
-      setEndTime(time);
-
-    }
-  };
-
-  
-  
-  
+  const [date, setDate] = useState<Dayjs>();
+  const [starttime, setStartTime] = useState<number | null>(null);
+  const [endTime, setEndTime] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -56,6 +32,66 @@ export default function SpaceDetail({ params }: Props) {
 
     fetchSpace();
   }, [params.id]);
+
+  const handleDateChange: DatePickerProps["onChange"] = (date, dateString) => {
+    setDate(date);
+    console.log(dateString);
+  };
+
+  const handleTimeChange = (time: Dayjs, timeType: string) => {
+    let timeNumber = null;
+    if (time) {
+      let hour = time.hour();
+      let minute = time.minute();
+      let timeNum = hour * 100 + minute;
+      timeNumber = timeNum;
+    }
+
+    if (timeType === "start") {
+      console.log("this is start time is ", timeNumber);
+      setStartTime(timeNumber);
+    }else if (timeType === "end") {
+      console.log("this is end time is ", timeNumber);
+      setEndTime(timeNumber);
+    }
+  };
+
+  const disabledTime = (current: Dayjs) => {
+    return {
+      disabledHours: () => {
+        if (!starttime)
+          return Array.from({ length: 24 }, (_, i) => i);
+        let lengthH = (Math.max(0, (starttime) / 100))
+        const startMinute = (starttime as any) % 100;
+        if(startMinute==30){
+          lengthH = Math.ceil(Math.max(0, (starttime + 30) / 100))
+        }
+        return Array.from(
+          { length: lengthH },
+          (_, i) => i
+        );
+      },
+      disabledMinutes: (selectedHour:number) => {
+        if (!starttime)
+          return Array.from({ length: 60 }, (_, i) => i);
+
+        const startHour = Math.floor((starttime as any) / 100);
+        const startMinute = (starttime as any) % 100;
+
+        if (selectedHour === startHour) {
+          return Array.from(
+            { length: (Math.floor(startMinute / 30))+1 },
+            (_, i) => i * 30
+          );
+        }
+
+        if (selectedHour < startHour)
+          return Array.from({ length: 60 }, (_, i) => i);
+
+        return [];
+      },
+    };
+  };
 
   return (
     <div className="flex justify-center my-20">
@@ -92,34 +128,17 @@ export default function SpaceDetail({ params }: Props) {
             <div className="flex items-center gap-5 mb-3">
               <div className="text-[#736868] font-semibold text-base">Date</div>
               <div>
-                <DatePicker className="border-[#979797]" onChange={onChangeDate} />
+                <DatePicker
+                  className="border-[#979797]"
+                  onChange={handleDateChange}
+                />
               </div>
             </div>
             <div className="flex items-center">
               <label className="mr-5 text-[#736868] font-semibold text-base">
                 Time
               </label>
-              <div className="col-span-3 flex gap-3">
-                <TimePicker
-                  format={format}
-                  className="w-[150px] border-[#979797]"
-                  id="inputTimeOpen"
-                  onChange={(time)=>onChangeTime(time, 'start')}
-                  // defaultValue={dayjs(space.data?.openTime, 'HH:mm')}
-                  minuteStep={30}
-                />
-                <div className="text-center self-center text-[#736868] font-semibold text-base">
-                  To
-                </div>
-                <TimePicker
-                  format={format}
-                  className="w-[150px] border-[#979797] "
-                  id="inputTimeClose"
-                  onChange={(time)=>onChangeTime(time, 'end')}
-                  minuteStep={30}
-                  // defaultValue={dayjs(space.data?.closeTime, 'HH:mm')}
-                />
-              </div>
+              <TimeSelection handleTimeChange={handleTimeChange} disabledTime={disabledTime} />
             </div>
             <div className="flex justify-end">
               <button className="bg-black px-5 py-2 rounded-full text-white max-w-max ">
@@ -131,4 +150,7 @@ export default function SpaceDetail({ params }: Props) {
       </div>
     </div>
   );
-}
+};
+
+
+export default SpaceDetail;
