@@ -4,6 +4,16 @@ import getSpace from "@/libs/getSpace";
 import React, { useEffect, useState } from "react";
 import { FaClock } from "react-icons/fa";
 import { SpaceItem } from "../../../../interface";
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+// Extend dayjs with plugins
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+// Set the default timezone to your country's timezone
+dayjs.tz.setDefault('Asia/Bangkok');
 
 interface Props {
   params: { id: string };
@@ -34,7 +44,7 @@ export default async function SpaceDetail({ params }: Props) {
             <div className="flex items-center gap-3">
               <FaClock />
               <p>
-                {space.data.openTime} - {space.data.closeTime}
+                {dayjs(space.data.openTime).format('HH:mm')} - {dayjs(space.data.closeTime).format('HH:mm')}
               </p>
             </div>
             <hr />

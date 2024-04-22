@@ -5,6 +5,7 @@ import { AiFillClockCircle } from "react-icons/ai";
 import { SpaceItem, Time } from "../../../interface";
 import { SetPreviewCard } from "../../../interface";
 import { useCardContext } from "@/context/CardContext";
+import dayjs from "dayjs";
 export default function Test({ data }: { data?: SpaceItem }) {
   const { card } = useCardContext();
 
@@ -38,7 +39,7 @@ export default function Test({ data }: { data?: SpaceItem }) {
               <div> {`${card?.openTime} - ${card?.closeTime}`} </div>
             ) : (
               <div>
-                {data?.openTime} - {data?.closeTime}
+                {dayjs(data?.openTime).format('HH:mm')} - {dayjs(data?.closeTime).format('HH:mm')}
               </div>
             )}
           </div>
