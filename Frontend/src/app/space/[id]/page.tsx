@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import React, { useEffect, useState } from "react";
 import { FaClock } from "react-icons/fa";
 import { DatePicker, DatePickerProps, TimePicker } from "antd";
@@ -15,8 +15,8 @@ const SpaceDetail = ({ params }: Props) => {
   const format = "HH:mm";
   const [space, setSpace] = useState<SpaceItem>();
   const [date, setDate] = useState<Dayjs>();
-  const [starttime, setStartTime] = useState<number | null>(null);
-  const [endTime, setEndTime] = useState<number | null>(null);
+  const [starttime, setStartTime] = useState<Dayjs | null>(null);
+  const [endTime, setEndTime] = useState<Dayjs | null>(null);
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -24,6 +24,7 @@ const SpaceDetail = ({ params }: Props) => {
         const spaceData = await getSpace(params.id);
         if (spaceData.data) {
           setSpace(spaceData.data);
+          console.log();
         }
       } catch (error) {
         console.error("Error fetching space:", error);
@@ -35,52 +36,38 @@ const SpaceDetail = ({ params }: Props) => {
 
   const handleDateChange: DatePickerProps["onChange"] = (date, dateString) => {
     setDate(date);
-    console.log(dateString);
   };
 
-  const handleTimeChange = (time: Dayjs, timeType: string) => {
-    let timeNumber = null;
-    if (time) {
-      let hour = time.hour();
-      let minute = time.minute();
-      let timeNum = hour * 100 + minute;
-      timeNumber = timeNum;
-    }
-
+  const handleTimeChange = (time: Dayjs | null, timeType: string) => {
     if (timeType === "start") {
-      console.log("this is start time is ", timeNumber);
-      setStartTime(timeNumber);
-    }else if (timeType === "end") {
-      console.log("this is end time is ", timeNumber);
-      setEndTime(timeNumber);
+      setStartTime((date as Dayjs).hour(time?.hour()||0).minute(time?.minute()||0));
+    } else if (timeType === "end") {
+      setEndTime((date as Dayjs).hour(time?.hour()||0).minute(time?.minute()||0));
     }
   };
 
   const disabledTime = (current: Dayjs) => {
     return {
       disabledHours: () => {
-        if (!starttime)
-          return Array.from({ length: 24 }, (_, i) => i);
-        let lengthH = (Math.max(0, (starttime) / 100))
-        const startMinute = (starttime as any) % 100;
-        if(startMinute==30){
-          lengthH = Math.ceil(Math.max(0, (starttime + 30) / 100))
+        if (!starttime) return Array.from({ length: 24 }, (_, i) => i);
+        let timeLength =starttime.hour();
+        if(starttime.minute()==30){
+          timeLength = timeLength+1;
         }
         return Array.from(
-          { length: lengthH },
+          { length: Math.max(0, timeLength) },
           (_, i) => i
         );
       },
-      disabledMinutes: (selectedHour:number) => {
-        if (!starttime)
-          return Array.from({ length: 60 }, (_, i) => i);
+      disabledMinutes: (selectedHour: number) => {
+        if (!starttime) return Array.from({ length: 60 }, (_, i) => i);
 
-        const startHour = Math.floor((starttime as any) / 100);
-        const startMinute = (starttime as any) % 100;
+        const startHour = starttime.hour();
+        const startMinute = starttime.minute();
 
         if (selectedHour === startHour) {
           return Array.from(
-            { length: (Math.floor(startMinute / 30))+1 },
+            { length: Math.ceil((startMinute + 1) / 30) },
             (_, i) => i * 30
           );
         }
@@ -131,6 +118,7 @@ const SpaceDetail = ({ params }: Props) => {
                 <DatePicker
                   className="border-[#979797]"
                   onChange={handleDateChange}
+                  value={date}
                 />
               </div>
             </div>
@@ -138,7 +126,10 @@ const SpaceDetail = ({ params }: Props) => {
               <label className="mr-5 text-[#736868] font-semibold text-base">
                 Time
               </label>
-              <TimeSelection handleTimeChange={handleTimeChange} disabledTime={disabledTime} />
+              <TimeSelection
+                handleTimeChange={handleTimeChange}
+                disabledTime={disabledTime}
+              />
             </div>
             <div className="flex justify-end">
               <button className="bg-black px-5 py-2 rounded-full text-white max-w-max ">
@@ -151,6 +142,5 @@ const SpaceDetail = ({ params }: Props) => {
     </div>
   );
 };
-
 
 export default SpaceDetail;
