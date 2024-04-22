@@ -12,22 +12,21 @@ interface Props {
   isOpen: boolean;
   handleClose: any;
   data: any;
+  isSubmitBan:Function
 }
 
-export default function ModalBan({ isOpen, handleClose, data }: Props) {
+export default function ModalBan({ isOpen, handleClose, data, isSubmitBan }: Props) {
   const session = useSession();
   const [date, setDate] = useState<any>();
   const [reason, setReason] = useState("");
 
   const ban = () => {
-    banUser(data._id, date!.$d as string, reason, session.data!.user.token);
-
+    banUser(data._id, date!.$d as string, reason, session.data!.user.token,isSubmitBan);
     handleClose();
   };
 
   const unBan = () => {
-    unbanUser(data._id, session.data!.user.token);
-
+    unbanUser(data._id, session.data!.user.token,isSubmitBan);
     handleClose();
   };
 
