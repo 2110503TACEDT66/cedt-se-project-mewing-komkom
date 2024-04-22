@@ -51,24 +51,38 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
       }));
     } else {
       const { id, value } = e.target;
-      /* const { id, value } = e.target;
-      const isNegative = e.target.value.startsWith("-"); */
-      /* if (!isNegative) {
+      setCard((prevCard) => ({
+        ...prevCard,
+        [id]: value,
+      }));
+      if (id === "remaining") {
+        setCard((prevCard) => ({
+          ...prevCard,
+          [id]: Math.abs(Number(value)),
+        }));
+      } /* else {
+
+
+        setCard((prevCard) => ({
+          ...prevCard,
+          [id]: value,
+        }));
+
+
+      } */
+      const isNegative = e.target.value.startsWith("-");
+      if (!isNegative) {
         setInputValue(e.target.value);
         setIsValid(true);
       } else {
         setInputValue("");
         setIsValid(false);
       }
-      if (Number(e.target.value) < 1) {
-        setAmount(1);
-      } else {
-        setAmount(Number(e.target.value));
-      } */
-      setCard((prevCard) => ({
+      
+      /* setCard((prevCard) => ({
         ...prevCard,
         [id]: value,
-      }));
+      })); */
     }
 
     /* const Value: number = Number(e.target.value);

@@ -1,5 +1,5 @@
 "use client";
-import CoWorkForm from "@/components/admin/CoWorkForm";
+import CoWorkForm from "@/components/admin/CreatCoWorkForm";
 import PreviewCard from "@/components/admin/PreviewCard";
 import React from "react";
 import { useCardContext } from "@/context/CardContext";
