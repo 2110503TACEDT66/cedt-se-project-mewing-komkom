@@ -72,12 +72,6 @@ exports.getReservation = async (req, res, next) => {
 
 exports.addReservation = async (req, res, next) => {
   try {
-    if (!req.body.reserveDate) {
-      return res.status(400).json({
-        success: false,
-        message: `User does not provided reserve date`,
-      });
-    }
     if (!req.body.startTime) {
       return res.status(400).json({
         success: false,
