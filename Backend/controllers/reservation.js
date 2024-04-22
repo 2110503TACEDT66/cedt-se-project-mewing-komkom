@@ -72,10 +72,22 @@ exports.getReservation = async (req, res, next) => {
 
 exports.addReservation = async (req, res, next) => {
   try {
-    if (!req.body.reserveDate) {
+    if (!req.body.startTime) {
       return res.status(400).json({
         success: false,
-        message: `User does not provided reserve date`,
+        message: `User does not provided start time`,
+      });
+    }
+    if (!req.body.endTime) {
+      return res.status(400).json({
+        success: false,
+        message: `User does not provided end time`,
+      });
+    }
+    if(req.body.endTime<=req.body.startTime) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid end time`,
       });
     }
     req.body.workingSpace = req.params.workingSpaceId;
