@@ -88,8 +88,8 @@ const SpaceDetail = ({ params }: Props) => {
 
         if (selectedHour === closeHour) {
           let arrayOfHours:number[] = [];
-          if(closeMinute===0){
-            arrayOfHours.push(30);
+          for(let i = closeMinute+1;i<40;i++){
+            arrayOfHours.push(i);
           }
           
           
