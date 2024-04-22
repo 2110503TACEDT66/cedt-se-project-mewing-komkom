@@ -113,16 +113,19 @@ export default function CoWorkForm({ data }: Props) {
           defaultValue={data?.address}
         />
         <label>จำนวนที่นั่ง:</label>
-
-        <Input
-          required
-          type="number"
-          placeholder="Max seats"
-          className=" rounded-lg p-3"
-          onChange={handleFormChange}
-          id="remaining"
-          min={1}
-        />
+        <div className="flex flex-col">
+          <Input
+            required
+            type="number"
+            placeholder="Max seats"
+            className=" rounded-lg p-3"
+            /* value={inputValue} */
+            onChange={handleFormChange}
+            id="remaining"
+            min={1}
+          />
+          <div className="text-xs text-red-500 flex ml-3 mt-3">{isValid ? <div className="mt-4"></div> : "You cant use the negative number"}</div>
+        </div>
 
         <div className="col-span-2"></div>
         <div className="col-span-3"></div>
