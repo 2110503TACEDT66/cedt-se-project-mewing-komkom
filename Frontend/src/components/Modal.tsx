@@ -20,7 +20,7 @@ export default function Modal({ isOpen, handleClose, data,decreaseRemain }: Prop
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const result = Reserve(
-      data._id,
+      data._id!,
       session.data!.user.token,
       date!.$d as string
     );

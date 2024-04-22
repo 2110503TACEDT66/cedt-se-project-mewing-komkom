@@ -9,10 +9,12 @@ export default async function getUserProfile(token: string) {
     }
   );
 
+
+  const result = await response.json()
   if (!response.ok) {
-    throw new Error("Failed to fetch user");
+    throw new Error(result.message);
   }
 
   
-  return await response.json();
+  return result
 }
