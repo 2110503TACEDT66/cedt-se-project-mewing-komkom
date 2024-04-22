@@ -6,6 +6,15 @@ import getSpace from "@/libs/getSpace";
 import { SpaceItem } from "../../../../interface";
 import dayjs, { Dayjs } from "dayjs";
 import TimeSelection from "@/components/ui/TimeSelectionProps";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+// Extend dayjs with plugins
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+// Set the default timezone to your country's timezone
+dayjs.tz.setDefault('Asia/Bangkok');
 
 interface Props {
   params: { id: string };
