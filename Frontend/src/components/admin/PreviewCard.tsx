@@ -1,10 +1,13 @@
+"use client"
 import React from "react";
 import { MdOutlinePhotoLibrary } from "react-icons/md";
 import { AiFillClockCircle } from "react-icons/ai";
 import { SpaceItem, Time } from "../../../interface";
 import { SetPreviewCard } from "../../../interface";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 export default function PreviewCard({ card }: { card?: SpaceItem }) {
+  const pathname = usePathname();
   const descc =
     "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fuga obcaecati nemo veniam minus, omnis, nam, labore sint ab dolor quisquam ipsa possimus. Itaque reprehenderit temporibus animi minima repellendus distinctio similique.";
   return (
@@ -53,14 +56,22 @@ export default function PreviewCard({ card }: { card?: SpaceItem }) {
           </div>
         </div>
         <div className="flex justify-end">
-          <Link href={`/adminpage/edit/${card?._id}`}>
-            <button className="align-middle select-none text-base font-normal text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none py-1 px-7 rounded-full bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none">
+          {pathname === "/adminpage" ? (
+            <Link href={`/adminpage/edit/${card?._id}`}>
+              <button className="align-middle select-none text-base font-normal text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none py-1 px-7 rounded-full bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none">
+                แก้ไข
+              </button>
+            </Link>
+          ) : (
+            <button
+              disabled
+              className="align-middle select-none text-base font-normal text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none py-1 px-7 rounded-full bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+            >
               แก้ไข
             </button>
-          </Link>
+          )}
         </div>
       </div>
-      
     </div>
   );
 }
