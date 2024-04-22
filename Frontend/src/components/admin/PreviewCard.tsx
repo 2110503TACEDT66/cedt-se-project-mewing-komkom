@@ -5,6 +5,15 @@ import { SpaceItem, Time } from "../../../interface";
 import { SetPreviewCard } from "../../../interface";
 import Link from "next/link";
 import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+// Extend dayjs with plugins
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+// Set the default timezone to your country's timezone
+dayjs.tz.setDefault('Asia/Bangkok');
 export default function PreviewCard({ card }: { card?: SpaceItem }) {
   const descc =
     "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fuga obcaecati nemo veniam minus, omnis, nam, labore sint ab dolor quisquam ipsa possimus. Itaque reprehenderit temporibus animi minima repellendus distinctio similique.";
