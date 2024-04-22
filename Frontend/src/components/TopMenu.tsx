@@ -26,7 +26,8 @@ export default async function TopMenu() {
         </Link>
 
         {isAdminOrModerator ? <TopMenuItem title="Dashboard" href="/adminpage" /> : ""}
-        {isModerator ? <TopMenuItem title="manage admin" href="/moderatorpage" /> : ""}
+        {isModerator ? <><TopMenuItem title="Manage Account" href="/moderatorpage" />
+                        <TopMenuItem title="Ban User" href="/ban" /></> : ""}
       </div>
       <div className="flex gap-4 items-center">
         {session ? (

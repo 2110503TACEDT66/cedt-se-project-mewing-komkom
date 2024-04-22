@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import { FaClock } from "react-icons/fa";
 import { SpaceItem } from "../../interface";
+import dayjs from "dayjs";
 
 interface Props {
   data: SpaceItem;
@@ -50,7 +51,7 @@ export default function Card({ data }: Props) {
         <div className="flex items-center gap-2">
           <FaClock />
           <p>
-            {data.openTime} - {data.closeTime}
+            {dayjs(data.openTime).format('HH:mm')} - {dayjs(data.closeTime).format('HH:mm')}
           </p>
         </div>
       </div>
