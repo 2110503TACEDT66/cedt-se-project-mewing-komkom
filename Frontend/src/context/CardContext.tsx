@@ -49,11 +49,10 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
         ...prevCard,
         [e.target.id.substring(5)]: value,
       }));
-
       if (id === "Edit-remaining") {
         setCardEdit((prevCard) => ({
           ...prevCard,
-          [id]: Math.abs(Number(value)),
+          [e.target.id.substring(5)]: Math.abs(Number(value)),
         }));
       }
       const isNegative = e.target.value.startsWith("-");
