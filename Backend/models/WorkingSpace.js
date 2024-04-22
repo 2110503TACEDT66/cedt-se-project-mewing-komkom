@@ -18,11 +18,11 @@ const WorkingStationSchema = new Schema(
       type: String,
     },
     openTime: {
-      type: String,
+      type: Date,
       required: [true, "Please add open time"],
     },
     closeTime: {
-      type: String,
+      type: Date,
       required: [true, "Please add close time"],
     },
     remaining: {
