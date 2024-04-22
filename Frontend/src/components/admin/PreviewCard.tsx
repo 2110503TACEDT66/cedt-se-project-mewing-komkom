@@ -4,6 +4,7 @@ import { AiFillClockCircle } from "react-icons/ai";
 import { SpaceItem, Time } from "../../../interface";
 import { SetPreviewCard } from "../../../interface";
 import Link from "next/link";
+import dayjs from "dayjs";
 export default function PreviewCard({ card }: { card?: SpaceItem }) {
   const descc =
     "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fuga obcaecati nemo veniam minus, omnis, nam, labore sint ab dolor quisquam ipsa possimus. Itaque reprehenderit temporibus animi minima repellendus distinctio similique.";
@@ -28,7 +29,7 @@ export default function PreviewCard({ card }: { card?: SpaceItem }) {
             <AiFillClockCircle className="mb-2" color="black" size={20} />
             <div>
               {card?.openTime || card?.closeTime ? (
-                <div> {`${card?.openTime} - ${card?.closeTime}`} </div>
+                <div> {`${dayjs(card?.openTime).format('HH:mm')} - ${dayjs(card?.closeTime).format('HH:mm')}`} </div>
               ) : (
                 "เวลาเปิด - เวลาปิด"
               )}
