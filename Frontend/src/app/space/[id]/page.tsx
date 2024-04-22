@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import { FaClock } from "react-icons/fa";
 import { DatePicker, DatePickerProps, TimePicker } from "antd";
@@ -24,7 +24,6 @@ const SpaceDetail = ({ params }: Props) => {
         const spaceData = await getSpace(params.id);
         if (spaceData.data) {
           setSpace(spaceData.data);
-          console.log();
         }
       } catch (error) {
         console.error("Error fetching space:", error);
@@ -39,25 +38,40 @@ const SpaceDetail = ({ params }: Props) => {
   };
 
   const handleTimeChange = (time: Dayjs | null, timeType: string) => {
+    let timewithdate = date;
+    if (date === undefined) {
+      timewithdate = dayjs();
+    }
     if (timeType === "start") {
-      setStartTime((date as Dayjs).hour(time?.hour()||0).minute(time?.minute()||0));
+      setStartTime(
+        timewithdate!.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
+          timewithdate
+      );
     } else if (timeType === "end") {
-      setEndTime((date as Dayjs).hour(time?.hour()||0).minute(time?.minute()||0));
+      setEndTime(
+        timewithdate!.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
+          timewithdate
+      );
     }
   };
 
-  const disabledTime = (current: Dayjs) => {
+  const disabledEndTime = (current: Dayjs) => {
+    let closeHour =dayjs(space?.closeTime).hour();
+    let closeMinute = dayjs(space?.closeTime).minute();
     return {
       disabledHours: () => {
         if (!starttime) return Array.from({ length: 24 }, (_, i) => i);
-        let timeLength =starttime.hour();
-        if(starttime.minute()==30){
-          timeLength = timeLength+1;
+        let timeLength = starttime.hour();
+        if (starttime.minute() == 30) {
+          timeLength = timeLength + 1;
         }
-        return Array.from(
-          { length: Math.max(0, timeLength) },
-          (_, i) => i
-        );
+        let arrayOfHours = Array.from({ length: Math.max(0, timeLength) }, (_, i) => i)
+        if(closeHour){
+          for(let i = closeHour+1; i<24; i++){
+            arrayOfHours.push(i);
+          }
+        }
+        return arrayOfHours;
       },
       disabledMinutes: (selectedHour: number) => {
         if (!starttime) return Array.from({ length: 60 }, (_, i) => i);
@@ -72,7 +86,45 @@ const SpaceDetail = ({ params }: Props) => {
           );
         }
 
+        if (selectedHour === closeHour) {
+          let arrayOfHours = Array.from(
+            { length: Math.ceil((closeMinute + 1) / 30) },
+            (_, i) => (i+1) * 30
+          );
+          return arrayOfHours
+        }
+
         if (selectedHour < startHour)
+          return Array.from({ length: 60 }, (_, i) => i);
+
+        return [];
+      },
+    };
+  };
+
+  const disabledStartTime = (current: Dayjs) => {
+    let openHour =dayjs(space?.openTime).hour();
+    let openMinute = dayjs(space?.openTime).minute();
+    return {
+      disabledHours: () => {
+        if (!dayjs(space?.openTime)) return Array.from({ length: 24 }, (_, i) => i);
+        
+        let timeLength = openHour;
+        return Array.from({ length: Math.max(0, timeLength) }, (_, i) => i);
+      },
+      disabledMinutes: (selectedHour: number) => {
+        if (!dayjs(space?.openTime)) return Array.from({ length: 60 }, (_, i) => i);
+
+        
+
+        if (selectedHour === openHour) {
+          return Array.from(
+            { length: Math.ceil((openMinute) / 30) },
+            (_, i) => i * 30
+          );
+        }
+
+        if (selectedHour < openHour)
           return Array.from({ length: 60 }, (_, i) => i);
 
         return [];
@@ -103,7 +155,8 @@ const SpaceDetail = ({ params }: Props) => {
               <div className="flex items-center gap-3">
                 <FaClock />
                 <p>
-                  {space?.openTime} - {space?.closeTime}
+                  {dayjs(space?.openTime).format("HH:mm")} -{" "}
+                  {dayjs(space?.closeTime).format("HH:mm")}
                 </p>
               </div>
               <hr />
@@ -126,10 +179,21 @@ const SpaceDetail = ({ params }: Props) => {
               <label className="mr-5 text-[#736868] font-semibold text-base">
                 Time
               </label>
-              <TimeSelection
-                handleTimeChange={handleTimeChange}
-                disabledTime={disabledTime}
-              />
+              <div className="col-span-3 flex gap-3">
+                <TimeSelection
+                  handleTimeChange={handleTimeChange}
+                  disabledTime={disabledStartTime}
+                  typeTime="start"
+                />
+                <div className="text-center self-center text-[#736868] font-semibold text-base">
+                  To
+                </div>
+                <TimeSelection
+                  handleTimeChange={handleTimeChange}
+                  disabledTime={disabledEndTime}
+                  typeTime="end"
+                />
+              </div>
             </div>
             <div className="flex justify-end">
               <button className="bg-black px-5 py-2 rounded-full text-white max-w-max ">
