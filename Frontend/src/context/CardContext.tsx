@@ -121,8 +121,8 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
   const handleOpenChange: TimePickerProps["onChange"] = (time: any) => {
     const hour = time.$H;
     const minute = time.$m;
-    const m = moment(`${hour}-${minute}`, "hh:mm a");
-    const formattedTime = m.format("hh:mm a");
+    const m = moment(`${hour}-${minute}`, "HH:mm");
+    const formattedTime = m.format("HH:mm");
     setCard((prevCard) => ({
       ...prevCard,
       openTime: formattedTime,
@@ -131,8 +131,8 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
   const handleEditOpenChange: TimePickerProps["onChange"] = (time: any) => {
     const hour = time.$H;
     const minute = time.$m;
-    const m = moment(`${hour}-${minute}`, "hh:mm a");
-    const formattedTime = m.format("hh:mm a");
+    const m = moment(`${hour}-${minute}`, "HH:mm");
+    const formattedTime = m.format("HH:mm");
     setCardEdit((prevCard) => ({
       ...prevCard,
       openTime: formattedTime,
@@ -141,8 +141,8 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
   const handleCloseChange: TimePickerProps["onChange"] = (time: any) => {
     const hour = time.$H;
     const minute = time.$m;
-    const m = moment(`${hour}-${minute}`, "hh:mm a");
-    const formattedTime = m.format("hh:mm a");
+    const m = moment(`${hour}-${minute}`, "HH:mm");
+    const formattedTime = m.format("HH:mm");
     setCard((prevCard) => ({
       ...prevCard,
       closeTime: formattedTime,
@@ -151,8 +151,8 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
   const handleEditCloseChange: TimePickerProps["onChange"] = (time: any) => {
     const hour = time.$H;
     const minute = time.$m;
-    const m = moment(`${hour}-${minute}`, "hh:mm a");
-    const formattedTime = m.format("hh:mm a");
+    const m = moment(`${hour}-${minute}`, "HH:mm");
+    const formattedTime = m.format("HH:mm");
     setCardEdit((prevCard) => ({
       ...prevCard,
       closeTime: formattedTime,
