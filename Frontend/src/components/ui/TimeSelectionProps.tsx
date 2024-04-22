@@ -19,6 +19,7 @@ const TimeSelection: React.FC<TimeSelectionProps> = ({
       onChange={(time) => handleTimeChange(time, typeTime)}
       minuteStep={30}
       disabledTime={disabledTime}
+      showNow={false}
     />
   );
 };
