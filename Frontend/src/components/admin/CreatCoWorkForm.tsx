@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { TimePicker } from "antd";
 import dayjs from "dayjs";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,9 +25,9 @@ export default function CoWorkForm({ data }: Props) {
     isValid,
     card,
   } = useCardContext();
-
   const session = useSession();
-  const onSubmit = (e: any) => {
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     createCoWorkingSpace(
       {
         name: card.name,
@@ -122,16 +122,23 @@ export default function CoWorkForm({ data }: Props) {
             /* value={inputValue} */
             onChange={handleFormChange}
             id="remaining"
+            defaultValue={1}
             min={1}
           />
-          <div className="text-xs text-red-500 flex ml-3 mt-3">{isValid ? <div className="mt-4"></div> : "You cant use the negative number"}</div>
+          <div className="text-xs text-red-500 flex ml-3 mt-3">
+            {isValid ? (
+              <div className="mt-4"></div>
+            ) : (
+              "You cant use the negative number"
+            )}
+          </div>
         </div>
 
         <div className="col-span-2"></div>
         <div className="col-span-3"></div>
         <Input
           type="submit"
-          className="flex justify-center rounded-full text-md w-36 transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+          className="cursor-pointer flex justify-center rounded-full text-md w-36 transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
         />
       </form>
     </div>
