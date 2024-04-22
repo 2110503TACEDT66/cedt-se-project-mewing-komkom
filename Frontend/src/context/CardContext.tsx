@@ -21,7 +21,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
     openTime: "",
     closeTime: "",
     address: "",
-    remaining: 1,
+    remaining: null,
   };
 
   const [card, setCard] = useState<SpaceItem>(newCard);
@@ -44,17 +44,33 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
       };
     } */
     if (e.target.id.substring(0, 5) === "Edit-") {
-      const { value } = e.target;
+      const { id, value } = e.target;
       setCardEdit((prevCard) => ({
         ...prevCard,
         [e.target.id.substring(5)]: value,
       }));
+
+      if (id === "Edit-remaining") {
+        setCardEdit((prevCard) => ({
+          ...prevCard,
+          [id]: Math.abs(Number(value)),
+        }));
+      }
+      const isNegative = e.target.value.startsWith("-");
+      if (!isNegative) {
+        setInputValue(e.target.value);
+        setIsValid(true);
+      } else {
+        setInputValue("");
+        setIsValid(false);
+      }
     } else {
       const { id, value } = e.target;
       setCard((prevCard) => ({
         ...prevCard,
         [id]: value,
       }));
+
       if (id === "remaining") {
         setCard((prevCard) => ({
           ...prevCard,
@@ -78,7 +94,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
         setInputValue("");
         setIsValid(false);
       }
-      
+
       /* setCard((prevCard) => ({
         ...prevCard,
         [id]: value,
