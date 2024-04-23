@@ -6,7 +6,7 @@ const WorkingStationSchema = new Schema(
     name: {
       type: String,
       required: [true, "Please add a name"],
-      unique: true,
+      unique: [true, "Name must be unique"],
       trim: true,
       maxlength: [50, "Name can not be more than 50 characters"],
     },

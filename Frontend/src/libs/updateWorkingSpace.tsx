@@ -1,4 +1,4 @@
-import Swal from "sweetalert2";
+/* import Swal from "sweetalert2";
 import { SpaceItem } from "../../interface";
 export default async function updateWorkingSpace(
   id: string,
@@ -8,16 +8,17 @@ export default async function updateWorkingSpace(
   const body = JSON.stringify(data); // Construct the request body
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URI}/workspace/` + id,
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/workingspace/` + id,
     {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: body, // Include the request body
+      body: body,
     }
   );
+
   if (!response.ok) {
     const ans = await response.json();
 
@@ -34,5 +35,52 @@ export default async function updateWorkingSpace(
     });
 
     return await response.json();
+  }
+} */
+
+import Swal from "sweetalert2";
+import { SpaceItem } from "../../interface";
+export default async function updateWorkingSpace(
+  id: string,
+  token: string,
+  data: SpaceItem
+) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URI}/workingspace/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: data.name,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const ans = await response.json();
+      Swal.fire({
+        title: "Error!",
+        text: ans.message || "Cannot Update #" + id,
+        icon: "error",
+      });
+    } else {
+      Swal.fire({
+        title: "Success!",
+        text: "Update successfully",
+        icon: "success",
+      });
+
+      return await response.json();
+    }
+  } catch (error) {
+    Swal.fire({
+      title: "Error!",
+      text: (error as any).message || "Cannot Update #" + id,
+      icon: "error",
+    });
   }
 }
