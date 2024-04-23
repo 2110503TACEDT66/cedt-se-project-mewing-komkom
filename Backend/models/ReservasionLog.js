@@ -14,7 +14,7 @@ const ReservationLogSchema = new Schema({
     },
     action: {
         type: String,
-        enum: ["edit", "cancel"],
+        enum: ["edit", "cancel", "forceCancel"],
         required: true,
     },
     beforeEditStartTime: {
