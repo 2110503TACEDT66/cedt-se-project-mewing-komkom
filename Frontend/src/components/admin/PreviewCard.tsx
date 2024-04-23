@@ -5,7 +5,17 @@ import { AiFillClockCircle } from "react-icons/ai";
 import { SpaceItem, Time } from "../../../interface";
 import { SetPreviewCard } from "../../../interface";
 import Link from "next/link";
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import { usePathname } from "next/navigation";
+
+// Extend dayjs with plugins
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+// Set the default timezone to your country's timezone
+dayjs.tz.setDefault('Asia/Bangkok');
 export default function PreviewCard({ card }: { card?: SpaceItem }) {
   const pathname = usePathname();
   const descc =
@@ -31,7 +41,7 @@ export default function PreviewCard({ card }: { card?: SpaceItem }) {
             <AiFillClockCircle className="mb-2" color="black" size={20} />
             <div>
               {card?.openTime || card?.closeTime ? (
-                <div> {`${card?.openTime} - ${card?.closeTime}`} </div>
+                <div> {`${dayjs(card?.openTime).format('HH:mm')} - ${dayjs(card?.closeTime).format('HH:mm')}`} </div>
               ) : (
                 "เวลาเปิด - เวลาปิด"
               )}
