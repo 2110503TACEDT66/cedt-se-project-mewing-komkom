@@ -25,9 +25,9 @@ const WorkingStationSchema = new Schema(
       type: String,
       required: [true, "Please add close time"],
     },
-    remaining: {
+    maxSeat: {
       type: Number,
-      required: [true, "Please add remaining spaces"],
+      required: [true, "Please add max seat"],
       default: 20,
     },
     image: {
