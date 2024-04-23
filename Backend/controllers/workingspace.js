@@ -147,7 +147,7 @@ exports.checkAvailableSeat = async (req, res, next) => {
       startTime: { $lt: endTime },
       endTime: { $gt: startTime }
     });
-    console.log(overlappingReservations);
+    console.log("this is hahaha",{overlappingReservations});
 
     let reservedSeats = 0;
     overlappingReservations.forEach(overlappingReservations => {

@@ -19,15 +19,7 @@ interface Props {
 export default function Card({ data }: Props) {
   return (
     <div className="relative hover:-translate-y-1 duration-150 cursor-pointer">
-      {/* <Image
-        src="https://www.terrabkk.com/images/upload/af178899ca2cc98fcf8a7114450d17a7.jpg"
-        width={0}
-        height={0}
-        sizes="100vw"
-        className="w-full rounded-3xl "
-        unoptimized
-        alt=""
-      /> */}
+          
       <div
         className="bg-gray-200 w-full h-80 rounded-3xl"
         style={{

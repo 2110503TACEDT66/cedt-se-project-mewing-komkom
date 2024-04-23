@@ -6,26 +6,22 @@ import getSpace from "@/libs/getSpace";
 import { SpaceItem } from "../../../../interface";
 import dayjs, { Dayjs } from "dayjs";
 import TimeSelection from "@/components/ui/TimeSelectionProps";
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-
-// Extend dayjs with plugins
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
-// Set the default timezone to your country's timezone
-dayjs.tz.setDefault('Asia/Bangkok');
+import createReservation from "@/libs/createReservation";
+import { useSession } from "next-auth/react";
+import checkAvailableSeat from "@/libs/checkAvailableSeat";
 
 interface Props {
   params: { id: string };
 }
 
 const SpaceDetail = ({ params }: Props) => {
+  const session = useSession();
   const format = "HH:mm";
   const [space, setSpace] = useState<SpaceItem>();
   const [date, setDate] = useState<Dayjs>();
-  const [starttime, setStartTime] = useState<Dayjs | null>(null);
+  const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
+  const [availableSeat, setAvailableSeat] = useState(0)
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -33,6 +29,7 @@ const SpaceDetail = ({ params }: Props) => {
         const spaceData = await getSpace(params.id);
         if (spaceData.data) {
           setSpace(spaceData.data);
+          setAvailableSeat(spaceData.data.remaining)
         }
       } catch (error) {
         console.error("Error fetching space:", error);
@@ -41,6 +38,42 @@ const SpaceDetail = ({ params }: Props) => {
 
     fetchSpace();
   }, [params.id]);
+
+  useEffect(() => {
+    if (startTime && endTime) {
+      const fetchAvailable = async () => {
+        try {
+          const availableseatha = await checkAvailableSeat({ startTime, endTime }, params.id);
+          if (!availableseatha) {
+            throw new Error("cannot fetch");
+          }
+          console.log("ngong mak = ", availableseatha.availableSeats);
+          setAvailableSeat(availableseatha.availableSeats);
+        } catch (error) {
+          console.error("error ja", error);;
+        }
+      };
+      fetchAvailable();
+    }
+  }, [startTime, endTime, params.id]);
+
+  const handleReserve = async(e:any)=>{
+    try {
+      e.preventDefault();
+      const data = {
+        startTime:startTime,
+        endTime:endTime,
+        workingSpace:params.id
+      }
+      const reservation = await createReservation(data as any,(session as any).data?.user.token)
+      if(!reservation){
+        throw new Error("cannot create.!!")
+      }
+      console.log("yeah");
+    } catch (error) {
+      console.error("error create Reservation",error);
+    }
+  }
 
   const handleDateChange: DatePickerProps["onChange"] = (date, dateString) => {
     setDate(date);
@@ -59,8 +92,8 @@ const SpaceDetail = ({ params }: Props) => {
     } else if (timeType === "end") {
       setEndTime(
         timewithdate!.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
-          timewithdate
-      );
+            timewithdate
+      )
     }
   };
 
@@ -69,9 +102,9 @@ const SpaceDetail = ({ params }: Props) => {
     let closeMinute = dayjs(space?.closeTime).minute();
     return {
       disabledHours: () => {
-        if (!starttime) return Array.from({ length: 24 }, (_, i) => i);
-        let timeLength = starttime.hour();
-        if (starttime.minute() == 30) {
+        if (!startTime) return Array.from({ length: 24 }, (_, i) => i);
+        let timeLength = startTime.hour();
+        if (startTime.minute() == 30) {
           timeLength = timeLength + 1;
         }
         let arrayOfHours = Array.from({ length: Math.max(0, timeLength) }, (_, i) => i)
@@ -83,10 +116,10 @@ const SpaceDetail = ({ params }: Props) => {
         return arrayOfHours;
       },
       disabledMinutes: (selectedHour: number) => {
-        if (!starttime) return Array.from({ length: 60 }, (_, i) => i);
+        if (!startTime) return Array.from({ length: 60 }, (_, i) => i);
 
-        const startHour = starttime.hour();
-        const startMinute = starttime.minute();
+        const startHour = startTime.hour();
+        const startMinute = startTime.minute();
 
         if (selectedHour === startHour) {
           return Array.from(
@@ -212,8 +245,11 @@ const SpaceDetail = ({ params }: Props) => {
                 />
               </div>
             </div>
+            <div>
+              Available seat : {availableSeat}
+            </div>
             <div className="flex justify-end">
-              <button className="bg-black px-5 py-2 rounded-full text-white max-w-max ">
+              <button className="bg-black px-5 py-2 rounded-full text-white max-w-max " onClick={handleReserve}>
                 reserve
               </button>
             </div>

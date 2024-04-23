@@ -26,7 +26,7 @@ router
   .get(getWorkingSpace)
   .put(protect, authorize("admin", "moderator"), updateWorkingSpace)
   .delete(protect, authorize("admin", "moderator"), deleteWorkingSpace);
-  router.route("/available/:id").get(checkAvailableSeat);
+  router.route("/available/:id").post(checkAvailableSeat);
 
 module.exports = router;
 
