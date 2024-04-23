@@ -41,7 +41,7 @@ export default function PreviewCard({ card }: { card?: SpaceItem }) {
             <AiFillClockCircle className="mb-2" color="black" size={20} />
             <div>
               {card?.openTime || card?.closeTime ? (
-                <div> {`${dayjs(card?.openTime).format('HH:mm')} - ${dayjs(card?.closeTime).format('HH:mm')}`} </div>
+                <div> {`${dayjs(card?.openTime).tz('Asia/Bangkok').format('HH:mm')} - ${dayjs(card?.closeTime).tz('Asia/Bangkok').format('HH:mm')}`} </div>
               ) : (
                 "เวลาเปิด - เวลาปิด"
               )}
