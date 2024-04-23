@@ -16,7 +16,6 @@ interface Props {
 
 const SpaceDetail = ({ params }: Props) => {
   const session = useSession();
-  const format = "HH:mm";
   const [space, setSpace] = useState<SpaceItem>();
   const [date, setDate] = useState<Dayjs>();
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
