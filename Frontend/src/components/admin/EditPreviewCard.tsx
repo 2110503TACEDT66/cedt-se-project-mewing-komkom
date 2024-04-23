@@ -1,27 +1,20 @@
 "use client";
-import updateWorkingSpace from "@/libs/updateWorkingSpace";
-import { useSession } from "next-auth/react";
 import React from "react";
+import { MdOutlinePhotoLibrary } from "react-icons/md";
+import { AiFillClockCircle } from "react-icons/ai";
+import { SpaceItem, Time } from "../../../interface";
+import { SetPreviewCard } from "../../../interface";
+import { useCardContext } from "@/context/CardContext";
+export default function Test({ data }: { data?: SpaceItem }) {
+  const { cardEdit } = useCardContext();
 
-export default function Test() {
-  const session = useSession();
-  const onSubmit = (e: any) => {
-    e.preventDefault();
-    updateWorkingSpace("6624ce411725e7ef4dbc3359", session.data!.user.token, {
-      name: "cardEdit.name",
-      address: "cardEdit.address",
-      tel: "081530",
-      openTime: "cardEdit.openTime",
-      closeTime: "cardEdit.closeTime",
-      remaining: 10,
-      image: "cardEdit.image",
-    });
-  };
+  const descc =
+    "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fuga obcaecati nemo veniam minus, omnis, nam, labore sint ab dolor quisquam ipsa possimus. Itaque reprehenderit temporibus animi minima repellendus distinctio similique.";
   return (
-    <div className="relative flex flex-col text-gray-700 bg-white shadow-xl bg-clip-border rounded-xl w-96 p-3">
-      {card?.image ? (
+    <div className="h-[520px] relative flex flex-col text-gray-700 bg-white shadow-xl bg-clip-border rounded-xl w-96 p-3">
+      {cardEdit?.image ? (
         <div className="relative h-[180px] mx-4 mt-4 overflow-hidden text-white shadow-lg bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
-          <img src={card?.image} alt="card-image" />
+          <img src={cardEdit?.image} alt="card-image" />
         </div>
       ) : data?.image ? (
         <div className="relative h-[180px] mx-4 mt-4 overflow-hidden text-white shadow-lg bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
@@ -36,28 +29,33 @@ export default function Test() {
       <div className="p-4">
         <div></div>
         <h5 className="block text-xl antialiased font-semibold leading-snug tracking-normal text-black mt-1">
-          {card?.name ? card?.name : data?.name}
+          {cardEdit?.name ? cardEdit?.name : data?.name}
         </h5>
         <div className="flex gap-2">
           <AiFillClockCircle className="mb-2" color="black" size={20} />
           <div>
-            {card?.openTime || card?.closeTime ? (
-              <div> {`${card?.openTime} - ${card?.closeTime}`} </div>
+            {cardEdit?.openTime || cardEdit?.closeTime ? (
+              <div> {`${cardEdit?.openTime} - ${cardEdit?.closeTime}`} </div>
             ) : (
               <div>
-                {dayjs(data?.openTime).tz('Asia/Bangkok').format('HH:mm')} - {dayjs(data?.closeTime).tz('Asia/Bangkok').format('HH:mm')}
+                {data?.openTime} - {data?.closeTime}
               </div>
             )}
           </div>
         </div>
         <hr />
         <div className=" mt-2 text-lg font-medium text-black">รายละเอียด</div>
-        <div className=" break-words text-base antialiased font-light leading-relaxed text-inherit">
-          {card?.address ? card?.address : data?.address}
+        <div className=" break-words h-24 text-base antialiased font-light leading-relaxed text-inherit">
+          {cardEdit?.address ? cardEdit?.address : data?.address}
         </div>
+      </div>
+
+      <div className="px-4">
         <div className="mt-2 flex gap-3 ">
           <div>จำนวนที่นั่ง :</div>
-          <div>{card?.maxSeat ? card?.maxSeat : data?.maxSeat}</div>
+          <div>
+            {cardEdit?.remaining ? cardEdit?.remaining : data?.remaining}
+          </div>
         </div>
       </div>
 
@@ -66,6 +64,7 @@ export default function Test() {
           แก้ไข
         </button>
       </div>
+
     </div>
   );
 }
