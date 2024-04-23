@@ -10,7 +10,7 @@ const ReservationLogSchema = new Schema({
     editAt: {
         type: Date,
         default: Date.now,
-        required,
+        required: true,
     },
     action: {
         type: String,
