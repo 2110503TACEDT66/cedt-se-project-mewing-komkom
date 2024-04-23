@@ -1,13 +1,16 @@
+'use client'
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import getAllAdmins from "@/libs/getallAdmins";
 import AdminItem from "@/components/moderator/AdminItem";
 import { User } from "../../../interface";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import { redirect } from "next/navigation";
 import AddButtonAdmin from "@/components/moderator/AddButtonAdmin";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import getAllUser from "@/libs/getUsers";
+
 
 interface Props{
   params: {id: string};
@@ -16,40 +19,44 @@ type SortOrder = {
   [key: string]: number;
 };
 
-export default async function ModeratorPage() {
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user.token) return null;
-  const allUsers_obeject = await getAllAdmins(session.user.token);
-  const usersdata = allUsers_obeject.data;
+export default function ModeratorPage() {
+  const session = useSession();
+  if (!session) return null;
+  // const allUsers_obeject = await getAllAdmins(session.user.token);
+  // const usersdata = allUsers_obeject.data;
+  const [users,setusers] = useState([]);
+  useEffect(()=>{
+    const fetchData = async()=>{
+      const userData = await getAllAdmins((session as any).data?.user.token);
+      if(!userData){
+        console.error("Invalid user data: ",userData);
+        return;
+      }
+      setusers(userData.data);
+    };
+    fetchData();
+  })
+  const [search, setSearch] = useState('');
+  const handleSearch = (event : any) => {
+    setSearch(event.target.value);
+  };
   
-const sortOrder: SortOrder = {
-  moderator: 0,
-  admin: 1,
-  user: 2,
-};
-
-const sortedUsers = usersdata.sort(
-  (a:any, b:any) => sortOrder[a.role] - sortOrder[b.role]
-);
-
-
-
   return (
-    <div className="p-4">
-      {" "}
-      {/* Add padding for spacing */}
-      <div className="text-2xl font-bold mb-4">List of Admins</div>
+    <div className="p-4"> {/* Add padding for spacing */}
+      <div className="text-2xl font-bold mb-4">Manage Account</div>
       {/* Search box and Add button */}
-      {/* <Stack direction="row" spacing={2} alignItems="center" mb={4}>
+      <Stack direction="row" spacing={2} alignItems="center" mb={4}>
         <TextField
           id="outlined-basic"
           label="Search"
           variant="outlined"
           size="small"
           fullWidth 
+          onChange={handleSearch}
         />
-        <AddButtonAdmin/>
-      </Stack> */}
+        {/* <AddButtonAdmin/> */}
+      </Stack>
+
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white">
@@ -70,9 +77,13 @@ const sortedUsers = usersdata.sort(
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {sortedUsers.map((eachadmin: User) => (
-              <AdminItem admin={eachadmin} />
-            ))}
+            
+          {users.filter((item:any)=>{return(item.name.includes(search)||item.role.includes(search))})
+          .map((eachadmin: User) => (
+          <AdminItem admin={eachadmin} />
+        ))}
+
+
           </tbody>
         </table>
       </div>
