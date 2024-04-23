@@ -16,6 +16,9 @@ const WorkingStationSchema = new Schema(
     },
     tel: {
       type: String,
+      match: [/^\d+$/, "Tel must only contain digits"],
+      minlength: [10, "Tel must have 10 digits"],
+      maxlength: [10, "Tel must have 10 digits"]
     },
     openTime: {
       type: String,
