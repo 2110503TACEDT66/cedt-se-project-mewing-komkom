@@ -39,7 +39,7 @@ export default function Test({ data }: { data?: SpaceItem }) {
               <div> {`${card?.openTime} - ${card?.closeTime}`} </div>
             ) : (
               <div>
-                {dayjs(data?.openTime).format('HH:mm')} - {dayjs(data?.closeTime).format('HH:mm')}
+                {dayjs(data?.openTime).tz('Asia/Bangkok').format('HH:mm')} - {dayjs(data?.closeTime).tz('Asia/Bangkok').format('HH:mm')}
               </div>
             )}
           </div>
