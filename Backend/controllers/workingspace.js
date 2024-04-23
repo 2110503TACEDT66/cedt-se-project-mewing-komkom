@@ -1,3 +1,4 @@
+const Reservation = require("../models/Reservation");
 const WorkingSpace = require("../models/WorkingSpace");
 
 exports.getAllWorkingSpace = async (req, res, next) => {
@@ -129,4 +130,42 @@ exports.deleteWorkingSpace = async (req, res, next) => {
     res.status(400).json({ success: false });
   }
 };
+
+
+exports.checkAvailableSeat = async (req, res, next) => {
+  try {
+    const { startTime, endTime } = req.body;
+    
+    const workingSpaceId = req.params.id;
+    const workingspace = await WorkingSpace.findById(workingSpaceId).populate('reservation');
+    if (!workingspace) {
+      return res.status(404).json({ success: false, message: "Working space not found" });
+    }
+
+    const overlappingReservations = await Reservation.find({
+      workingSpace: workingSpaceId,
+      startTime: { $lt: endTime },
+      endTime: { $gt: startTime }
+    });
+    console.log(overlappingReservations);
+
+    let reservedSeats = 0;
+    overlappingReservations.forEach(overlappingReservations => {
+      reservedSeats += 1;
+    });
+
+    const availableSeats = workingspace.remaining - reservedSeats;
+
+    res.status(200).json({
+      success: true,
+      availableSeats: availableSeats
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+
 
