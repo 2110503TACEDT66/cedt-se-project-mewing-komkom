@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ReservationLogSchema = new Schema({
-    reservationId:{
-        type: Schema.ObjectId,
-        ref:"Reservation",
+    reservationId: {
+    type: Schema.ObjectId,
+        ref: "Reservation",
         required: true,
     },
     editAt: {
@@ -14,7 +14,7 @@ const ReservationLogSchema = new Schema({
     },
     action: {
         type: String,
-        enum: ["edit","cancel"],
+        enum: ["edit", "cancel"],
         required: true,
     },
     beforeEditStartTime: {
@@ -28,7 +28,10 @@ const ReservationLogSchema = new Schema({
     },
     afterEditEndTime: {
         type: Date
+    },
+    canceledReservation: {
+        type: Object,
     }
 });
 
-module.exports = mongoose.model("ReservasionLog",ReservationLogSchema);
+module.exports = mongoose.model("ReservasionLog", ReservationLogSchema);
