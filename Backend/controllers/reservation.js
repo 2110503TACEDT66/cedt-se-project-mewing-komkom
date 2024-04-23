@@ -101,8 +101,6 @@ exports.addReservation = async (req, res, next) => {
       });
     }
 
-
-
     // add user Id to req.body
     req.body.user = req.user.id;
     // Check for existed reservation
@@ -234,17 +232,6 @@ exports.clearSpace = async (req, res, next) => {
     const clearReservations = await Reservation.deleteMany({
       workingSpace: req.params.id,
     });
-
-    await WorkingSpace.findByIdAndUpdate(
-      req.params.id,
-      {
-        remaining: workingspace.remaining + clearReservations.deletedCount,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
 
     return res
       .status(200)
