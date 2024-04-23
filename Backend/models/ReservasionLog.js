@@ -7,7 +7,7 @@ const ReservationLogSchema = new Schema({
         ref: "Reservation",
         required: true,
     },
-    editAt: {
+    createdAt: {
         type: Date,
         default: Date.now,
         required: true,
