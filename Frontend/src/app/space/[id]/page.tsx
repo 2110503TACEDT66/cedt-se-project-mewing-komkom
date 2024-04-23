@@ -9,6 +9,7 @@ import TimeSelection from "@/components/ui/TimeSelectionProps";
 import createReservation from "@/libs/createReservation";
 import { useSession } from "next-auth/react";
 import checkAvailableSeat from "@/libs/checkAvailableSeat";
+import Swal from "sweetalert2";
 
 interface Props {
   params: { id: string };
@@ -21,6 +22,7 @@ const SpaceDetail = ({ params }: Props) => {
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
   const [availableSeat, setAvailableSeat] = useState(0)
+  const [isReserve, setIsReserve] = useState(false);
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -53,17 +55,35 @@ const SpaceDetail = ({ params }: Props) => {
       };
       fetchAvailable();
     }
-  }, [startTime, endTime, params.id]);
+  }, [startTime, endTime, params.id,isReserve]);
 
   const handleReserve = async(e:any)=>{
     try {
       e.preventDefault();
+      if(availableSeat==0){
+        Swal.fire({
+          title: "Error!",
+          text: "The seats are fully occupied. Unable to reserve.",
+          icon: "error",
+        });
+        return;
+      }
+  
+      if(dayjs().isAfter(startTime)){
+        Swal.fire({
+          title: "Error!",
+          text: "Booking unavailable before current time.",
+          icon: "error",
+        });
+        return;
+      }
       const data = {
         startTime:startTime,
         endTime:endTime,
         workingSpace:params.id
       }
       const reservation = await createReservation(data as any,(session as any).data?.user.token)
+      setIsReserve((prev)=>!prev)
       if(!reservation){
         throw new Error("cannot create.!!")
       }
@@ -151,9 +171,12 @@ const SpaceDetail = ({ params }: Props) => {
     return {
       disabledHours: () => {
         if (!dayjs(space?.openTime)) return Array.from({ length: 24 }, (_, i) => i);
-        
+        let currentTimeHour = dayjs().hour();
         let timeLength = openHour;
         let arrayOfHours = Array.from({ length: Math.max(0, timeLength) }, (_, i) => i);
+        for(let i = 0 ;i<currentTimeHour;i++){
+          arrayOfHours.push(i);
+        }
         for(let i = closeHour+1 ;i<24;i++){
           arrayOfHours.push(i);
         }
@@ -161,18 +184,26 @@ const SpaceDetail = ({ params }: Props) => {
       },
       disabledMinutes: (selectedHour: number) => {
         if (!dayjs(space?.openTime)) return Array.from({ length: 60 }, (_, i) => i);
-
         
-
+        let arrayOfMinute = []
+        let currentTimeMinute = dayjs().minute();
+        for(let i=0;i<currentTimeMinute;i++){
+          arrayOfMinute.push(i);
+        }
         if (selectedHour === openHour) {
-          return Array.from(
+          arrayOfMinute.push(Array.from(
             { length: Math.ceil((openMinute) / 30) },
             (_, i) => i * 30
-          );
+          ));
+          for(let i=0 ; i<currentTimeMinute ; i++){
+            arrayOfMinute.push(i);
+          }
+          return arrayOfMinute
         }
 
         if (selectedHour < openHour)
-          return Array.from({ length: 60 }, (_, i) => i);
+          arrayOfMinute.push(Array.from({ length: 60 }, (_, i) => i))
+          return arrayOfMinute;
 
         return [];
       },
