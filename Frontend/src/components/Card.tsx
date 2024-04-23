@@ -59,7 +59,7 @@ export default function Card({ data }: Props) {
         <div className="flex items-center gap-2">
           <FaClock />
           <p>
-            {dayjs.utc(data.openTime).local().format('HH:mm')} - {dayjs.utc(data.closeTime).local().format('HH:mm')}
+            {dayjs(data.openTime).tz('Asia/Bangkok').format('HH:mm')} - {dayjs(data.closeTime).tz('Asia/Bangkok').format('HH:mm')}
           </p>
         </div>
       </div>
