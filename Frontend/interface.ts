@@ -50,10 +50,10 @@ export interface SetPreviewCard {
 }
 export interface User {
   _id: string;
-  name:string;
-  role:string;
-  email:string;
-  password:string;
+  name: string;
+  role: string;
+  email: string;
+  password: string;
   createdAt: string;
   __v: number;
 }
