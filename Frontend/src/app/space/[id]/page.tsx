@@ -47,7 +47,6 @@ const SpaceDetail = ({ params }: Props) => {
           if (!availableseatha) {
             throw new Error("cannot fetch");
           }
-          console.log("this is availableseat = ", { availableseatha });
           console.log("ngong mak = ", availableseatha.availableSeats);
           setAvailableSeat(availableseatha.availableSeats);
         } catch (error) {
@@ -59,9 +58,6 @@ const SpaceDetail = ({ params }: Props) => {
   }, [startTime, endTime, params.id]);
 
   const handleReserve = async(e:any)=>{
-    console.log("this is id =  "+params.id);
-    console.log("this is startTime = "+startTime?.toString());
-    console.log("this is endTime = "+endTime?.toString());
     try {
       e.preventDefault();
       const data = {
@@ -93,8 +89,6 @@ const SpaceDetail = ({ params }: Props) => {
         timewithdate!.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
           timewithdate
       );
-      console.log((timewithdate!.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
-      timewithdate).toString());
     } else if (timeType === "end") {
       setEndTime(
         timewithdate!.hour(time?.hour() || 0).minute(time?.minute() || 0) ||

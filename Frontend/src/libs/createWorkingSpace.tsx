@@ -4,7 +4,7 @@ export default async function createCoWorkingSpace(
   token: string
 ) {
   const response = await fetch(
-    "https://cedt-se-project-mewing-komkom-nq7g.vercel.app/api/v1/workingspace",
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/workingspace`,
     {
       method: "POST",
       headers: {

@@ -91,8 +91,6 @@ exports.addReservation = async (req, res, next) => {
       });
     }
 
-    console.log("this is startTime on be = ",req.body.startTime);
-    console.log("this is endTime on be = ",req.body.endTime);
     req.body.workingSpace = req.params.workingSpaceId;
 
     const workingspace = await WorkingSpace.findById(req.params.workingSpaceId);
