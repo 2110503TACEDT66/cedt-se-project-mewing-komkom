@@ -10,8 +10,8 @@ import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-// Set the default timezone to your country's timezone
-dayjs.tz.setDefault('Asia/Bangkok');
+// // Set the default timezone to your country's timezone
+// dayjs.tz.setDefault('Asia/Bangkok');
 interface Props {
   data: SpaceItem;
 }
@@ -59,7 +59,7 @@ export default function Card({ data }: Props) {
         <div className="flex items-center gap-2">
           <FaClock />
           <p>
-            {dayjs(data.openTime).format('HH:mm')} - {dayjs(data.closeTime).format('HH:mm')}
+            {dayjs.utc(data.openTime).local().format('HH:mm')} - {dayjs.utc(data.closeTime).local().format('HH:mm')}
           </p>
         </div>
       </div>
