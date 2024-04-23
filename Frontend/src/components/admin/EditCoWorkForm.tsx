@@ -33,7 +33,7 @@ export default function EditCoWorkForm({ data }: Props) {
       tel: "081530",
       openTime: cardEdit.openTime,
       closeTime: cardEdit.closeTime,
-      remaining: cardEdit.remaining,
+      maxSeat: cardEdit.remaining,
       image: cardEdit.image,
     });
   };

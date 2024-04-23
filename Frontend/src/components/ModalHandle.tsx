@@ -20,7 +20,7 @@ export default function ModalHandle({
 
   return (
     <div className="flex gap-2 items-center mt-5">
-      {remain > 0 ? (
+      {remain! > 0 ? (
         <button
           className="bg-black px-5 py-2 rounded-full text-white max-w-max "
           onClick={() => {
@@ -45,7 +45,7 @@ export default function ModalHandle({
         isOpen={open}
         data={space}
         handleClose={() => setOpen(false)}
-        decreaseRemain={() => setRemain(remain - 1)}
+        decreaseRemain={() => setRemain(remain! - 1)}
       />
     </div>
   );
