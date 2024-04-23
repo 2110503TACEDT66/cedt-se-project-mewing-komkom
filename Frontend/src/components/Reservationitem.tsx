@@ -36,7 +36,7 @@ export default function ReservationItem({
 
   return (
     <div key={reservation._id} className={`border p-4 my-4 ${hide}`}>
-      <p>Date: {reservation.reserveDate.toString()}</p>
+      <p>Date: {reservation.startTime.toString()}</p>
       <p>User: {reservation.user}</p>
       <p>Working Space: {reservation.workingSpace.name}</p>
       <div className="flex justify-end mt-2">

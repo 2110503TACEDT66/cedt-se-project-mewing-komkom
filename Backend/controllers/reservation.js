@@ -90,6 +90,9 @@ exports.addReservation = async (req, res, next) => {
         message: `Invalid end time`,
       });
     }
+
+    console.log("this is startTime on be = ",req.body.startTime);
+    console.log("this is endTime on be = ",req.body.endTime);
     req.body.workingSpace = req.params.workingSpaceId;
 
     const workingspace = await WorkingSpace.findById(req.params.workingSpaceId);
@@ -107,7 +110,7 @@ exports.addReservation = async (req, res, next) => {
     // Check for existed reservation
     const existedReservation = await Reservation.find({ user: req.user.id });
     //If the user is not an admin, they can only create 3 reservation.
-    if (existedReservation.length >= 3 && req.user.role !== "admin") {
+    if (existedReservation.length >= 3 && req.user.role !== "admin" && req.user.role !== 'moderator') {
       return res.status(400).json({
         success: false,
         message: `The user with ID ${req.user.id} has already made 3 reservations`,
@@ -116,9 +119,6 @@ exports.addReservation = async (req, res, next) => {
     if (workingspace.remaining > 0) {
       await WorkingSpace.findByIdAndUpdate(
         req.params.workingSpaceId,
-        {
-          remaining: workingspace.remaining - 1,
-        },
         {
           new: true,
           runValidators: true,
@@ -203,9 +203,6 @@ exports.deleteReservation = async (req, res, next) => {
 
     await WorkingSpace.findByIdAndUpdate(
       reservation.workingSpace,
-      {
-        remaining: spaceData.remaining + 1,
-      },
       {
         new: true,
         runValidators: true,
