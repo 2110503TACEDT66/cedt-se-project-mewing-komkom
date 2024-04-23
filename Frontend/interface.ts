@@ -21,7 +21,7 @@ export interface SpaceItem {
   tel?: string;
   openTime: string;
   closeTime: string;
-  remaining: number;
+  maxSeat: number;
   __v?: number;
   reservation?: Reservation[];
   id?: string;
