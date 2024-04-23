@@ -13,7 +13,7 @@ export default function ModalHandle({
   context?: string;
 }) {
   const [open, setOpen] = useState(false);
-  const [remain, setRemain] = useState(space.remaining);
+  const [remain, setRemain] = useState(space.maxSeat);
 
   const router = useRouter();
   const session = useSession();

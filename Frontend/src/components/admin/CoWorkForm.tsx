@@ -36,7 +36,7 @@ export default function CoWorkForm({ data }: Props) {
         tel: "081530",
         openTime: card.openTime,
         closeTime: card.closeTime,
-        remaining: card.remaining,
+        maxSeat: card.remaining,
         image: card.image,
       });
     }
@@ -48,7 +48,7 @@ export default function CoWorkForm({ data }: Props) {
           tel: "081530",
           openTime: card.openTime,
           closeTime: card.closeTime,
-          remaining: card.remaining,
+          maxSeat: card.remaining,
           image: card.image,
         },
         session.data!.user.token
@@ -133,7 +133,7 @@ export default function CoWorkForm({ data }: Props) {
           onChange={handleFormChange}
           id="inputNumber"  
           min={1}
-          defaultValue={data?.remaining}
+          defaultValue={data?.maxSeat}
         />
 
         <div className="col-span-2"></div>

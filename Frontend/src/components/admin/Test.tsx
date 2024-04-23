@@ -51,7 +51,7 @@ export default function Test({ data }: { data?: SpaceItem }) {
         </div>
         <div className="mt-2 flex gap-3 ">
           <div>จำนวนที่นั่ง :</div>
-          <div>{card?.remaining ? card?.remaining : data?.remaining}</div>
+          <div>{card?.maxSeat ? card?.maxSeat : data?.maxSeat}</div>
         </div>
       </div>
 
