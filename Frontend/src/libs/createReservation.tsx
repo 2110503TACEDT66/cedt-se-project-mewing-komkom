@@ -1,10 +1,11 @@
 import Swal from "sweetalert2";
-export default async function createCoWorkingSpace(
-  data: object,
+import { Reservation } from "../../interface";
+export default async function createReservation(
+  data: Reservation,
   token: string
 ) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URI}/workingspace`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/workingspace/${data.workingSpace}/reservation/`,
     {
       method: "POST",
       headers: {
