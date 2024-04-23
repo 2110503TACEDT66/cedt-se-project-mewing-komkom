@@ -1,5 +1,6 @@
 const Reservation = require("../models/Reservation");
 const WorkingSpace = require("../models/WorkingSpace");
+const ReservasionLog = require("../models/ReservasionLog");
 
 exports.getAllReservation = async (req, res, next) => {
   let query;
@@ -62,7 +63,7 @@ exports.getReservation = async (req, res, next) => {
       success: true,
       data: reservation,
     });
-  } catch (error) { 
+  } catch (error) {
     console.log(error);
     return res
       .status(500)
@@ -84,7 +85,7 @@ exports.addReservation = async (req, res, next) => {
         message: `User does not provided end time`,
       });
     }
-    if(req.body.endTime<=req.body.startTime) {
+    if (req.body.endTime <= req.body.startTime) {
       return res.status(400).json({
         success: false,
         message: `Invalid end time`,
@@ -163,7 +164,9 @@ exports.updateReservation = async (req, res, next) => {
         message: `User ${req.user.id} is not authorized to update this reservation`,
       });
     }
-
+    // Log the edit reservation
+    if (req.body.startTime !== reservation.startTime || req.body.endTime !== reservation.endTime)
+      await addEditReservationLog(req.params.id, reservation.startTime, req.body.startTime, reservation.endTime, req.body.endTime)
     reservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -188,7 +191,7 @@ exports.deleteReservation = async (req, res, next) => {
       });
     }
 
-    //Make sure user is the reservation owner
+    // Make sure user is the reservation owner
     if (
       reservation.user.toString() !== req.user.id &&
       req.user.role !== "admin"
@@ -200,7 +203,6 @@ exports.deleteReservation = async (req, res, next) => {
     }
 
     const spaceData = await WorkingSpace.findById(reservation.workingSpace);
-
     await WorkingSpace.findByIdAndUpdate(
       reservation.workingSpace,
       {
@@ -211,6 +213,15 @@ exports.deleteReservation = async (req, res, next) => {
         runValidators: true,
       }
     );
+
+    if (req.user.role === "admin" && req.user.id !== reservation.user.toString()) {
+      // Log the Forced Cancel reservation
+      await addCancelReservationLog(req.params.id, reservation, true)
+
+    } else {
+      // Log the cancel reservation
+      await addCancelReservationLog(req.params.id, reservation)
+    }
 
     await reservation.deleteOne();
     res.status(200).json({
@@ -286,3 +297,28 @@ exports.getUserReservation = async (req, res, next) => {
       .json({ success: false, message: "Cannot find reservation" });
   }
 };
+
+
+// Function to add reservation log for editing
+const addEditReservationLog = async (reservationId, beforeEditStartTime, afterEditStartTime, beforeEditEndTime, afterEditEndTime) => {
+  const reservationLog = await ReservasionLog.create({
+    reservationId,
+    action: "edit",
+    beforeEditStartTime,
+    afterEditStartTime,
+    beforeEditEndTime,
+    afterEditEndTime
+  });
+  // return { success: true, message: 'Edit Reservation Log added successfully', data: reservationLog };
+}
+
+// Function to add reservation log for cancellation
+const addCancelReservationLog = async (reservationId, canceledReservation, forced = false) => {
+
+  const reservationLog = await ReservasionLog.create({
+    reservationId,
+    action: forced ? "forceCancel" : "cancel",
+    canceledReservation
+  });
+  // return { success: true, message: 'Cancel Reservation Log added successfully', data: reservationLog };
+}
