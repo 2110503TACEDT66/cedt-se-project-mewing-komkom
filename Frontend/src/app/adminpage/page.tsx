@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { SpaceJson } from "../../../interface";
-import Test from "@/components/admin/Test";
+// import Test from "@/components/admin/Test";
 
 export default async function page() {
   /* const data = [1, 2, 3, 4, 5, 6, 7]; */
