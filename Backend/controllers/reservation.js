@@ -9,6 +9,9 @@ exports.getAllReservation = async (req, res, next) => {
     query = Reservation.find({ user: req.user.id }).populate({
       path: "workingSpace",
       select: "name address tel",
+    }).populate({
+      path: "user",
+      select: "name email",
     });
   } else {
     // if you are an admin, u can see it all
@@ -20,11 +23,18 @@ exports.getAllReservation = async (req, res, next) => {
       }).populate({
         path: "workingSpace",
         select: "name address tel",
+      })
+      .populate({
+        path: "user",
+        select: "name email",
       });
     } else {
       query = Reservation.find().populate({
         path: "workingSpace",
         select: "name address tel",
+      }).populate({
+        path: "user",
+        select: "name email",
       });
     }
   }
