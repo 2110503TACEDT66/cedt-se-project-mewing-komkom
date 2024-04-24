@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
@@ -11,9 +11,8 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import getAllUser from "@/libs/getUsers";
 
-
-interface Props{
-  params: {id: string};
+interface Props {
+  params: { id: string };
 }
 
 export default function ModeratorPage() {
@@ -21,25 +20,27 @@ export default function ModeratorPage() {
   if (!session) return null;
   // const allUsers_obeject = await getAllAdmins(session.user.token);
   // const usersdata = allUsers_obeject.data;
-  const [users,setusers] = useState([]);
-  useEffect(()=>{
-    const fetchData = async()=>{
+  const [users, setusers] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
       const userData = await getAllAdmins((session as any).data?.user.token);
-      if(!userData){
-        console.error("Invalid user data: ",userData);
+      if (!userData) {
+        console.error("Invalid user data: ", userData);
         return;
       }
       setusers(userData.data);
     };
     fetchData();
-  })
-  const [search, setSearch] = useState('');
-  const handleSearch = (event : any) => {
+  });
+  const [search, setSearch] = useState("");
+  const handleSearch = (event: any) => {
     setSearch(event.target.value);
   };
-  
+
   return (
-    <div className="p-4"> {/* Add padding for spacing */}
+    <div className="p-4">
+      {" "}
+      {/* Add padding for spacing */}
       <div className="text-2xl font-bold mb-4">Manage Account</div>
       {/* Search box and Add button */}
       <Stack direction="row" spacing={2} alignItems="center" mb={4}>
@@ -48,12 +49,11 @@ export default function ModeratorPage() {
           label="Search"
           variant="outlined"
           size="small"
-          fullWidth 
+          fullWidth
           onChange={handleSearch}
         />
         {/* <AddButtonAdmin/> */}
       </Stack>
-
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white">
@@ -74,13 +74,17 @@ export default function ModeratorPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            
-          {users.filter((item:any)=>{return(item.name.includes(search)||item.role.includes(search)||item.email.includes(search))})
-          .map((eachadmin: User) => (
-          <AdminItem admin={eachadmin} />
-        ))}
-
-
+            {users
+              .filter((item: any) => {
+                return (
+                  item.name.toLowerCase().includes(search.toLowerCase()) ||
+                  item.role.toLowerCase().includes(search.toLowerCase()) ||
+                  item.email.toLowerCase().includes(search.toLowerCase())
+                );
+              })
+              .map((eachadmin: User) => (
+                <AdminItem admin={eachadmin} />
+              ))}
           </tbody>
         </table>
       </div>
