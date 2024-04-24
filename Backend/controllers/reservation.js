@@ -101,8 +101,6 @@ exports.addReservation = async (req, res, next) => {
       });
     }
 
-
-
     // add user Id to req.body
     req.body.user = req.user.id;
     // Check for existed reservation
@@ -112,23 +110,6 @@ exports.addReservation = async (req, res, next) => {
       return res.status(400).json({
         success: false,
         message: `The user with ID ${req.user.id} has already made 3 reservations`,
-      });
-    }
-    if (workingspace.remaining > 0) {
-      await WorkingSpace.findByIdAndUpdate(
-        req.params.workingSpaceId,
-        {
-          remaining: workingspace.remaining - 1,
-        },
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
-    } else {
-      return res.status(400).json({
-        success: false,
-        message: `This Working Space is full!`,
       });
     }
     const reservation = await Reservation.create(req.body);
@@ -201,19 +182,6 @@ exports.deleteReservation = async (req, res, next) => {
         message: `User ${req.user.id} is not authorized to delete this reservation`,
       });
     }
-
-    const spaceData = await WorkingSpace.findById(reservation.workingSpace);
-    await WorkingSpace.findByIdAndUpdate(
-      reservation.workingSpace,
-      {
-        remaining: spaceData.remaining + 1,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-
     if ((req.user.role === "admin" || req.user.role === "moderator") && req.user.id !== reservation.user.toString()) {
       // Log the Forced Cancel reservation
       await addCancelReservationLog(req.params.id, reservation, true)
@@ -222,7 +190,6 @@ exports.deleteReservation = async (req, res, next) => {
       // Log the cancel reservation
       await addCancelReservationLog(req.params.id, reservation)
     }
-
     await reservation.deleteOne();
     res.status(200).json({
       success: true,
@@ -250,17 +217,6 @@ exports.clearSpace = async (req, res, next) => {
     const clearReservations = await Reservation.deleteMany({
       workingSpace: req.params.id,
     });
-
-    await WorkingSpace.findByIdAndUpdate(
-      req.params.id,
-      {
-        remaining: workingspace.remaining + clearReservations.deletedCount,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
 
     return res
       .status(200)
