@@ -10,6 +10,7 @@ import createReservation from "@/libs/createReservation";
 import { useSession } from "next-auth/react";
 import checkAvailableSeat from "@/libs/checkAvailableSeat";
 import Swal from "sweetalert2";
+import { redirect, usePathname } from "next/navigation";
 
 interface Props {
   params: { id: string };
@@ -37,6 +38,8 @@ const SpaceDetail = ({ params }: Props) => {
     };
 
     fetchSpace();
+
+    console.log(session);
   }, [params.id]);
 
   useEffect(() => {
@@ -126,7 +129,7 @@ const SpaceDetail = ({ params }: Props) => {
     if (date === undefined) {
       timewithdate = dayjs();
     }
-    if(timewithdate){
+    if (timewithdate) {
       if (timeType === "start") {
         setStartTime(
           timewithdate.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
@@ -148,7 +151,7 @@ const SpaceDetail = ({ params }: Props) => {
     return {
       disabledHours: () => {
         if (!startTime) return Array.from({ length: 24 }, (_, i) => i);
-        if(!date) return Array.from({ length: 24 }, (_, i) => i)
+        if (!date) return Array.from({ length: 24 }, (_, i) => i);
         let timeLength = startTime.hour();
         if (startTime.minute() == 30) {
           timeLength = timeLength + 1;
@@ -157,7 +160,7 @@ const SpaceDetail = ({ params }: Props) => {
           { length: Math.max(0, timeLength) },
           (_, i) => i
         );
-        if(date?.date() === dayjs().date()){
+        if (date?.date() === dayjs().date()) {
           for (let i = 0; i < currentTimeHour; i++) {
             arrayOfHours.push(i);
           }
@@ -171,13 +174,13 @@ const SpaceDetail = ({ params }: Props) => {
       },
       disabledMinutes: (selectedHour: number) => {
         if (!startTime) return Array.from({ length: 60 }, (_, i) => i);
-        if(!date) return Array.from({ length: 60 }, (_, i) => i)
+        if (!date) return Array.from({ length: 60 }, (_, i) => i);
         const startHour = startTime.hour();
         const startMinute = startTime.minute();
 
         let arrayOfMinute = [];
         if (selectedHour === startHour) {
-          for (let i = 0; i < startMinute+1; i++) {
+          for (let i = 0; i < startMinute + 1; i++) {
             arrayOfMinute.push(i);
           }
         }
@@ -185,7 +188,7 @@ const SpaceDetail = ({ params }: Props) => {
         if (selectedHour === closeHour) {
           for (let i = closeMinute + 1; i < 60; i++) {
             arrayOfMinute.push(i);
-          }  
+          }
         }
 
         if (selectedHour < startHour)
@@ -205,14 +208,14 @@ const SpaceDetail = ({ params }: Props) => {
       disabledHours: () => {
         if (!dayjs(space?.openTime))
           return Array.from({ length: 24 }, (_, i) => i);
-        if(!date) return Array.from({ length: 24 }, (_, i) => i)
+        if (!date) return Array.from({ length: 24 }, (_, i) => i);
         let currentTimeHour = dayjs().hour();
         let timeLength = openHour;
         let arrayOfHours = Array.from(
           { length: Math.max(0, timeLength) },
           (_, i) => i
         );
-        if(date?.date() === dayjs().date()){
+        if (date?.date() === dayjs().date()) {
           for (let i = 0; i < currentTimeHour; i++) {
             arrayOfHours.push(i);
           }
@@ -225,12 +228,11 @@ const SpaceDetail = ({ params }: Props) => {
       disabledMinutes: (selectedHour: number) => {
         if (!dayjs(space?.openTime))
           return Array.from({ length: 60 }, (_, i) => i);
-        if(!date) return Array.from({ length: 60 }, (_, i) => i)
+        if (!date) return Array.from({ length: 60 }, (_, i) => i);
         let arrayOfMinute = [];
         let currentTimeMinute = dayjs().minute();
         let currentTimeHour = dayjs().hour();
-        if(date?.date() === dayjs().date()){
-          
+        if (date?.date() === dayjs().date()) {
         }
         if (currentTimeHour === selectedHour) {
           for (let i = 0; i < currentTimeMinute; i++) {
@@ -257,83 +259,89 @@ const SpaceDetail = ({ params }: Props) => {
     };
   };
 
-  return (
-    <div className="flex justify-center my-20">
-      <div className="bg-white relative flex justify-center items-center p-4 pl-10 rounded-3xl w-[1184px] h-[613px]">
-        <div
-          className="bg-gray-200 w-[512px] h-[478px] rounded-2xl"
-          style={{
-            backgroundImage: `url(${space?.image})`,
-            backgroundSize: "cover",
-          }}
-        />
+  if (session.status == "unauthenticated") {
+    redirect(`/login`);
+  } else {
+    return (
+      <div className="flex justify-center my-20">
+        <div className="bg-white relative flex justify-center items-center p-4 pl-10 rounded-3xl w-[1184px] h-[613px]">
+          <div
+            className="bg-gray-200 w-[512px] h-[478px] rounded-2xl"
+            style={{
+              backgroundImage: `url(${space?.image})`,
+              backgroundSize: "cover",
+            }}
+          />
 
-        <div>
-          <div className="flex flex-col justify-between p-10">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <h1 className="text-4xl font-bold">{space?.name}</h1>
-                <span className="bg-green-400 text-white rounded-lg px-3 max-w-max">
-                  เปิดอยู่
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <FaClock />
-                <p>
-                  {dayjs(space?.openTime).format("HH:mm")} -{" "}
-                  {dayjs(space?.closeTime).format("HH:mm")}
-                </p>
-              </div>
-              <hr />
-              <p>{space?.address}</p>
-              <p>{space?.tel}</p>
-            </div>
-          </div>
-          <div className="flex flex-col justify-between p-10 gap-y-5">
-            <div className="flex items-center gap-5 mb-3">
-              <div className="text-[#736868] font-semibold text-base">Date</div>
-              <div>
-                <DatePicker
-                  className="border-[#979797]"
-                  onChange={handleDateChange}
-                  value={date}
-                />
-              </div>
-            </div>
-            <div className="flex items-center">
-              <label className="mr-5 text-[#736868] font-semibold text-base">
-                Time
-              </label>
-              <div className="col-span-3 flex gap-3">
-                <TimeSelection
-                  handleTimeChange={handleTimeChange}
-                  disabledTime={disabledStartTime}
-                  typeTime="start"
-                />
-                <div className="text-center self-center text-[#736868] font-semibold text-base">
-                  To
+          <div>
+            <div className="flex flex-col justify-between p-10">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <h1 className="text-4xl font-bold">{space?.name}</h1>
+                  <span className="bg-green-400 text-white rounded-lg px-3 max-w-max">
+                    เปิดอยู่
+                  </span>
                 </div>
-                <TimeSelection
-                  handleTimeChange={handleTimeChange}
-                  disabledTime={disabledEndTime}
-                  typeTime="end"
-                />
+                <div className="flex items-center gap-3">
+                  <FaClock />
+                  <p>
+                    {dayjs(space?.openTime).format("HH:mm")} -{" "}
+                    {dayjs(space?.closeTime).format("HH:mm")}
+                  </p>
+                </div>
+                <hr />
+                <p>{space?.address}</p>
+                <p>{space?.tel}</p>
               </div>
             </div>
-            <div>Available seat : {availableSeat}</div>
-            <div className="flex justify-end">
-              <button
-                className="bg-black px-5 py-2 rounded-full text-white max-w-max "
-                onClick={handleReserve}
-              >
-                reserve
-              </button>
+            <div className="flex flex-col justify-between p-10 gap-y-5">
+              <div className="flex items-center gap-5 mb-3">
+                <div className="text-[#736868] font-semibold text-base">
+                  Date
+                </div>
+                <div>
+                  <DatePicker
+                    className="border-[#979797]"
+                    onChange={handleDateChange}
+                    value={date}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center">
+                <label className="mr-5 text-[#736868] font-semibold text-base">
+                  Time
+                </label>
+                <div className="col-span-3 flex gap-3">
+                  <TimeSelection
+                    handleTimeChange={handleTimeChange}
+                    disabledTime={disabledStartTime}
+                    typeTime="start"
+                  />
+                  <div className="text-center self-center text-[#736868] font-semibold text-base">
+                    To
+                  </div>
+                  <TimeSelection
+                    handleTimeChange={handleTimeChange}
+                    disabledTime={disabledEndTime}
+                    typeTime="end"
+                  />
+                </div>
+              </div>
+              <div>Available seat : {availableSeat}</div>
+              <div className="flex justify-end">
+                <button
+                  className="bg-black px-5 py-2 rounded-full text-white max-w-max "
+                  onClick={handleReserve}
+                >
+                  reserve
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default SpaceDetail;
