@@ -37,8 +37,7 @@ export default async function Banner() {
           {session && isAdmin ? "Space Manage System " : "Space Reservation"}
         </h1>
         <p className="max-w-xl text-center mx-auto">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et alias
-          assumenda
+        Join us for productive vibes! Reserve your spot now.
         </p>
         {session && isAdmin ? (
           <Link
