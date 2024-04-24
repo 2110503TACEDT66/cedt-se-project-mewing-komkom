@@ -55,7 +55,7 @@ export default function Card({ data }: Props) {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
           </span>
-          มีที่ว่าง
+          available
         </div>
       ) : (
         <div className="flex text-sm items-center gap-2 absolute top-5 left-5 bg-white px-3 py-1 rounded-full text-red-700">
@@ -63,7 +63,7 @@ export default function Card({ data }: Props) {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
           </span>
-          เต็ม
+          occupied
         </div>
       )}
 
