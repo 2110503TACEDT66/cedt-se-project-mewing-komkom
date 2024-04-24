@@ -52,7 +52,7 @@ export default async function Banner() {
             href="#booking"
             className="bg-black max-w-max text-white px-6 py-3 mx-auto rounded-full"
           >
-            จองเลย
+            reserve now
           </Link>
         )}
         <Marquee speed={50} className="py-10">
