@@ -144,9 +144,11 @@ const SpaceDetail = ({ params }: Props) => {
   const disabledEndTime = (current: Dayjs) => {
     let closeHour = dayjs(space?.closeTime).hour();
     let closeMinute = dayjs(space?.closeTime).minute();
+    let currentTimeHour = dayjs().hour();
     return {
       disabledHours: () => {
         if (!startTime) return Array.from({ length: 24 }, (_, i) => i);
+        if(!date) return Array.from({ length: 24 }, (_, i) => i)
         let timeLength = startTime.hour();
         if (startTime.minute() == 30) {
           timeLength = timeLength + 1;
@@ -155,6 +157,11 @@ const SpaceDetail = ({ params }: Props) => {
           { length: Math.max(0, timeLength) },
           (_, i) => i
         );
+        if(date?.date() === dayjs().date()){
+          for (let i = 0; i < currentTimeHour; i++) {
+            arrayOfHours.push(i);
+          }
+        }
         if (closeHour) {
           for (let i = closeHour + 1; i < 24; i++) {
             arrayOfHours.push(i);
@@ -164,13 +171,13 @@ const SpaceDetail = ({ params }: Props) => {
       },
       disabledMinutes: (selectedHour: number) => {
         if (!startTime) return Array.from({ length: 60 }, (_, i) => i);
-
+        if(!date) return Array.from({ length: 60 }, (_, i) => i)
         const startHour = startTime.hour();
         const startMinute = startTime.minute();
 
         let arrayOfMinute = [];
         if (selectedHour === startHour) {
-          for (let i = 0; i < startMinute; i++) {
+          for (let i = 0; i < startMinute+1; i++) {
             arrayOfMinute.push(i);
           }
         }
@@ -198,14 +205,17 @@ const SpaceDetail = ({ params }: Props) => {
       disabledHours: () => {
         if (!dayjs(space?.openTime))
           return Array.from({ length: 24 }, (_, i) => i);
+        if(!date) return Array.from({ length: 24 }, (_, i) => i)
         let currentTimeHour = dayjs().hour();
         let timeLength = openHour;
         let arrayOfHours = Array.from(
           { length: Math.max(0, timeLength) },
           (_, i) => i
         );
-        for (let i = 0; i < currentTimeHour; i++) {
-          arrayOfHours.push(i);
+        if(date?.date() === dayjs().date()){
+          for (let i = 0; i < currentTimeHour; i++) {
+            arrayOfHours.push(i);
+          }
         }
         for (let i = closeHour + 1; i < 24; i++) {
           arrayOfHours.push(i);
@@ -215,10 +225,13 @@ const SpaceDetail = ({ params }: Props) => {
       disabledMinutes: (selectedHour: number) => {
         if (!dayjs(space?.openTime))
           return Array.from({ length: 60 }, (_, i) => i);
-
+        if(!date) return Array.from({ length: 60 }, (_, i) => i)
         let arrayOfMinute = [];
         let currentTimeMinute = dayjs().minute();
         let currentTimeHour = dayjs().hour();
+        if(date?.date() === dayjs().date()){
+          
+        }
         if (currentTimeHour === selectedHour) {
           for (let i = 0; i < currentTimeMinute; i++) {
             arrayOfMinute.push(i);
