@@ -6,7 +6,7 @@ const WorkingStationSchema = new Schema(
     name: {
       type: String,
       required: [true, "Please add a name"],
-      unique: true,
+      unique: [true, "Name must be unique"],
       trim: true,
       maxlength: [50, "Name can not be more than 50 characters"],
     },
@@ -16,6 +16,9 @@ const WorkingStationSchema = new Schema(
     },
     tel: {
       type: String,
+      match: [/^\d+$/, "Tel must only contain digits"],
+      minlength: [10, "Tel must have 10 digits"],
+      maxlength: [10, "Tel must have 10 digits"]
     },
     openTime: {
       type: String,
@@ -25,9 +28,9 @@ const WorkingStationSchema = new Schema(
       type: String,
       required: [true, "Please add close time"],
     },
-    remaining: {
+    maxSeat: {
       type: Number,
-      required: [true, "Please add remaining spaces"],
+      required: [true, "Please add max seat"],
       default: 20,
     },
     image: {

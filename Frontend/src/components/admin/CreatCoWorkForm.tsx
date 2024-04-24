@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { TimePicker } from "antd";
 import dayjs from "dayjs";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,17 +20,16 @@ export default function CoWorkForm({ data }: Props) {
     handleFormChange,
     handleOpenChange,
     handleCloseChange,
-    handleFileChange,
+    amount,
+    inputValue,
+    isValid,
     card,
   } = useCardContext();
-
-
-
   const session = useSession();
-  const onSubmit = (e : any) => {
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(data){
-      updateWorkingSpace(data.id,session.data!.user.token,{
+    createCoWorkingSpace(
+      {
         name: card.name,
         address: card.address,
         tel: "081530",
@@ -38,30 +37,14 @@ export default function CoWorkForm({ data }: Props) {
         closeTime: card.closeTime,
         remaining: card.remaining,
         image: card.image,
-      });
-    }
-    else{
-      createCoWorkingSpace(
-        {
-          name: card.name,
-          address: card.address,
-          tel: "081530",
-          openTime: card.openTime,
-          closeTime: card.closeTime,
-          remaining: card.remaining,
-          image: card.image,
-        },
-        session.data!.user.token
-      );
-    };
-    }
-    
-
-
+      },
+      session.data!.user.token
+    );
+  };
 
   return (
     <div className=" bg-white rounded-2xl shadow-2xl">
-      <form className="p-20 grid grid-cols-4 gap-10 ">
+      <form onSubmit={onSubmit} className="p-20 grid grid-cols-4 gap-10 ">
         <label htmlFor="image-upload">รูปภาพ:</label>
         {/* <Input
             type="file"
@@ -72,10 +55,11 @@ export default function CoWorkForm({ data }: Props) {
             onChange={handleFileChange}
           /> */}
         <Input
+          required
           type="text"
           className="col-span-2 text-xs max-w-60 text-gray-400"
           placeholder="Image Url"
-          id="inputImage"
+          id="image"
           onChange={handleFormChange}
           defaultValue={data?.image}
         />
@@ -89,61 +73,73 @@ export default function CoWorkForm({ data }: Props) {
         </label> */}
         <label>ชื่อ:</label>
         <Input
+          required
           type="text"
           placeholder="co-working space's name"
           className="col-span-3 "
           onChange={handleFormChange}
           maxLength={25}
-          id="inputName"
+          id="name"
           defaultValue={data?.name}
         />
         <label>เวลาเปิด:</label>
         <div className="col-span-3 flex gap-3">
           <TimePicker
+            required
             format={format}
             className=" "
-            id="inputTimeOpen"
+            id="openTime"
             onChange={handleOpenChange}
             /* defaultValue={dayjs(data?.openTime, 'HH:mm')} */
           />
           <div className="text-center self-center">ถึง</div>
           <TimePicker
+            required
             format={format}
             className=" "
-            id="inputTimeClose"
+            id="closeTime"
             onChange={handleCloseChange}
             /* defaultValue={dayjs(data?.closeTime, 'HH:mm')} */
           />
         </div>
         <label>รายละเอียด:</label>
         <Textarea
+          required
           className="col-span-3 "
           placeholder="co-working space's detail"
           onChange={handleFormChange}
           maxLength={120}
-          id="inputDesc"
+          id="address"
           defaultValue={data?.address}
         />
         <label>จำนวนที่นั่ง:</label>
-
-        <Input
-          type="number"
-          placeholder="Max seats"
-          className=" rounded-lg p-3"
-          onChange={handleFormChange}
-          id="inputNumber"  
-          min={1}
-          defaultValue={data?.remaining}
-        />
+        <div className="flex flex-col">
+          <Input
+            required
+            type="number"
+            placeholder="Max seats"
+            className=" rounded-lg p-3"
+            /* value={inputValue} */
+            onChange={handleFormChange}
+            id="remaining"
+            defaultValue={1}
+            min={1}
+          />
+          <div className="text-xs text-red-500 flex ml-3 mt-3">
+            {isValid ? (
+              <div className="mt-4"></div>
+            ) : (
+              "You cant use the negative number"
+            )}
+          </div>
+        </div>
 
         <div className="col-span-2"></div>
         <div className="col-span-3"></div>
-        <button
-          onClick={onSubmit}
-          className="align-middle select-none text-lg font-semibold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none py-2 px-12 rounded-full bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
-        >
-          Submit
-        </button>
+        <Input
+          type="submit"
+          className="cursor-pointer flex justify-center rounded-full text-md w-36 transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+        />
       </form>
     </div>
   );

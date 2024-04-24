@@ -2,7 +2,16 @@ import Image from "next/image";
 import React from "react";
 import { FaClock } from "react-icons/fa";
 import { SpaceItem } from "../../interface";
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
+// Extend dayjs with plugins
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+// // Set the default timezone to your country's timezone
+// dayjs.tz.setDefault('Asia/Bangkok');
 interface Props {
   data: SpaceItem;
 }
@@ -50,7 +59,7 @@ export default function Card({ data }: Props) {
         <div className="flex items-center gap-2">
           <FaClock />
           <p>
-            {data.openTime} - {data.closeTime}
+            {dayjs(data.openTime).tz('Asia/Bangkok').format('HH:mm')} - {dayjs(data.closeTime).tz('Asia/Bangkok').format('HH:mm')}
           </p>
         </div>
       </div>
