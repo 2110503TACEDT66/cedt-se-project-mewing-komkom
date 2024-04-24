@@ -27,8 +27,8 @@ export default async function Banner() {
       <div className="flex flex-col justify-center gap-7 w-full">
         <span className="px-4 py-2 bg-blue-100 mx-auto max-w-max rounded-full text-blue-600">
           {session && isAdmin
-            ? "You are the admin of Caramel- Macchiato"
-            : "caramel macchiato"}
+            ? "Elevate this site towards success"
+            : "Join us for productive vibes!"}
         </span>{" "}
         <h1 className="max-w-5xl text-8xl font-extrabold text-center mx-auto">
           <span className="bg-gradient-to-b from-blue-700 to-blue-400 bg-clip-text text-transparent">
@@ -37,7 +37,8 @@ export default async function Banner() {
           {session && isAdmin ? "Space Manage System " : "Space Reservation"}
         </h1>
         <p className="max-w-xl text-center mx-auto">
-        Join us for productive vibes! Reserve your spot now.
+          Discover seamless co-working bookings. Reserve your space
+          effortlessly."
         </p>
         {session && isAdmin ? (
           <Link
