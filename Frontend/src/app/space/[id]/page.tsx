@@ -6,26 +6,23 @@ import getSpace from "@/libs/getSpace";
 import { SpaceItem } from "../../../../interface";
 import dayjs, { Dayjs } from "dayjs";
 import TimeSelection from "@/components/ui/TimeSelectionProps";
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-
-// Extend dayjs with plugins
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
-// Set the default timezone to your country's timezone
-dayjs.tz.setDefault('Asia/Bangkok');
+import createReservation from "@/libs/createReservation";
+import { useSession } from "next-auth/react";
+import checkAvailableSeat from "@/libs/checkAvailableSeat";
+import Swal from "sweetalert2";
 
 interface Props {
   params: { id: string };
 }
 
 const SpaceDetail = ({ params }: Props) => {
-  const format = "HH:mm";
+  const session = useSession();
   const [space, setSpace] = useState<SpaceItem>();
   const [date, setDate] = useState<Dayjs>();
-  const [starttime, setStartTime] = useState<Dayjs | null>(null);
+  const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
+  const [availableSeat, setAvailableSeat] = useState<number | string>("-");
+  const [isReserve, setIsReserve] = useState(false);
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -42,8 +39,86 @@ const SpaceDetail = ({ params }: Props) => {
     fetchSpace();
   }, [params.id]);
 
+  useEffect(() => {
+    if (!date) {
+      setAvailableSeat("-");
+      return;
+    }
+    if (startTime && endTime) {
+      const fetchAvailable = async () => {
+        try {
+          const availableseatha = await checkAvailableSeat(
+            { startTime, endTime },
+            params.id
+          );
+          if (!availableseatha) {
+            throw new Error("cannot fetch");
+          }
+          setAvailableSeat(availableseatha.availableSeats);
+        } catch (error) {
+          console.error("error ja", error);
+        }
+      };
+      fetchAvailable();
+    }
+  }, [startTime, endTime, params.id, isReserve]);
+
+  const handleReserve = async (e: any) => {
+    try {
+      e.preventDefault();
+      if (!date) {
+        Swal.fire({
+          title: "Error!",
+          text: "Please provide date ",
+          icon: "error",
+        });
+        return;
+      }
+      if ((availableSeat as number) <= 0) {
+        Swal.fire({
+          title: "Error!",
+          text: "The seats are fully occupied. Unable to reserve.",
+          icon: "error",
+        });
+        return;
+      }
+
+      if (dayjs().isAfter(startTime)) {
+        Swal.fire({
+          title: "Error!",
+          text: "Booking unavailable before current time.",
+          icon: "error",
+        });
+        return;
+      }
+      const data = {
+        startTime: startTime,
+        endTime: endTime,
+        workingSpace: params.id,
+      };
+      const reservation = await createReservation(
+        data as any,
+        (session as any).data?.user.token
+      );
+      setIsReserve((prev) => !prev);
+      if (!reservation) {
+        throw new Error("cannot create.!!");
+      }
+    } catch (error) {
+      console.error("error create Reservation", error);
+    }
+  };
+
   const handleDateChange: DatePickerProps["onChange"] = (date, dateString) => {
     setDate(date);
+    if (date) {
+      setStartTime(
+        date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
+      );
+      setEndTime(
+        date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0)
+      );
+    }
   };
 
   const handleTimeChange = (time: Dayjs | null, timeType: string) => {
@@ -51,100 +126,133 @@ const SpaceDetail = ({ params }: Props) => {
     if (date === undefined) {
       timewithdate = dayjs();
     }
-    if (timeType === "start") {
-      setStartTime(
-        timewithdate!.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
-          timewithdate
-      );
-    } else if (timeType === "end") {
-      setEndTime(
-        timewithdate!.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
-          timewithdate
-      );
+    if(timewithdate){
+      if (timeType === "start") {
+        setStartTime(
+          timewithdate.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
+            timewithdate
+        );
+      } else if (timeType === "end") {
+        setEndTime(
+          timewithdate.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
+            timewithdate
+        );
+      }
     }
   };
 
   const disabledEndTime = (current: Dayjs) => {
-    let closeHour =dayjs(space?.closeTime).hour();
+    let closeHour = dayjs(space?.closeTime).hour();
     let closeMinute = dayjs(space?.closeTime).minute();
+    let currentTimeHour = dayjs().hour();
     return {
       disabledHours: () => {
-        if (!starttime) return Array.from({ length: 24 }, (_, i) => i);
-        let timeLength = starttime.hour();
-        if (starttime.minute() == 30) {
+        if (!startTime) return Array.from({ length: 24 }, (_, i) => i);
+        if(!date) return Array.from({ length: 24 }, (_, i) => i)
+        let timeLength = startTime.hour();
+        if (startTime.minute() == 30) {
           timeLength = timeLength + 1;
         }
-        let arrayOfHours = Array.from({ length: Math.max(0, timeLength) }, (_, i) => i)
-        if(closeHour){
-          for(let i = closeHour+1; i<24; i++){
+        let arrayOfHours = Array.from(
+          { length: Math.max(0, timeLength) },
+          (_, i) => i
+        );
+        if(date?.date() === dayjs().date()){
+          for (let i = 0; i < currentTimeHour; i++) {
+            arrayOfHours.push(i);
+          }
+        }
+        if (closeHour) {
+          for (let i = closeHour + 1; i < 24; i++) {
             arrayOfHours.push(i);
           }
         }
         return arrayOfHours;
       },
       disabledMinutes: (selectedHour: number) => {
-        if (!starttime) return Array.from({ length: 60 }, (_, i) => i);
+        if (!startTime) return Array.from({ length: 60 }, (_, i) => i);
+        if(!date) return Array.from({ length: 60 }, (_, i) => i)
+        const startHour = startTime.hour();
+        const startMinute = startTime.minute();
 
-        const startHour = starttime.hour();
-        const startMinute = starttime.minute();
-
+        let arrayOfMinute = [];
         if (selectedHour === startHour) {
-          return Array.from(
-            { length: Math.ceil((startMinute + 1) / 30) },
-            (_, i) => i * 30
-          );
+          for (let i = 0; i < startMinute+1; i++) {
+            arrayOfMinute.push(i);
+          }
         }
 
         if (selectedHour === closeHour) {
-          let arrayOfHours:number[] = [];
-          for(let i = closeMinute+1;i<40;i++){
-            arrayOfHours.push(i);
-          }
-          
-          
-          return arrayOfHours
+          for (let i = closeMinute + 1; i < 60; i++) {
+            arrayOfMinute.push(i);
+          }  
         }
 
         if (selectedHour < startHour)
           return Array.from({ length: 60 }, (_, i) => i);
 
-        return [];
+        return arrayOfMinute;
       },
     };
   };
 
   const disabledStartTime = (current: Dayjs) => {
-    let openHour =dayjs(space?.openTime).hour();
+    let openHour = dayjs(space?.openTime).hour();
     let openMinute = dayjs(space?.openTime).minute();
-    let closeHour =dayjs(space?.closeTime).hour();
+    let closeHour = dayjs(space?.closeTime).hour();
     let closeMinute = dayjs(space?.closeTime).minute();
     return {
       disabledHours: () => {
-        if (!dayjs(space?.openTime)) return Array.from({ length: 24 }, (_, i) => i);
-        
+        if (!dayjs(space?.openTime))
+          return Array.from({ length: 24 }, (_, i) => i);
+        if(!date) return Array.from({ length: 24 }, (_, i) => i)
+        let currentTimeHour = dayjs().hour();
         let timeLength = openHour;
-        let arrayOfHours = Array.from({ length: Math.max(0, timeLength) }, (_, i) => i);
-        for(let i = closeHour+1 ;i<24;i++){
+        let arrayOfHours = Array.from(
+          { length: Math.max(0, timeLength) },
+          (_, i) => i
+        );
+        if(date?.date() === dayjs().date()){
+          for (let i = 0; i < currentTimeHour; i++) {
+            arrayOfHours.push(i);
+          }
+        }
+        for (let i = closeHour + 1; i < 24; i++) {
           arrayOfHours.push(i);
         }
-        return arrayOfHours
+        return arrayOfHours;
       },
       disabledMinutes: (selectedHour: number) => {
-        if (!dayjs(space?.openTime)) return Array.from({ length: 60 }, (_, i) => i);
-
-        
-
+        if (!dayjs(space?.openTime))
+          return Array.from({ length: 60 }, (_, i) => i);
+        if(!date) return Array.from({ length: 60 }, (_, i) => i)
+        let arrayOfMinute = [];
+        let currentTimeMinute = dayjs().minute();
+        let currentTimeHour = dayjs().hour();
+        if(date?.date() === dayjs().date()){
+          
+        }
+        if (currentTimeHour === selectedHour) {
+          for (let i = 0; i < currentTimeMinute; i++) {
+            arrayOfMinute.push(i);
+          }
+        }
         if (selectedHour === openHour) {
-          return Array.from(
-            { length: Math.ceil((openMinute) / 30) },
-            (_, i) => i * 30
-          );
+          for (let i = 0; i < Math.ceil(openMinute / 30); i++) {
+            arrayOfMinute.push(i * 30);
+          }
+        }
+        if (selectedHour === closeHour) {
+          for (let i = closeMinute; i < 60; i++) {
+            arrayOfMinute.push(i);
+          }
         }
 
-        if (selectedHour < openHour)
-          return Array.from({ length: 60 }, (_, i) => i);
+        if (selectedHour < openHour) {
+          arrayOfMinute = Array.from({ length: 60 }, (_, i) => i);
+        }
 
-        return [];
+        return arrayOfMinute;
       },
     };
   };
@@ -212,8 +320,12 @@ const SpaceDetail = ({ params }: Props) => {
                 />
               </div>
             </div>
+            <div>Available seat : {availableSeat}</div>
             <div className="flex justify-end">
-              <button className="bg-black px-5 py-2 rounded-full text-white max-w-max ">
+              <button
+                className="bg-black px-5 py-2 rounded-full text-white max-w-max "
+                onClick={handleReserve}
+              >
                 reserve
               </button>
             </div>

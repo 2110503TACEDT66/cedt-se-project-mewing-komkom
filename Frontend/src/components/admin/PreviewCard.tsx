@@ -62,7 +62,7 @@ export default function PreviewCard({ card }: { card?: SpaceItem }) {
         <div className="px-4">
           <div className="mt-2 flex gap-3 ">
             <div>จำนวนที่นั่ง :</div>
-            <div>{card?.remaining}</div>
+            <div>{card?.maxSeat}</div>
           </div>
         </div>
         <div className="flex justify-end">

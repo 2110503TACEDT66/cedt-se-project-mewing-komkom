@@ -12,7 +12,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
     openTime: "",
     closeTime: "",
     address: "",
-    remaining: 1,
+    maxSeat: 1,
   };
 
   const edit: SpaceItem = {
@@ -21,7 +21,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
     openTime: "",
     closeTime: "",
     address: "",
-    remaining: null,
+    maxSeat: null,
   };
 
   const [card, setCard] = useState<SpaceItem>(newCard);

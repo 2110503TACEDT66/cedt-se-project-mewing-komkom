@@ -21,11 +21,12 @@ export interface SpaceItem {
   tel?: string;
   openTime: string;
   closeTime: string;
-  remaining: number | any;
+  maxSeat: number | null;
   __v?: number;
   reservation?: Reservation[];
   id?: string;
   image: string;
+  availableSeat?:number
 }
 
 export interface SpaceJson {
