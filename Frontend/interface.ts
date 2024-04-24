@@ -1,7 +1,8 @@
 export interface Reservation {
   _id: string;
-  reserveDate: Date;
-  user: string;
+  startTime: Date;
+  endTime: Date;
+  user: User;
   workingSpace: RefWorkingSpace;
   createdAt: Date;
   __v: number;
@@ -13,6 +14,14 @@ export interface RefWorkingSpace {
   tel: string;
   id: string;
 }
+
+// export interface RefUser {
+//   _id: string;
+//   name: string;
+//   tel: string;
+//   role: string;
+//   email: string;
+// }
 
 export interface SpaceItem {
   _id?: string;
