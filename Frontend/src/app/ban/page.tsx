@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 export default function Ban() {
   const session = useSession();
@@ -83,7 +84,7 @@ export default function Ban() {
                           {item.tel}
                         </td>
                         <td className="whitespace-nowrap px-6 py-4">
-                          {item.banUntil}
+                          {item.banUntil? dayjs(item.banUntil).format("DD MMMM YYYY") : ""}
                         </td>
                         <td className="whitespace-nowrap px-6 py-4">
                           <ModalBanHandle
