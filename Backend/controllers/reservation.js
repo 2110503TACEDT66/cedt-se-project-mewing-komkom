@@ -214,7 +214,7 @@ exports.deleteReservation = async (req, res, next) => {
       }
     );
 
-    if (req.user.role === "admin" && req.user.id !== reservation.user.toString()) {
+    if ((req.user.role === "admin" || req.user.role === "moderator") && req.user.id !== reservation.user.toString()) {
       // Log the Forced Cancel reservation
       await addCancelReservationLog(req.params.id, reservation, true)
 
