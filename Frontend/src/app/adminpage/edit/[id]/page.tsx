@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import getUserProfile from "@/libs/getUserProfile";
 import getSpace from "@/libs/getSpace";
 import Preview from "@/components/admin/EditPreviewCard";
-import Test from "@/components/admin/Test";
+
 export default async function page({ params }: { params: { id: string } }) {
   const space = await getSpace(params.id);
 
