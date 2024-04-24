@@ -25,7 +25,7 @@ export default function Card({ data }: Props) {
     const fetchAvailable = async()=>{
       const availableSeat = await checkAvailableSeat({startTime:dayjs(),endTime:dayjs().add(2,'hour')},data.id || "")
       if(!availableSeat) return;
-      setAvailableSeat(availableSeat.availableSeats);
+        setAvailableSeat(availableSeat.availableSeats);
     }
     fetchAvailable();
   },[])
