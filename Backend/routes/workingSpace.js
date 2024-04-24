@@ -5,6 +5,7 @@ const {
   getAllWorkingSpace,
   updateWorkingSpace,
   deleteWorkingSpace,
+  checkAvailableSeat,
 } = require("../controllers/workingspace");
 
 // Include other resource routers
@@ -25,7 +26,10 @@ router
   .get(getWorkingSpace)
   .put(protect, authorize("admin", "moderator"), updateWorkingSpace)
   .delete(protect, authorize("admin", "moderator"), deleteWorkingSpace);
-
+router
+  .route("/available/:id")
+  .post(checkAvailableSeat);
+  
 module.exports = router;
 
 /**

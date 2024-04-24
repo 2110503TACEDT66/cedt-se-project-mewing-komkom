@@ -75,7 +75,7 @@ export default function ModeratorPage() {
           </thead>
           <tbody className="divide-y divide-gray-200">
             
-          {users.filter((item:any)=>{return(item.name.includes(search)||item.role.includes(search))})
+          {users.filter((item:any)=>{return(item.name.includes(search)||item.role.includes(search)||item.email.includes(search))})
           .map((eachadmin: User) => (
           <AdminItem admin={eachadmin} />
         ))}

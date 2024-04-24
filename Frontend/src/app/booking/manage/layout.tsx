@@ -8,8 +8,8 @@ export default function ManageReservationLayout({
   manage: React.ReactNode;
 }) {
   return (
-    <div style={{ border: "1px solid black", padding: "20px" }}>
-      {children}
+    <div style={{ padding: "20px" }}>
+    
       {dashboard}
       {manage}
     </div>
