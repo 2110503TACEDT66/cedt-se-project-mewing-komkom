@@ -10,6 +10,9 @@ exports.getAllReservation = async (req, res, next) => {
     query = Reservation.find({ user: req.user.id }).populate({
       path: "workingSpace",
       select: "name address tel",
+    }).populate({
+      path: "user",
+      select: "name email",
     });
   } else {
     // if you are an admin, u can see it all
@@ -21,11 +24,18 @@ exports.getAllReservation = async (req, res, next) => {
       }).populate({
         path: "workingSpace",
         select: "name address tel",
+      })
+      .populate({
+        path: "user",
+        select: "name email",
       });
     } else {
       query = Reservation.find().populate({
         path: "workingSpace",
         select: "name address tel",
+      }).populate({
+        path: "user",
+        select: "name email",
       });
     }
   }
@@ -106,7 +116,7 @@ exports.addReservation = async (req, res, next) => {
     // Check for existed reservation
     const existedReservation = await Reservation.find({ user: req.user.id });
     //If the user is not an admin, they can only create 3 reservation.
-    if (existedReservation.length >= 3 && req.user.role !== "admin") {
+    if (existedReservation.length >= 3 && req.user.role !== "admin" && req.user.role !== "moderator") {
       return res.status(400).json({
         success: false,
         message: `The user with ID ${req.user.id} has already made 3 reservations`,

@@ -21,11 +21,11 @@ const WorkingStationSchema = new Schema(
       maxlength: [10, "Tel must have 10 digits"]
     },
     openTime: {
-      type: String,
+      type: Date,
       required: [true, "Please add open time"],
     },
     closeTime: {
-      type: String,
+      type: Date,
       required: [true, "Please add close time"],
     },
     maxSeat: {

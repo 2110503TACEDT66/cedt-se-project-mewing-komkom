@@ -35,7 +35,7 @@ export default function CoWorkForm({ data }: Props) {
         tel: "081530",
         openTime: card.openTime,
         closeTime: card.closeTime,
-        remaining: card.remaining,
+        maxSeat: card.remaining,
         image: card.image,
       },
       session.data!.user.token
