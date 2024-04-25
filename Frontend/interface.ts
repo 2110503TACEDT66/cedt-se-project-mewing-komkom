@@ -28,14 +28,14 @@ export interface SpaceItem {
   name: string;
   address: string;
   tel?: string;
-  openTime: string;
-  closeTime: string;
+  openTime: Date | string;
+  closeTime: Date | string;
   maxSeat: number | null;
   __v?: number;
   reservation?: Reservation[];
   id?: string;
   image: string;
-  availableSeat?:number
+  availableSeat?: number;
 }
 
 export interface SpaceJson {
