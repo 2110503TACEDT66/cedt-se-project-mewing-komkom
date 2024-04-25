@@ -38,11 +38,11 @@ export default function Test({ data }: { data?: SpaceItem }) {
             {cardEdit?.openTime || cardEdit?.closeTime ? (
               <div>
                 {" "}
-                {`${dayjs(cardEdit?.openTime).format("HH:mm")} - ${dayjs(cardEdit?.closeTime).format("HH:mm")}`}{" "}
+                {`${dayjs(cardEdit?.openTime).format("HH:mm a")} - ${dayjs(cardEdit?.closeTime).format("HH:mm a")}`}{" "}
               </div>
             ) : (
               <div>
-                {`${dayjs(data?.openTime).format("HH:mm")} - ${dayjs(data?.closeTime).format("HH:mm")}`}
+                {`${dayjs(data?.openTime).format("HH:mm a")} - ${dayjs(data?.closeTime).format("HH:mm a")}`}
               </div>
             )}
           </div>
