@@ -53,7 +53,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
         ...prevCard,
         [e.target.id.substring(5)]: value,
       }));
-      if (id === "Edit-remaining") {
+      if (id === "Edit-maxSeat") {
         setCardEdit((prevCard) => ({
           ...prevCard,
           [e.target.id.substring(5)]: Math.abs(Number(value)),
@@ -74,7 +74,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
         [id]: value,
       }));
 
-      if (id === "remaining") {
+      if (id === "maxSeat") {
         setCard((prevCard) => ({
           ...prevCard,
           [id]: Math.abs(Number(value)),
@@ -130,10 +130,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
     }));
   };
   const handleEditOpenChange: TimePickerProps["onChange"] = (time: any) => {
-    const hour = time.$H;
-    const minute = time.$m;
-    const m = moment(`${hour}-${minute}`, "HH:mm");
-    const formattedTime = m.format("HH:mm");
+    const formattedTime = dayjs(time).format();
     setCardEdit((prevCard) => ({
       ...prevCard,
       openTime: formattedTime,
@@ -147,10 +144,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
     }));
   };
   const handleEditCloseChange: TimePickerProps["onChange"] = (time: any) => {
-    const hour = time.$H;
-    const minute = time.$m;
-    const m = moment(`${hour}-${minute}`, "HH:mm");
-    const formattedTime = m.format("HH:mm");
+    const formattedTime = dayjs(time).format();
     setCardEdit((prevCard) => ({
       ...prevCard,
       closeTime: formattedTime,

@@ -5,6 +5,7 @@ import { AiFillClockCircle } from "react-icons/ai";
 import { SpaceItem, Time } from "../../../interface";
 import { SetPreviewCard } from "../../../interface";
 import { useCardContext } from "@/context/CardContext";
+import dayjs from "dayjs";
 export default function Test({ data }: { data?: SpaceItem }) {
   const { cardEdit } = useCardContext();
 
@@ -35,10 +36,13 @@ export default function Test({ data }: { data?: SpaceItem }) {
           <AiFillClockCircle className="mb-2" color="black" size={20} />
           <div>
             {cardEdit?.openTime || cardEdit?.closeTime ? (
-              <div> {`${cardEdit?.openTime} - ${cardEdit?.closeTime}`} </div>
+              <div>
+                {" "}
+                {`${dayjs(cardEdit?.openTime).format("HH:mm")} - ${dayjs(cardEdit?.closeTime).format("HH:mm")}`}{" "}
+              </div>
             ) : (
               <div>
-                {data?.openTime} - {data?.closeTime}
+                {`${dayjs(data?.openTime).format("HH:mm")} - ${dayjs(data?.closeTime).format("HH:mm")}`}
               </div>
             )}
           </div>
@@ -53,9 +57,7 @@ export default function Test({ data }: { data?: SpaceItem }) {
       <div className="px-4">
         <div className="mt-2 flex gap-3 ">
           <div>จำนวนที่นั่ง :</div>
-          <div>
-            {cardEdit?.remaining ? cardEdit?.remaining : data?.maxSeat}
-          </div>
+          <div>{cardEdit?.maxSeat ? cardEdit?.maxSeat : data?.maxSeat}</div>
         </div>
       </div>
 
@@ -64,7 +66,6 @@ export default function Test({ data }: { data?: SpaceItem }) {
           แก้ไข
         </button>
       </div>
-
     </div>
   );
 }

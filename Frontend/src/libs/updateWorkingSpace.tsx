@@ -56,6 +56,11 @@ export default async function updateWorkingSpace(
         },
         body: JSON.stringify({
           name: data.name,
+          image: data.image,
+          address : data.address,
+          openTime: data.openTime,
+          closeTime: data.closeTime,
+          maxSeat:data.maxSeat
         }),
       }
     );

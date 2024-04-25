@@ -30,10 +30,9 @@ export default function EditCoWorkForm({ data }: Props) {
     updateWorkingSpace(data.id, session.data!.user.token, {
       name: cardEdit.name,
       address: cardEdit.address,
-      tel: "081530",
       openTime: cardEdit.openTime,
       closeTime: cardEdit.closeTime,
-      maxSeat: cardEdit.remaining,
+      maxSeat: cardEdit.maxSeat,
       image: cardEdit.image,
     });
   };
@@ -111,9 +110,9 @@ export default function EditCoWorkForm({ data }: Props) {
             placeholder="Max seats"
             className=" rounded-lg p-3"
             /* value={inputValue} */
-            defaultValue={data?.remaining}
+            defaultValue={data?.maxSeat}
             onChange={handleFormChange}
-            id="Edit-remaining"
+            id="Edit-maxSeat"
             min={1}
           />
           <div className="text-xs text-red-500 flex ml-3 mt-3">
