@@ -1,11 +1,11 @@
-'use client'
+"use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { FaClock } from "react-icons/fa";
 import { SpaceItem } from "../../interface";
 import dayjs from "dayjs";
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import checkAvailableSeat from "@/libs/checkAvailableSeat";
 
 // Extend dayjs with plugins
@@ -20,16 +20,19 @@ interface Props {
 
 export default function Card({ data }: Props) {
   const [availableSeat, setAvailableSeat] = useState<number>(0);
-  if(!data) return
-  useEffect(()=>{
-    const fetchAvailable = async()=>{
-      const availableSeat = await checkAvailableSeat({startTime:dayjs(),endTime:dayjs().add(2,'hour')},data.id || "")
-      if(!availableSeat) return;
-        setAvailableSeat(availableSeat.availableSeats);
-    }
+  if (!data) return;
+  useEffect(() => {
+    const fetchAvailable = async () => {
+      const availableSeat = await checkAvailableSeat(
+        { startTime: dayjs(), endTime: dayjs().add(2, "hour") },
+        data.id || ""
+      );
+      if (!availableSeat) return;
+      setAvailableSeat(availableSeat.availableSeats);
+    };
     fetchAvailable();
-  },[])
-  
+  }, []);
+
   return (
     <div className="relative hover:-translate-y-1 duration-150 cursor-pointer">
       {/* <Image
@@ -72,7 +75,8 @@ export default function Card({ data }: Props) {
         <div className="flex items-center gap-2">
           <FaClock />
           <p>
-            {dayjs(data.openTime).tz('Asia/Bangkok').format('HH:mm')} - {dayjs(data.closeTime).tz('Asia/Bangkok').format('HH:mm')}
+            {dayjs(data.openTime).format("HH:mm a")} -{" "}
+            {dayjs(data.closeTime).format("HH:mm a")}
           </p>
         </div>
       </div>
