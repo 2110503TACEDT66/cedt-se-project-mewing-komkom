@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "../ui/input";
 import { useCardContext } from "@/context/CardContext";
 import createCoWorkingSpace from "@/libs/createWorkingSpace";
-import { SetPreviewCard } from "../../../interface";
+import { SetPreviewCard, SpaceItem } from "../../../interface";
 import { useSession } from "next-auth/react";
 import updateWorkingSpace from "@/libs/updateWorkingSpace";
 
@@ -28,12 +28,12 @@ export default function EditCoWorkForm({ data }: Props) {
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     updateWorkingSpace(data.id, session.data!.user.token, {
-      name: cardEdit.name,
-      address: cardEdit.address,
-      openTime: cardEdit.openTime,
-      closeTime: cardEdit.closeTime,
-      maxSeat: cardEdit.maxSeat,
-      image: cardEdit.image,
+      name: cardEdit.name ? cardEdit.name : data.name,
+      address: cardEdit.address ? cardEdit.address : data.address,
+      openTime: cardEdit.openTime ? cardEdit.openTime : data.openTime,
+      closeTime: cardEdit.closeTime ? cardEdit.closeTime : data.closeTime,
+      maxSeat: cardEdit.maxSeat ? cardEdit.maxSeat : data.maxSeat,
+      image: cardEdit.image ? cardEdit.image : data.image,
     });
   };
 
