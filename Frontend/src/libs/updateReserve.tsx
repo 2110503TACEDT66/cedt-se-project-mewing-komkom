@@ -4,11 +4,10 @@ export default async function UpdateReservation(
   token: string,
   date: string
 ) {
-  const body = JSON.stringify({ reserveDate: date }); // Construct the request body
+  const body = JSON.stringify({ startTime: Date, endTime: Date }); // Construct the request body
 
   const response = await fetch(
-   `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation/` +
-      id,
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation/` + id,
     {
       method: "PUT",
       headers: {
@@ -23,7 +22,7 @@ export default async function UpdateReservation(
 
     Swal.fire({
       title: "Error!",
-      text: ans.message ||"Cannot Update #" + id,
+      text: ans.message || "Cannot Update #" + id,
       icon: "error",
     });
   } else {
