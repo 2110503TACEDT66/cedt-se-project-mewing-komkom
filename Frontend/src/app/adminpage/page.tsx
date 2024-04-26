@@ -2,12 +2,27 @@ import PreviewCard from "@/components/admin/PreviewCard";
 import getSpaces from "@/libs/getSpaces";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React from "react";
 import { SpaceJson } from "../../../interface";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import getUserProfile from "@/libs/getUserProfile";
 
 export default async function page() {
-  /* const data = [1, 2, 3, 4, 5, 6, 7]; */
+  const session = await getServerSession(authOptions);
+  var profile;
+
+  if (session) {
+    profile = await getUserProfile(session.user.token);
+  }
+  const isAdminOrModerator =
+    profile?.data.role === "admin" || profile?.data.role === "moderator"
+      ? true
+      : false;
+  if (!isAdminOrModerator) {
+    redirect("/");
+  }
   const data: SpaceJson = await getSpaces();
   const ready = data.data;
   return (
@@ -30,7 +45,7 @@ export default async function page() {
         </div>
       </div>
       <div className="grid grid-cols-4 justify-items-center gap-10">
-        {data.data.map((i: any) => (
+        {ready.map((i: any) => (
           <PreviewCard card={i} />
         ))}
       </div>
