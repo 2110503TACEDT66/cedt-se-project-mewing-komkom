@@ -122,7 +122,7 @@ export default function ReservationDetail({ params }: Props) {
       },
     };
   };
-  
+
 
   const disabledStartTime = (current: Dayjs) => {
     let openHour = dayjs(space?.openTime).hour();
@@ -204,6 +204,10 @@ export default function ReservationDetail({ params }: Props) {
           params.id,
           session.data.user.token
         );
+        if (fetchReserve.data && fetchReserve.data.startTime && fetchReserve.data.endTime) {
+          // Set the date state with the existing reservation date
+          setDate(dayjs(fetchReserve.data.startTime));
+        }
         try {
           const spacedata = await getSpace(fetchReserve.data.workingSpace._id);
           setSpace(spacedata.data);
@@ -257,7 +261,7 @@ export default function ReservationDetail({ params }: Props) {
                   <DatePicker
                     className="border-[#979797]"
                     onChange={handleDateChange}
-                    value={date}
+                    value={date ? dayjs(date) : undefined} // Set value to date if it exists
                   />
                 </div>
             </div>
@@ -269,7 +273,7 @@ export default function ReservationDetail({ params }: Props) {
                 <TimeSelection
                   handleTimeChange={handleTimeChange}
                   disabledTime={disabledStartTime}
-                  typeTime="start"
+                  typeTime="start"              
                 />
                 <div className="text-center self-center text-[#736868] font-semibold text-base">
                   To
