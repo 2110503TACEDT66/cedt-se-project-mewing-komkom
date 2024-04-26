@@ -16,6 +16,7 @@ import TimeSelection from "@/components/ui/TimeSelectionProps";
 import Swal from "sweetalert2";
 import checkAvailableSeat from "@/libs/checkAvailableSeat";
 import { Skeleton } from "@/components/ui/skeleton";
+import UpdateReservation from "@/libs/updateReserve";
 
 interface Props {
   params: { id: string };
@@ -33,9 +34,50 @@ export default function ReservationDetail({ params }: Props) {
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
   const [isReserve, setIsReserve] = useState(false);
   const [availableSeat, setAvailableSeat] = useState<number | string>(0);
-  const handleOnSubmit = () => {
-    console.log("Submit");
-    console.log(dayjs(space?.openTime));
+
+  const handleReserve = async (e: any) => {
+    try {
+      e.preventDefault();
+      if (!date) {
+        Swal.fire({
+          title: "Error!",
+          text: "Please provide date ",
+          icon: "error",
+        });
+        return;
+      }
+      if ((availableSeat as number) <= 0) {
+        Swal.fire({
+          title: "Error!",
+          text: "The seats are fully occupied. Unable to reserve.",
+          icon: "error",
+        });
+        return;
+      }
+      if (dayjs().isAfter(startTime)) {
+        Swal.fire({
+          title: "Error!",
+          text: "Booking unavailable before current time.",
+          icon: "error",
+        });
+        return;
+      }
+      const data = {
+        startTime: startTime,
+        endTime: endTime,
+      };
+      const reservation = await UpdateReservation(
+        params.id,
+        session.data?.user.token,
+        data as any
+      );
+      setIsReserve((prev) => !prev);
+      if (!reservation) {
+        throw new Error("cannot create.!!");
+      }
+    } catch (error) {
+      console.error("error create Reservation", error);
+    }
   };
 
   const handleDateChange: DatePickerProps["onChange"] = (date, dateString) => {
@@ -186,16 +228,28 @@ export default function ReservationDetail({ params }: Props) {
   };
 
   useEffect(() => {
-    const fetchAvailable = async () => {
-      const availableSeat = await checkAvailableSeat(
-        { startTime: dayjs(), endTime: dayjs().add(2, "hour") },
-        space?._id || ""
-      );
-      if (!availableSeat) return;
-      setAvailableSeat(availableSeat.availableSeats);
-    };
-    fetchAvailable();
-  }, []);
+    if (!date) {
+      setAvailableSeat("-");
+      return;
+    }
+    if (startTime && endTime) {
+      const fetchAvailable = async () => {
+        try {
+          const availableseatha = await checkAvailableSeat(params.id, {
+            startTime,
+            endTime,
+          });
+          if (!availableseatha) {
+            throw new Error("cannot fetch");
+          }
+          setAvailableSeat(availableseatha.availableSeats);
+        } catch (error) {
+          console.error("error ja", error);
+        }
+      };
+      fetchAvailable();
+    }
+  }, [startTime, endTime, params.id, isReserve]);
 
   useEffect(() => {
     const fetchReserve = async () => {
@@ -298,7 +352,7 @@ export default function ReservationDetail({ params }: Props) {
             <div className="flex items-center gap-5 mb-3">
               <div className="text-[#736868] font-semibold text-base">Date</div>
               <div>
-                {date ? (
+                {space ? (
                   <DatePicker
                     className="border-[#979797]"
                     onChange={handleDateChange}
@@ -331,6 +385,7 @@ export default function ReservationDetail({ params }: Props) {
                   <TimeSelection
                     handleTimeChange={handleTimeChange}
                     disabledTime={disabledEndTime}
+                    defultTime={dayjs(space?.closeTime)}
                     typeTime="end"
                   />
                 ) : (
@@ -341,7 +396,7 @@ export default function ReservationDetail({ params }: Props) {
             <div>Available seat : {availableSeat}</div>
             <div className="flex justify-end">
               <button
-                onClick={handleOnSubmit}
+                onClick={handleReserve}
                 className="bg-black px-5 py-2 rounded-full text-white max-w-max "
               >
                 Save Changes
