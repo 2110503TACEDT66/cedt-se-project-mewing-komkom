@@ -4,7 +4,7 @@ export default async function createCoWorkingSpace(
   token: string
 ) {
   const response = await fetch(
-    "https://cedt-se-project-mewing-komkom-nq7g.vercel.app/api/v1/workingspace",
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/workingspace`,
     {
       method: "POST",
       headers: {
@@ -13,10 +13,33 @@ export default async function createCoWorkingSpace(
       },
       body: JSON.stringify(data),
     }
-  );
-  if (!response.ok) {
+  )
+    .then((response) => {
+      if (response.ok) {
+        Swal.fire({
+          title: "Success!",
+          text: "Create successfully",
+          icon: "success",
+        });
+        return response.json();
+      }
+      return response.json().then((error) => {
+        throw new Error(error);
+      });
+    })
+    .then((user) => {
+      console.log(user);
+    })
+    .catch((error) => {
+      Swal.fire({
+        title: "Error!",
+        text: "Cannot create new co-working space",
+        icon: "error",
+      });
+    });
+  /* if (!response.ok) {
     const ans = await response.json();
-
+    console.log(ans.message);
     Swal.fire({
       title: "Error!",
       text: ans.message || "Create Failed",
@@ -29,5 +52,5 @@ export default async function createCoWorkingSpace(
       icon: "success",
     });
     return await response.json();
-  }
+  } */
 }
