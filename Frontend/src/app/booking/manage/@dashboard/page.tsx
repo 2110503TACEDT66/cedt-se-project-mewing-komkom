@@ -5,6 +5,7 @@ import Space from "@/db/models/WorkingSpace";
 import { dbConnect } from "@/db/dbConnect";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import dayjs from "dayjs";
 
 export default async function DashboardPage() {
 
@@ -47,7 +48,7 @@ export default async function DashboardPage() {
         <tbody>
           <tr>
             <td> Email </td>
-            <td> {profile.data.email} </td>
+            <td className="tracking-wide"> {profile.data.email} </td>
           </tr>
           <tr>
             <td> Tel. </td>
@@ -59,7 +60,7 @@ export default async function DashboardPage() {
           </tr>
           <tr>
             <td> Member Since </td>
-            <td> {createdAt.toString()} </td>
+            <td> {dayjs(createdAt).format('DD MMMM YYYY')} </td>
           </tr>
           
         </tbody>

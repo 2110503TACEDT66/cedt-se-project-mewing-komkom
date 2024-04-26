@@ -33,7 +33,7 @@ export default async function TopMenu() {
         {session ? (
           <>
             <p>Welcome {profile.data.name}</p>
-            <TopMenuItem title="การจองของคุณ" href="/booking/manage" />
+            <TopMenuItem title="All Reservation" href="/booking/manage" />
           </>
         ) : (
           <TopMenuItem title="Sign-Up" href="/register" />

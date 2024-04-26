@@ -51,7 +51,7 @@ export default async function ReservationDetail({ params }: Props) {
               context="แก้ไข"
               id={params.id}
             />
-            <p>ที่ว่าง: {space.data.remaining}</p>
+            <p>ที่ว่าง: {space.data.maxSeat}</p>
           </div>
         </div>
       </div>
