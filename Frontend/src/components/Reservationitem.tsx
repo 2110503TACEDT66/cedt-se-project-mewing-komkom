@@ -19,8 +19,10 @@ dayjs.extend(timezone);
 
 export default function ReservationItem({
   reservation,
+  history = false,
 }: {
   reservation: Reservation;
+  history?: boolean ; 
 }) {
   const session = useSession();
   const router = useRouter();
@@ -46,7 +48,9 @@ export default function ReservationItem({
 
   return (
     <div key={reservation._id} className={`border p-4 my-4 ${hide}`}>
-      <h1 className="text-xl font-medium mb-2">{reservation.workingSpace.name}</h1>
+      <h1 className="text-xl font-medium mb-2">
+        {reservation.workingSpace.name}
+      </h1>
       <table className="border-separate border-spacing-x-3">
         <tbody>
           <tr>
@@ -55,7 +59,9 @@ export default function ReservationItem({
           </tr>
           <tr>
             <td>Time</td>
-            <td>{startTime} - {endTime}</td>
+            <td>
+              {startTime} - {endTime}
+            </td>
           </tr>
           <tr>
             <td>User</td>
@@ -63,20 +69,22 @@ export default function ReservationItem({
           </tr>
         </tbody>
       </table>
-      <div className="flex justify-end">
-        <button
-          className="mr-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          onClick={handleEdit}
-        >
-          Edit
-        </button>
-        <button
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-          onClick={handleDelete}
-        >
-          Delete
-        </button>
-      </div>
+      {!history && (
+        <div className="flex justify-end">
+          <button
+            className="mr-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            onClick={handleEdit}
+          >
+            Edit
+          </button>
+          <button
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            onClick={handleDelete}
+          >
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 }
