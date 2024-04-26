@@ -32,6 +32,7 @@ export default async function ReservationDetail({ params }: Props) {
               <h1 className="text-4xl font-bold">{space.data.name}</h1>
               <span className="bg-green-400 text-white rounded-lg px-3 max-w-max">
                 เปิดอยู่
+                
               </span>
             </div>
             <div className="flex items-center gap-3">
