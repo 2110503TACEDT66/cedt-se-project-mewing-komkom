@@ -12,73 +12,153 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
     openTime: "",
     closeTime: "",
     address: "",
-    remaining: 1,
+    maxSeat: 1,
+  };
+
+  const edit: SpaceItem = {
+    image: "",
+    name: "",
+    openTime: "",
+    closeTime: "",
+    address: "",
+    maxSeat: null,
   };
 
   const [card, setCard] = useState<SpaceItem>(newCard);
-  const [previewImage, setPreviewImage] = useState<any>(null);
+  const [cardEdit, setCardEdit] = useState<SpaceItem>(edit);
 
-  /*   const [name, setName] = useState<string>("");
-  const [desc, setDesc] = useState<string>("");
-  const [num, setNum] = useState<string>(""); */
+  const [amount, setAmount] = useState<number>(1);
+  const [inputValue, setInputValue] = useState("");
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
-    if (e.target.id === "inputName") {
+  const [isValid, setIsValid] = useState(true);
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    /* if (e.target.id === "number") {
+      let handleNegative: any = Number(e.target.value);
+      handleNegative = (value: number) => {
+        if (value < 1) {
+          setAmount(1);
+        } else {
+          setAmount(value);
+        }
+      };
+    } */
+    if (e.target.id.substring(0, 5) === "Edit-") {
+      const { id, value } = e.target;
+      setCardEdit((prevCard) => ({
+        ...prevCard,
+        [e.target.id.substring(5)]: value,
+      }));
+      if (id === "Edit-remaining") {
+        setCardEdit((prevCard) => ({
+          ...prevCard,
+          [e.target.id.substring(5)]: Math.abs(Number(value)),
+        }));
+      }
+      const isNegative = e.target.value.startsWith("-");
+      if (!isNegative) {
+        setInputValue(e.target.value);
+        setIsValid(true);
+      } else {
+        setInputValue("");
+        setIsValid(false);
+      }
+    } else {
+      const { id, value } = e.target;
       setCard((prevCard) => ({
         ...prevCard,
-        name: e.target.value,
+        [id]: value,
       }));
-    }
-    if (e.target.id === "inputDesc") {
-      setCard((prevCard) => ({
+
+      if (id === "remaining") {
+        setCard((prevCard) => ({
+          ...prevCard,
+          [id]: Math.abs(Number(value)),
+        }));
+      } /* else {
+
+
+        setCard((prevCard) => ({
+          ...prevCard,
+          [id]: value,
+        }));
+
+
+      } */
+      const isNegative = e.target.value.startsWith("-");
+      if (!isNegative) {
+        setInputValue(e.target.value);
+        setIsValid(true);
+      } else {
+        setInputValue("");
+        setIsValid(false);
+      }
+
+      /* setCard((prevCard) => ({
         ...prevCard,
-        address: e.target.value,
-      }));
+        [id]: value,
+      })); */
     }
-    if (e.target.id === "inputNumber") {
-      setCard((prevCard) => ({
-        ...prevCard,
-        remaining: e.target.value,
-      }));
-    }
-    if (e.target.id === "inputImage") {
-      setCard((prevCard) => ({
-        ...prevCard,
-        image: e.target.value,
-      }));
-    }
+
+    /* const Value: number = Number(e.target.value);
+    if (Value < 1) {
+      setAmount(1);
+    } else {
+      setAmount(Value);
+    } */
+
+    /* if (e.target.id === "number") {
+
+    } */
+
+    /* setCard((prevCard) => ({
+      ...prevCard,
+      number: e.target.value,
+    })); */
   };
+
   const handleOpenChange: TimePickerProps["onChange"] = (time: any) => {
     const hour = time.$H;
     const minute = time.$m;
-    const m = moment(`${hour}-${minute}`, "hh:mm a");
-    const formattedTime = m.format("hh:mm a");
-    console.log(formattedTime);
+    const m = moment(`${hour}-${minute}`, "HH:mm");
+    const formattedTime = m.format("HH:mm");
     setCard((prevCard) => ({
       ...prevCard,
       openTime: formattedTime,
     }));
   };
-
+  const handleEditOpenChange: TimePickerProps["onChange"] = (time: any) => {
+    const hour = time.$H;
+    const minute = time.$m;
+    const m = moment(`${hour}-${minute}`, "HH:mm");
+    const formattedTime = m.format("HH:mm");
+    setCardEdit((prevCard) => ({
+      ...prevCard,
+      openTime: formattedTime,
+    }));
+  };
   const handleCloseChange: TimePickerProps["onChange"] = (time: any) => {
     const hour = time.$H;
     const minute = time.$m;
-    const m = moment(`${hour}-${minute}`, "hh:mm a");
-    const formattedTime = m.format("hh:mm a");
-    console.log(formattedTime);
+    const m = moment(`${hour}-${minute}`, "HH:mm");
+    const formattedTime = m.format("HH:mm");
     setCard((prevCard) => ({
       ...prevCard,
       closeTime: formattedTime,
     }));
   };
+  const handleEditCloseChange: TimePickerProps["onChange"] = (time: any) => {
+    const hour = time.$H;
+    const minute = time.$m;
+    const m = moment(`${hour}-${minute}`, "HH:mm");
+    const formattedTime = m.format("HH:mm");
+    setCardEdit((prevCard) => ({
+      ...prevCard,
+      closeTime: formattedTime,
+    }));
+  };
 
-  /*   const [file, setFile] = useState<any>();
-  function getfile(e: any) {
-    console.log(e.target.files[0]);
-    setFile(e.target.files[0]);
-  } */
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
+  /*   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
     const reader = new FileReader();
     reader.onload = () => {
       if (reader.readyState === 2) {
@@ -89,20 +169,6 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
       }
     };
     reader.readAsDataURL(e.target.files[0]);
-  };
-
-  /* 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-
-  const handleDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDesc(event.target.value);
-  };
-
-  const handleNumChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
-    setNum(event.target.value);
   }; */
 
   return (
@@ -112,7 +178,12 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
         handleFormChange,
         handleOpenChange,
         handleCloseChange,
-        handleFileChange,
+        handleEditCloseChange,
+        handleEditOpenChange,
+        inputValue,
+        isValid,
+        amount,
+        cardEdit,
       }}
     >
       {children}

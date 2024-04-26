@@ -1,7 +1,8 @@
 export interface Reservation {
   _id: string;
-  reserveDate: Date;
-  user: string;
+  startTime: Date;
+  endTime: Date;
+  user: User;
   workingSpace: RefWorkingSpace;
   createdAt: Date;
   __v: number;
@@ -14,6 +15,14 @@ export interface RefWorkingSpace {
   id: string;
 }
 
+// export interface RefUser {
+//   _id: string;
+//   name: string;
+//   tel: string;
+//   role: string;
+//   email: string;
+// }
+
 export interface SpaceItem {
   _id?: string;
   name: string;
@@ -21,11 +30,12 @@ export interface SpaceItem {
   tel?: string;
   openTime: string;
   closeTime: string;
-  remaining: number;
+  maxSeat: number | null;
   __v?: number;
   reservation?: Reservation[];
   id?: string;
   image: string;
+  availableSeat?:number
 }
 
 export interface SpaceJson {
@@ -50,10 +60,10 @@ export interface SetPreviewCard {
 }
 export interface User {
   _id: string;
-  name:string;
-  role:string;
-  email:string;
-  password:string;
+  name: string;
+  role: string;
+  email: string;
+  password: string;
   createdAt: string;
   __v: number;
 }
