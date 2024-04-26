@@ -20,6 +20,7 @@ import UpdateReservation from "@/libs/updateReserve";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { max } from "moment";
+import { Progress } from "@/components/ui/progress";
 
 interface Props {
   params: { id: string };
@@ -436,11 +437,7 @@ export default function ReservationDetail({ params }: Props) {
                     </div>
                   </div>
                   <div>
-                    <div className="h-3 rounded-full bg-[#E0E0E0]">
-                      <div
-                        className={`bg-green-500 h-3 ${setStyle} rounded-full`}
-                      ></div>
-                    </div>
+                    <Progress className="h-3" value={percent} />
                   </div>
                 </div>
               ) : (
