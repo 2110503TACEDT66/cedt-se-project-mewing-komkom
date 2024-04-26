@@ -46,7 +46,7 @@ export default function ReservationItem({
 
   return (
     <div key={reservation._id} className={`border p-4 my-4 ${hide}`}>
-      <h1 className="text-xl font-medium mb-2">{reservation.workingSpace.name}</h1>
+      <h1 className="text-xl font-medium mb-2">{reservation.workingSpace?.name}</h1>
       <table className="border-separate border-spacing-x-3">
         <tbody>
           <tr>

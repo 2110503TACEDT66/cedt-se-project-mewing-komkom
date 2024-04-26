@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "../ui/input";
 import { useCardContext } from "@/context/CardContext";
 import createCoWorkingSpace from "@/libs/createWorkingSpace";
-import { SetPreviewCard } from "../../../interface";
+import { SetPreviewCard, SpaceItem } from "../../../interface";
 import { useSession } from "next-auth/react";
 import updateWorkingSpace from "@/libs/updateWorkingSpace";
 
@@ -28,13 +28,12 @@ export default function EditCoWorkForm({ data }: Props) {
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     updateWorkingSpace(data.id, session.data!.user.token, {
-      name: cardEdit.name,
-      address: cardEdit.address,
-      tel: "081530",
-      openTime: cardEdit.openTime,
-      closeTime: cardEdit.closeTime,
-      maxSeat: cardEdit.remaining,
-      image: cardEdit.image,
+      name: cardEdit.name ? cardEdit.name : data.name,
+      address: cardEdit.address ? cardEdit.address : data.address,
+      openTime: cardEdit.openTime ? cardEdit.openTime : data.openTime,
+      closeTime: cardEdit.closeTime ? cardEdit.closeTime : data.closeTime,
+      maxSeat: cardEdit.maxSeat ? cardEdit.maxSeat : data.maxSeat,
+      image: cardEdit.image ? cardEdit.image : data.image,
     });
   };
 
@@ -83,7 +82,7 @@ export default function EditCoWorkForm({ data }: Props) {
             className=" "
             id="Edit-openTime"
             onChange={handleEditOpenChange}
-            defaultValue={dayjs(data?.openTime, "HH:mm")}
+            defaultValue={dayjs(data?.openTime)}
           />
           <div className="text-center self-center">ถึง</div>
           <TimePicker
@@ -91,7 +90,7 @@ export default function EditCoWorkForm({ data }: Props) {
             className=" "
             id="Edit-closeTime"
             onChange={handleEditCloseChange}
-            defaultValue={dayjs(data?.closeTime, "HH:mm")}
+            defaultValue={dayjs(data?.closeTime)}
           />
         </div>
         <label>รายละเอียด:</label>
@@ -111,9 +110,9 @@ export default function EditCoWorkForm({ data }: Props) {
             placeholder="Max seats"
             className=" rounded-lg p-3"
             /* value={inputValue} */
-            defaultValue={data?.remaining}
+            defaultValue={data?.maxSeat}
             onChange={handleFormChange}
-            id="Edit-remaining"
+            id="Edit-maxSeat"
             min={1}
           />
           <div className="text-xs text-red-500 flex ml-3 mt-3">
