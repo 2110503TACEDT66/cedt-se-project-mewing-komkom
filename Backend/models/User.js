@@ -11,6 +11,9 @@ const UserSchema = new mongoose.Schema(
     tel: {
       type: String,
       required: [true, "Please add a telephone number"],
+      match: [/^\d+$/, "Tel must only contain digits"],
+      minlength: [10, "Tel must have 10 digits"],
+      maxlength: [10, "Tel must have 10 digits"]
     },
     role: {
       type: String,
@@ -52,6 +55,14 @@ const UserSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+// Reverse poppulate with virtuals
+UserSchema.virtual("reservation", {
+  ref: "Reservation",
+  localField: "_id",
+  foreignField: "user",
+  justOne: false,
+});
 
 // Encrypt password using bcrypt
 UserSchema.pre("save", async function (next) {

@@ -1,6 +1,5 @@
-import CoWorkForm from "@/components/admin/CoWorkForm";
+import CoWorkForm from "@/components/admin/EditCoWorkForm";
 import PreviewCard from "@/components/admin/PreviewCard";
-import Test from "@/components/admin/Test";
 import React, { useEffect, useState } from "react";
 import { useCardContext } from "@/context/CardContext";
 import { useSession } from "next-auth/react";
@@ -8,9 +7,8 @@ import { Route } from "lucide-react";
 import { useRouter } from "next/navigation";
 import getUserProfile from "@/libs/getUserProfile";
 import getSpace from "@/libs/getSpace";
+import Preview from "@/components/admin/EditPreviewCard";
 export default async function page({ params }: { params: { id: string } }) {
-
-  
   const space = await getSpace(params.id);
 
   return (
@@ -27,7 +25,7 @@ export default async function page({ params }: { params: { id: string } }) {
           <div className="font-bold text-2xl flex justify-end mb-12"></div>
           <div className="flex justify-center">
             {/* <PreviewCard card={card} /> */}
-                <Test data={space.data}/>
+            <Preview data={space.data} />
           </div>
         </div>
       </div>

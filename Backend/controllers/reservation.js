@@ -1,5 +1,6 @@
 const Reservation = require("../models/Reservation");
 const WorkingSpace = require("../models/WorkingSpace");
+const ReservasionLog = require("../models/ReservasionLog");
 
 exports.getAllReservation = async (req, res, next) => {
   let query;
@@ -9,6 +10,9 @@ exports.getAllReservation = async (req, res, next) => {
     query = Reservation.find({ user: req.user.id }).populate({
       path: "workingSpace",
       select: "name address tel",
+    }).populate({
+      path: "user",
+      select: "name email",
     });
   } else {
     // if you are an admin, u can see it all
@@ -20,11 +24,18 @@ exports.getAllReservation = async (req, res, next) => {
       }).populate({
         path: "workingSpace",
         select: "name address tel",
+      })
+      .populate({
+        path: "user",
+        select: "name email",
       });
     } else {
       query = Reservation.find().populate({
         path: "workingSpace",
         select: "name address tel",
+      }).populate({
+        path: "user",
+        select: "name email",
       });
     }
   }
@@ -62,7 +73,7 @@ exports.getReservation = async (req, res, next) => {
       success: true,
       data: reservation,
     });
-  } catch (error) { 
+  } catch (error) {
     console.log(error);
     return res
       .status(500)
@@ -84,7 +95,7 @@ exports.addReservation = async (req, res, next) => {
         message: `User does not provided end time`,
       });
     }
-    if(req.body.endTime<=req.body.startTime) {
+    if (req.body.endTime <= req.body.startTime) {
       return res.status(400).json({
         success: false,
         message: `Invalid end time`,
@@ -100,34 +111,15 @@ exports.addReservation = async (req, res, next) => {
       });
     }
 
-
-
     // add user Id to req.body
     req.body.user = req.user.id;
     // Check for existed reservation
     const existedReservation = await Reservation.find({ user: req.user.id });
     //If the user is not an admin, they can only create 3 reservation.
-    if (existedReservation.length >= 3 && req.user.role !== "admin") {
+    if (existedReservation.length >= 3 && req.user.role !== "admin" && req.user.role !== "moderator") {
       return res.status(400).json({
         success: false,
         message: `The user with ID ${req.user.id} has already made 3 reservations`,
-      });
-    }
-    if (workingspace.remaining > 0) {
-      await WorkingSpace.findByIdAndUpdate(
-        req.params.workingSpaceId,
-        {
-          remaining: workingspace.remaining - 1,
-        },
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
-    } else {
-      return res.status(400).json({
-        success: false,
-        message: `This Working Space is full!`,
       });
     }
     const reservation = await Reservation.create(req.body);
@@ -163,7 +155,9 @@ exports.updateReservation = async (req, res, next) => {
         message: `User ${req.user.id} is not authorized to update this reservation`,
       });
     }
-
+    // Log the edit reservation
+    if (req.body.startTime !== reservation.startTime || req.body.endTime !== reservation.endTime)
+      await addEditReservationLog(req.params.id, reservation.startTime, req.body.startTime, reservation.endTime, req.body.endTime)
     reservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -188,7 +182,7 @@ exports.deleteReservation = async (req, res, next) => {
       });
     }
 
-    //Make sure user is the reservation owner
+    // Make sure user is the reservation owner
     if (
       reservation.user.toString() !== req.user.id &&
       req.user.role !== "admin"
@@ -198,20 +192,14 @@ exports.deleteReservation = async (req, res, next) => {
         message: `User ${req.user.id} is not authorized to delete this reservation`,
       });
     }
+    if ((req.user.role === "admin" || req.user.role === "moderator") && req.user.id !== reservation.user.toString()) {
+      // Log the Forced Cancel reservation
+      await addCancelReservationLog(req.params.id, reservation, true)
 
-    const spaceData = await WorkingSpace.findById(reservation.workingSpace);
-
-    await WorkingSpace.findByIdAndUpdate(
-      reservation.workingSpace,
-      {
-        remaining: spaceData.remaining + 1,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-
+    } else {
+      // Log the cancel reservation
+      await addCancelReservationLog(req.params.id, reservation)
+    }
     await reservation.deleteOne();
     res.status(200).json({
       success: true,
@@ -239,17 +227,6 @@ exports.clearSpace = async (req, res, next) => {
     const clearReservations = await Reservation.deleteMany({
       workingSpace: req.params.id,
     });
-
-    await WorkingSpace.findByIdAndUpdate(
-      req.params.id,
-      {
-        remaining: workingspace.remaining + clearReservations.deletedCount,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
 
     return res
       .status(200)
@@ -286,3 +263,28 @@ exports.getUserReservation = async (req, res, next) => {
       .json({ success: false, message: "Cannot find reservation" });
   }
 };
+
+
+// Function to add reservation log for editing
+const addEditReservationLog = async (reservationId, beforeEditStartTime, afterEditStartTime, beforeEditEndTime, afterEditEndTime) => {
+  const reservationLog = await ReservasionLog.create({
+    reservationId,
+    action: "edit",
+    beforeEditStartTime,
+    afterEditStartTime,
+    beforeEditEndTime,
+    afterEditEndTime
+  });
+  // return { success: true, message: 'Edit Reservation Log added successfully', data: reservationLog };
+}
+
+// Function to add reservation log for cancellation
+const addCancelReservationLog = async (reservationId, canceledReservation, forced = false) => {
+
+  const reservationLog = await ReservasionLog.create({
+    reservationId,
+    action: forced ? "forceCancel" : "cancel",
+    canceledReservation
+  });
+  // return { success: true, message: 'Cancel Reservation Log added successfully', data: reservationLog };
+}
