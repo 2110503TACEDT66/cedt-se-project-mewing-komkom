@@ -51,7 +51,7 @@ export interface Time {
 }
 
 export interface SetPreviewCard {
-  img: any;
+  img: string;
   name: string;
   open: string;
   close: string;
