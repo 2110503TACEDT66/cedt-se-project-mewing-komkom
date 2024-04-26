@@ -17,9 +17,16 @@ import Swal from "sweetalert2";
 import checkAvailableSeat from "@/libs/checkAvailableSeat";
 import { Skeleton } from "@/components/ui/skeleton";
 import UpdateReservation from "@/libs/updateReserve";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import { max } from "moment";
 
 interface Props {
   params: { id: string };
+}
+interface DateProps {
+  startTime: Dayjs;
+  endTime: Dayjs;
 }
 
 export default function ReservationDetail({ params }: Props) {
@@ -33,7 +40,65 @@ export default function ReservationDetail({ params }: Props) {
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
   const [isReserve, setIsReserve] = useState(false);
-  const [availableSeat, setAvailableSeat] = useState<number | string>(0);
+  const [availableSeat, setAvailableSeat] = useState<number>(0);
+  const [setStyle, setSetStyle] = useState<string>("w-[0%]");
+  const [timeData, setTimeData] = useState<DateProps>();
+
+  useEffect(() => {
+    const fetchReserve = async () => {
+      try {
+        const fetchReserve = await getReservation(
+          params.id,
+          session.data.user.token
+        );
+        if (
+          fetchReserve.data &&
+          fetchReserve.data.startTime &&
+          fetchReserve.data.endTime
+        ) {
+          // Set the date state with the existing reservation date
+          const startTime = dayjs(fetchReserve.data.startTime);
+          const endTime = dayjs(fetchReserve.data.endTime);
+          setDate(dayjs(fetchReserve.data.startTime));
+          setTimeData({
+            startTime: startTime,
+            endTime: endTime,
+          });
+        }
+        try {
+          const spacedata = await getSpace(fetchReserve.data.workingSpace._id);
+          setSpace(spacedata.data);
+        } catch (error) {
+          console.error("Error fetching space:", error);
+        }
+      } catch (error) {
+        console.error("Error fetching reserve:", error);
+      }
+    };
+    fetchReserve();
+  }, [params.id]);
+  useEffect(() => {
+    if (!date) {
+      setAvailableSeat(0);
+    } else if (startTime && endTime) {
+      const fetchAvailable = async () => {
+        try {
+          const availableseatha = await checkAvailableSeat(space?._id as any, {
+            startTime,
+            endTime,
+          });
+          if (!availableseatha) {
+            throw new Error("cannot fetch");
+          }
+
+          setAvailableSeat(availableseatha.availableSeats);
+        } catch (error) {
+          console.error("error ja", error);
+        }
+      };
+      fetchAvailable();
+    }
+  }, [startTime, endTime, isReserve]);
 
   const handleReserve = async (e: any) => {
     try {
@@ -76,7 +141,7 @@ export default function ReservationDetail({ params }: Props) {
         throw new Error("cannot create.!!");
       }
     } catch (error) {
-      console.error("error create Reservation", error);
+      console.error("error update Reservation", error);
     }
   };
 
@@ -227,60 +292,24 @@ export default function ReservationDetail({ params }: Props) {
     };
   };
 
+  /*   const debug = () => {
+    console.log(date);
+    console.log(availableSeat);
+    console.log(dayjs(startTime).tz("Asia/Bangkok").format("HH:mm"));
+    console.log(dayjs(endTime).tz("Asia/Bangkok").format("HH:mm"));
+  }; */
+  const [percent, setPercent] = useState(0);
   useEffect(() => {
-    if (!date) {
-      setAvailableSeat("-");
-      return;
-    }
-    if (startTime && endTime) {
-      const fetchAvailable = async () => {
-        try {
-          const availableseatha = await checkAvailableSeat(params.id, {
-            startTime,
-            endTime,
-          });
-          if (!availableseatha) {
-            throw new Error("cannot fetch");
-          }
-          setAvailableSeat(availableseatha.availableSeats);
-        } catch (error) {
-          console.error("error ja", error);
-        }
-      };
-      fetchAvailable();
-    }
-  }, [startTime, endTime, params.id, isReserve]);
-
-  useEffect(() => {
-    const fetchReserve = async () => {
-      try {
-        const fetchReserve = await getReservation(
-          params.id,
-          session.data.user.token
-        );
-        if (
-          fetchReserve.data &&
-          fetchReserve.data.startTime &&
-          fetchReserve.data.endTime
-        ) {
-          // Set the date state with the existing reservation date
-          setDate(dayjs(fetchReserve.data.startTime));
-        }
-        try {
-          const spacedata = await getSpace(fetchReserve.data.workingSpace._id);
-          setSpace(spacedata.data);
-        } catch (error) {
-          console.error("Error fetching space:", error);
-        }
-      } catch (error) {
-        console.error("Error fetching reserve:", error);
-      }
-    };
-    fetchReserve();
-  }, []);
+    if (space?.maxSeat)
+      setPercent(Math.floor((availableSeat / space?.maxSeat) * 100));
+    setSetStyle(`w-[${percent}%]`);
+  }, [availableSeat]);
 
   return (
     <div className="flex justify-center my-20 flex-col gap-5 items-center">
+      {/* <button className="bg-red-500 p-10" onClick={debug}>
+        hello
+      </button> */}
       <h1 className="text-center text-4xl font-bold">
         {space?.name ? (
           <div>
@@ -373,7 +402,7 @@ export default function ReservationDetail({ params }: Props) {
                     handleTimeChange={handleTimeChange}
                     disabledTime={disabledStartTime}
                     typeTime="start"
-                    defultTime={dayjs(space?.openTime)}
+                    defultTime={dayjs(timeData?.startTime)}
                   />
                 ) : (
                   <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB]" />
@@ -385,7 +414,7 @@ export default function ReservationDetail({ params }: Props) {
                   <TimeSelection
                     handleTimeChange={handleTimeChange}
                     disabledTime={disabledEndTime}
-                    defultTime={dayjs(space?.closeTime)}
+                    defultTime={dayjs(timeData?.endTime)}
                     typeTime="end"
                   />
                 ) : (
@@ -393,7 +422,34 @@ export default function ReservationDetail({ params }: Props) {
                 )}
               </div>
             </div>
-            <div>Available seat : {availableSeat}</div>
+            <div>
+              <div className="flex text-[#0043CE] font-bold text-base">
+                Available Seat
+              </div>
+
+              {space?.maxSeat ? (
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-2 items-end">
+                    <div className="font-bold text-base">{percent}%</div>
+                    <div className="text-xs pb-[3px] text-[#6F6F6F]">
+                      {availableSeat} seat left
+                    </div>
+                  </div>
+                  <div>
+                    <div className="h-3 rounded-full bg-[#E0E0E0]">
+                      <div
+                        className={`bg-green-500 h-3 ${setStyle} rounded-full`}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <Skeleton className="h-4 w-[150px] bg-[#E5E7EB]" />
+                  <Skeleton className="h-3 bg-[#E5E7EB]" />
+                </div>
+              )}
+            </div>
             <div className="flex justify-end">
               <button
                 onClick={handleReserve}
