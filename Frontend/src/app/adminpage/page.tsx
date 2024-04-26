@@ -10,19 +10,6 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import getUserProfile from "@/libs/getUserProfile";
 
 export default async function page() {
-  const session = await getServerSession(authOptions);
-  var profile;
-
-  if (session) {
-    profile = await getUserProfile(session.user.token);
-  }
-  const isAdminOrModerator =
-    profile?.data.role === "admin" || profile?.data.role === "moderator"
-      ? true
-      : false;
-  if (!isAdminOrModerator) {
-    redirect("/");
-  }
   const data: SpaceJson = await getSpaces();
   const ready = data.data;
   return (
