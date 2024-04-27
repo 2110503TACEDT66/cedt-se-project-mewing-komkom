@@ -7,21 +7,8 @@ exports.getAllReservation = async (req, res, next) => {
 
   // General users can see only their reservation
   if (req.user.role !== "admin" && req.user.role !== "moderator") {
-    query = Reservation.find({ user: req.user.id }).populate({
-      path: "workingSpace",
-      select: "name address tel",
-    }).populate({
-      path: "user",
-      select: "name email",
-    });
-  } else {
-    // if you are an admin, u can see it all
-    if (req.params.workingSpaceId) {
-      console.log(req.params.workingSpaceId);
-
-      query = Reservation.find({
-        workingSpace: req.params.workingSpaceId,
-      }).populate({
+    query = Reservation.find({ user: req.user.id })
+      .populate({
         path: "workingSpace",
         select: "name address tel",
       })
@@ -29,14 +16,32 @@ exports.getAllReservation = async (req, res, next) => {
         path: "user",
         select: "name email",
       });
+  } else {
+    // if you are an admin, u can see it all
+    if (req.params.workingSpaceId) {
+      console.log(req.params.workingSpaceId);
+
+      query = Reservation.find({
+        workingSpace: req.params.workingSpaceId,
+      })
+        .populate({
+          path: "workingSpace",
+          select: "name address tel",
+        })
+        .populate({
+          path: "user",
+          select: "name email",
+        });
     } else {
-      query = Reservation.find().populate({
-        path: "workingSpace",
-        select: "name address tel",
-      }).populate({
-        path: "user",
-        select: "name email",
-      });
+      query = Reservation.find()
+        .populate({
+          path: "workingSpace",
+          select: "name address tel",
+        })
+        .populate({
+          path: "user",
+          select: "name email",
+        });
     }
   }
 
@@ -116,7 +121,11 @@ exports.addReservation = async (req, res, next) => {
     // Check for existed reservation
     const existedReservation = await Reservation.find({ user: req.user.id });
     //If the user is not an admin, they can only create 3 reservation.
-    if (existedReservation.length >= 3 && req.user.role !== "admin" && req.user.role !== "moderator") {
+    if (
+      existedReservation.length >= 3 &&
+      req.user.role !== "admin" &&
+      req.user.role !== "moderator"
+    ) {
       return res.status(400).json({
         success: false,
         message: `The user with ID ${req.user.id} has already made 3 reservations`,
@@ -148,7 +157,8 @@ exports.updateReservation = async (req, res, next) => {
     //Make sure user is the reservation owner
     if (
       reservation.user.toString() !== req.user.id &&
-      req.user.role !== "admin"
+      req.user.role !== "admin" &&
+      req.user.role !== "moderator"
     ) {
       return res.status(401).json({
         success: false,
@@ -156,8 +166,18 @@ exports.updateReservation = async (req, res, next) => {
       });
     }
     // Log the edit reservation
-    if (req.body.startTime !== reservation.startTime || req.body.endTime !== reservation.endTime)
-      await addEditReservationLog(req.params.id, reservation.startTime, req.body.startTime, reservation.endTime, req.body.endTime)
+    if (
+      req.body.startTime !== reservation.startTime ||
+      req.body.endTime !== reservation.endTime
+    )
+      await addEditReservationLog(
+        req.params.id,
+        reservation.startTime,
+        req.body.startTime,
+        reservation.endTime,
+        req.body.endTime,
+        req.user.id
+      );
     reservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -185,20 +205,32 @@ exports.deleteReservation = async (req, res, next) => {
     // Make sure user is the reservation owner
     if (
       reservation.user.toString() !== req.user.id &&
-      req.user.role !== "admin" && req.user.role !== "moderator"
+      req.user.role !== "admin" &&
+      req.user.role !== "moderator"
     ) {
       return res.status(401).json({
         success: false,
         message: `User ${req.user.id} is not authorized to delete this reservation`,
       });
     }
-    if ((req.user.role === "admin" || req.user.role === "moderator") && req.user.id !== reservation.user.toString()) {
+    if (
+      (req.user.role === "admin" || req.user.role === "moderator") &&
+      req.user.id !== reservation.user.toString()
+    ) {
       // Log the Forced Cancel reservation
-      await addCancelReservationLog(req.params.id, reservation, true)
-
+      await addCancelReservationLog(
+        req.params.id,
+        reservation,
+        true,
+        (userid = req.user.id)
+      );
     } else {
       // Log the cancel reservation
-      await addCancelReservationLog(req.params.id, reservation)
+      await addCancelReservationLog(
+        req.params.id,
+        reservation,
+        (userid = req.user.id)
+      );
     }
     await reservation.deleteOne();
     res.status(200).json({
@@ -264,27 +296,65 @@ exports.getUserReservation = async (req, res, next) => {
   }
 };
 
-
 // Function to add reservation log for editing
-const addEditReservationLog = async (reservationId, beforeEditStartTime, afterEditStartTime, beforeEditEndTime, afterEditEndTime) => {
+const addEditReservationLog = async (
+  reservationId,
+  beforeEditStartTime,
+  afterEditStartTime,
+  beforeEditEndTime,
+  afterEditEndTime,
+  userid
+) => {
   const reservationLog = await ReservasionLog.create({
     reservationId,
     action: "edit",
     beforeEditStartTime,
     afterEditStartTime,
     beforeEditEndTime,
-    afterEditEndTime
+    afterEditEndTime,
+    user: userid,
   });
   // return { success: true, message: 'Edit Reservation Log added successfully', data: reservationLog };
-}
+};
 
 // Function to add reservation log for cancellation
-const addCancelReservationLog = async (reservationId, canceledReservation, forced = false) => {
-
+const addCancelReservationLog = async (
+  reservationId,
+  canceledReservation,
+  forced = false,
+  userid
+) => {
   const reservationLog = await ReservasionLog.create({
     reservationId,
     action: forced ? "forceCancel" : "cancel",
-    canceledReservation
+    canceledReservation,
+    user: userid,
   });
   // return { success: true, message: 'Cancel Reservation Log added successfully', data: reservationLog };
-}
+};
+
+exports.getLogReservation = async (req, res, next) => {
+  let query;
+
+  // General users can see only their reservation
+  if (req.user.role !== "admin" && req.user.role !== "moderator") {
+    query = ReservasionLog.find({user: req.user.id });
+  } else {
+    // if you are an admin, u can see it all
+    query = ReservasionLog.find();
+  }
+
+  try {
+    const reservationLog = await query;
+
+    res.status(200).json({
+      success: true,
+      data: reservationLog,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Cannot find Log Appointment" });
+  }
+};
