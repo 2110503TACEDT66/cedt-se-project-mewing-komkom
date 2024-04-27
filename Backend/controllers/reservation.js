@@ -1,6 +1,7 @@
 const Reservation = require("../models/Reservation");
 const WorkingSpace = require("../models/WorkingSpace");
 const ReservasionLog = require("../models/ReservasionLog");
+const { getAvailableSeat } = require("./workingspace");
 
 exports.getAllReservation = async (req, res, next) => {
   let query;
@@ -110,7 +111,12 @@ exports.addReservation = async (req, res, next) => {
         message: `No working space with the id of ${req.params.workingSpaceId}`,
       });
     }
-
+    if(getAvailableSeat(req.params.workingSpaceId, req.body.startTime, req.body.endTime) == 0){
+      return res.status(400).json({
+        success: false,
+        message: `No available seat for this time slot`,
+      });
+    }
     // add user Id to req.body
     req.body.user = req.user.id;
     // Check for existed reservation
