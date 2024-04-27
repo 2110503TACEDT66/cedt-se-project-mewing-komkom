@@ -1,6 +1,7 @@
 const Reservation = require("../models/Reservation");
 const WorkingSpace = require("../models/WorkingSpace");
 const ReservasionLog = require("../models/ReservasionLog");
+const { getAvailableSeat } = require("./workingspace");
 
 exports.getAllReservation = async (req, res, next) => {
   let query;
@@ -25,10 +26,10 @@ exports.getAllReservation = async (req, res, next) => {
         path: "workingSpace",
         select: "name address tel",
       })
-      .populate({
-        path: "user",
-        select: "name email",
-      });
+        .populate({
+          path: "user",
+          select: "name email",
+        });
     } else {
       query = Reservation.find().populate({
         path: "workingSpace",
@@ -110,18 +111,24 @@ exports.addReservation = async (req, res, next) => {
         message: `No working space with the id of ${req.params.workingSpaceId}`,
       });
     }
-
+    if(getAvailableSeat(req.params.workingSpaceId, req.body.startTime, req.body.endTime) == 0){
+      return res.status(400).json({
+        success: false,
+        message: `No available seat for this time slot`,
+      });
+    }
     // add user Id to req.body
     req.body.user = req.user.id;
     // Check for existed reservation
-    const existedReservation = await Reservation.find({ user: req.user.id });
+    // const existedReservation = await Reservation.find({ user: req.user.id });
     //If the user is not an admin, they can only create 3 reservation.
-    if (existedReservation.length >= 3 && req.user.role !== "admin" && req.user.role !== "moderator") {
-      return res.status(400).json({
-        success: false,
-        message: `The user with ID ${req.user.id} has already made 3 reservations`,
-      });
-    }
+    // if (existedReservation.length >= 3 && req.user.role !== "admin" && req.user.role !== "moderator") {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: `The user with ID ${req.user.id} has already made 3 reservations`,
+    //   });
+    // }
+    // TODO: QUOTA 
     const reservation = await Reservation.create(req.body);
     res.status(200).json({
       success: true,
