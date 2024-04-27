@@ -12,6 +12,7 @@ import checkAvailableSeat from "@/libs/checkAvailableSeat";
 import Swal from "sweetalert2";
 import { redirect, usePathname } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
 
 interface Props {
   params: { id: string };
@@ -25,6 +26,7 @@ const SpaceDetail = ({ params }: Props) => {
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
   const [availableSeat, setAvailableSeat] = useState<number>(0);
   const [isReserve, setIsReserve] = useState(false);
+  const [percent, setPercent] = useState(0);
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -259,6 +261,10 @@ const SpaceDetail = ({ params }: Props) => {
       },
     };
   };
+  useEffect(() => {
+    if (space?.maxSeat)
+      setPercent(Math.floor((availableSeat / space?.maxSeat) * 100));
+  }, [availableSeat]);
 
   if (session.status == "unauthenticated") {
     redirect(`/login`);
@@ -387,13 +393,13 @@ const SpaceDetail = ({ params }: Props) => {
                 {space?.maxSeat ? (
                   <div className="flex flex-col gap-2">
                     <div className="flex gap-2 items-end">
-                      {/* <div className="font-bold text-base">{percent}%</div> */}
+                      <div className="font-bold text-base">{percent}%</div>
                       <div className="text-xs pb-[3px] text-[#6F6F6F]">
                         {availableSeat} seat left
                       </div>
                     </div>
                     <div>
-                      {/* <Progress className="h-3" value={percent} /> */}
+                      <Progress className="h-3" value={percent} />
                     </div>
                   </div>
                 ) : (
