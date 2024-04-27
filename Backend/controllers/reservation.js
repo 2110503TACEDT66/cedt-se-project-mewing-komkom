@@ -25,10 +25,10 @@ exports.getAllReservation = async (req, res, next) => {
         path: "workingSpace",
         select: "name address tel",
       })
-      .populate({
-        path: "user",
-        select: "name email",
-      });
+        .populate({
+          path: "user",
+          select: "name email",
+        });
     } else {
       query = Reservation.find().populate({
         path: "workingSpace",
@@ -114,12 +114,12 @@ exports.addReservation = async (req, res, next) => {
     // add user Id to req.body
     req.body.user = req.user.id;
     // Check for existed reservation
-    const existedReservation = await Reservation.find({ user: req.user.id });
+    const userQuota = await getUserAvailableQuota(req.params.workingSpaceId, req.user.id, req.body.startTime, req.body.endTime);
     //If the user is not an admin, they can only create 3 reservation.
-    if (existedReservation.length >= 3 && req.user.role !== "admin" && req.user.role !== "moderator") {
+    if (userQuota <= 0 && req.user.role !== "admin" && req.user.role !== "moderator") {
       return res.status(400).json({
         success: false,
-        message: `The user with ID ${req.user.id} has already made 3 reservations`,
+        message: `The user with ID ${req.user.id} has exceeded the maximum quota of reservations`,
       });
     }
     const reservation = await Reservation.create(req.body);
@@ -264,6 +264,30 @@ exports.getUserReservation = async (req, res, next) => {
   }
 };
 
+exports.getUserReservationQuota = async (req, res, next) => {
+  const selectedDate = req.body.selectedDate;
+  if (!selectedDate)
+    selectedDate = new Date();
+  try {
+    const userQuotaLeft = await getUserAvailableQuota(selectedDate, req.user.id);
+    res.status(200).json({
+      success: true,
+      data: userQuotaLeft,
+    });
+  } catch (e) {
+    return res.status(500).json({ success: false, message: "Cannot get Reservation Quota" });
+  }
+}
+
+const getUserAvailableQuota = async (selectedDate, userId) => {
+  selectedDate = new Date(selectedDate).getDate();
+  const existedReservation = await Reservation.find({
+    user: userId,
+    // find the match startingdate
+    startTime: { $gte: selectedDate, $lt: selectedDate.setDate(selectedDate.getDate() + 1) },
+  });
+  return 3 - existedReservation.length;
+}
 
 // Function to add reservation log for editing
 const addEditReservationLog = async (reservationId, beforeEditStartTime, afterEditStartTime, beforeEditEndTime, afterEditEndTime) => {
