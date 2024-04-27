@@ -6,7 +6,7 @@ exports.getAllReservation = async (req, res, next) => {
   let query;
 
   // General users can see only their reservation
-  if (req.user.role !== "admin") {
+  if (req.user.role !== "admin" && req.user.role !== "moderator") {
     query = Reservation.find({ user: req.user.id }).populate({
       path: "workingSpace",
       select: "name address tel",
@@ -185,7 +185,7 @@ exports.deleteReservation = async (req, res, next) => {
     // Make sure user is the reservation owner
     if (
       reservation.user.toString() !== req.user.id &&
-      req.user.role !== "admin"
+      req.user.role !== "admin" && req.user.role !== "moderator"
     ) {
       return res.status(401).json({
         success: false,

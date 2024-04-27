@@ -13,8 +13,24 @@ export default async function createCoWorkingSpace(
       },
       body: JSON.stringify(data),
     }
-  )
-    .then((response) => {
+  );
+  if (!response.ok) {
+    const ans = await response.json();
+    console.log(ans.message);
+    Swal.fire({
+      title: "Error!",
+      text: ans.message || "Create Failed",
+      icon: "error",
+    });
+  } else {
+    Swal.fire({
+      title: "Success!",
+      text: "Create successfully",
+      icon: "success",
+    });
+    return await response.json();
+  }
+  /* .then((response) => {
       if (response.ok) {
         Swal.fire({
           title: "Success!",
@@ -36,21 +52,5 @@ export default async function createCoWorkingSpace(
         text: "Cannot create new co-working space",
         icon: "error",
       });
-    });
-  /* if (!response.ok) {
-    const ans = await response.json();
-    console.log(ans.message);
-    Swal.fire({
-      title: "Error!",
-      text: ans.message || "Create Failed",
-      icon: "error",
-    });
-  } else {
-    Swal.fire({
-      title: "Success!",
-      text: "Create successfully",
-      icon: "success",
-    });
-    return await response.json();
-  } */
+    }); */
 }
