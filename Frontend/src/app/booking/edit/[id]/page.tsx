@@ -83,23 +83,19 @@ export default function ReservationDetail({ params }: Props) {
   }, [params.id]);
 
   useEffect(() => {
-    if (!timeData && (startTime || endTime)) {
+    if (!date) {
       setAvailableSeat(0);
-    } else {
+      return;
+    }
+    if (startTime && endTime) {
       const fetchAvailable = async () => {
         try {
-          const data = {
-            startTime: startTime ? startTime : timeData?.startTime,
-            endTime: endTime ? endTime : timeData?.endTime,
-          }; // Set the data to the existing reservation time or the new time
-
-          const availableseatha = await checkAvailableSeat(
-            space?._id as any,
-            data
-          );
-
+          const availableseatha = await checkAvailableSeat(space?._id as any, {
+            startTime,
+            endTime,
+          });
           if (!availableseatha) {
-            throw new Error("cannot fetch cause of error.!!");
+            throw new Error("cannot fetch");
           }
           setAvailableSeat(availableseatha.availableSeats);
         } catch (error) {
@@ -108,7 +104,7 @@ export default function ReservationDetail({ params }: Props) {
       };
       fetchAvailable();
     }
-  }, [startTime, endTime, isReserve, timeData]);
+  }, [startTime, endTime, params.id, isReserve]);
 
   useEffect(() => {
     if (space?.maxSeat)
@@ -315,9 +311,9 @@ export default function ReservationDetail({ params }: Props) {
 
   return (
     <div className="flex justify-center my-20 flex-col gap-5 items-center">
-      {/* <button className="bg-red-500 p-10" onClick={debug}>
+      <button className="bg-red-500 p-10" onClick={debug}>
         hello
-      </button> */}
+      </button>
       <h1 className="text-center text-4xl font-bold">
         {space?.name ? (
           <div>
@@ -393,7 +389,7 @@ export default function ReservationDetail({ params }: Props) {
                   <DatePicker
                     className="border-[#979797]"
                     onChange={handleDateChange}
-                    value={date ? dayjs(date) : undefined} // Set value to date if it exists
+                    defaultValue={dayjs(date)}
                   />
                 ) : (
                   <Skeleton className="h-[32px] w-[138px] bg-[#E5E7EB] shadow-lg" />
