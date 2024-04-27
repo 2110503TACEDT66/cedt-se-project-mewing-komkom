@@ -148,28 +148,8 @@ exports.deleteWorkingSpace = async (req, res, next) => {
 exports.checkAvailableSeat = async (req, res, next) => {
   try {
     const { startTime, endTime } = req.body;
-
     const workingSpaceId = req.params.id;
-    console.log("this is id = ", workingSpaceId);
-    const workingspace =
-      await WorkingSpace.findById(workingSpaceId).populate("reservation");
-    if (!workingspace) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Working space not found" });
-    }
-
-    const overlappingReservations = await Reservation.find({
-      workingSpace: workingSpaceId,
-      startTime: { $lt: endTime },
-      endTime: { $gt: startTime },
-    });
-    let reservedSeats = 0;
-    overlappingReservations.forEach((overlappingReservations) => {
-      reservedSeats += 1;
-    });
-
-    const availableSeats = workingspace.maxSeat - reservedSeats;
+    const availableSeats = await getAvailableSeat(workingSpaceId, startTime, endTime);
 
     res.status(200).json({
       success: true,
@@ -179,4 +159,24 @@ exports.checkAvailableSeat = async (req, res, next) => {
     console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
+
 };
+
+async function getAvailableSeat(workingSpaceId, startTime, endTime) {
+
+  const workingspace = await WorkingSpace.findById(workingSpaceId);
+  if (!workingspace) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Working space not found" });
+  }
+  const overlappingReservations = await Reservation.find({
+    workingSpace: workingSpaceId,
+    startTime: { $lt: endTime },
+    endTime: { $gt: startTime },
+  });
+
+  const availableSeats = workingspace.maxSeat - overlappingReservations.length;
+  return availableSeats > 0 ? availableSeats : 0;
+}
+exports.getAvailableSeat = getAvailableSeat;
