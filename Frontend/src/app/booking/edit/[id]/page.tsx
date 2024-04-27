@@ -21,6 +21,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { max } from "moment";
 import { Progress } from "@/components/ui/progress";
+import { start } from "repl";
 
 interface Props {
   params: { id: string };
@@ -38,12 +39,12 @@ export default function ReservationDetail({ params }: Props) {
 
   const [space, setSpace] = useState<SpaceItem>();
   const [date, setDate] = useState<Dayjs>();
-  const [startTime, setStartTime] = useState<Dayjs | null>(null);
+  const [startTime, setStartTime] = useState<Dayjs | null>();
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
   const [isReserve, setIsReserve] = useState(false);
   const [availableSeat, setAvailableSeat] = useState<number>(0);
-  const [setStyle, setSetStyle] = useState<string>("w-[0%]");
   const [timeData, setTimeData] = useState<DateProps>();
+  const [percent, setPercent] = useState(0);
 
   useEffect(() => {
     const fetchReserve = async () => {
@@ -60,7 +61,9 @@ export default function ReservationDetail({ params }: Props) {
           // Set the date state with the existing reservation date
           const startTime = dayjs(fetchReserve.data.startTime);
           const endTime = dayjs(fetchReserve.data.endTime);
+
           setDate(dayjs(fetchReserve.data.startTime));
+
           setTimeData({
             startTime: startTime,
             endTime: endTime,
@@ -78,20 +81,26 @@ export default function ReservationDetail({ params }: Props) {
     };
     fetchReserve();
   }, [params.id]);
+
   useEffect(() => {
-    if (!date) {
+    if (!timeData && (startTime || endTime)) {
       setAvailableSeat(0);
-    } else if (startTime && endTime) {
+    } else {
       const fetchAvailable = async () => {
         try {
-          const availableseatha = await checkAvailableSeat(space?._id as any, {
-            startTime,
-            endTime,
-          });
-          if (!availableseatha) {
-            throw new Error("cannot fetch");
-          }
+          const data = {
+            startTime: startTime ? startTime : timeData?.startTime,
+            endTime: endTime ? endTime : timeData?.endTime,
+          }; // Set the data to the existing reservation time or the new time
 
+          const availableseatha = await checkAvailableSeat(
+            space?._id as any,
+            data
+          );
+
+          if (!availableseatha) {
+            throw new Error("cannot fetch cause of error.!!");
+          }
           setAvailableSeat(availableseatha.availableSeats);
         } catch (error) {
           console.error("error ja", error);
@@ -99,7 +108,12 @@ export default function ReservationDetail({ params }: Props) {
       };
       fetchAvailable();
     }
-  }, [startTime, endTime, isReserve]);
+  }, [startTime, endTime, isReserve, timeData]);
+
+  useEffect(() => {
+    if (space?.maxSeat)
+      setPercent(Math.floor((availableSeat / space?.maxSeat) * 100));
+  }, [availableSeat]);
 
   const handleReserve = async (e: any) => {
     try {
@@ -129,8 +143,8 @@ export default function ReservationDetail({ params }: Props) {
         return;
       }
       const data = {
-        startTime: startTime,
-        endTime: endTime,
+        startTime: startTime ? startTime : timeData?.startTime,
+        endTime: endTime ? endTime : timeData?.endTime,
       };
       const reservation = await UpdateReservation(
         params.id,
@@ -293,18 +307,11 @@ export default function ReservationDetail({ params }: Props) {
     };
   };
 
-  /*   const debug = () => {
-    console.log(date);
+  const debug = () => {
     console.log(availableSeat);
-    console.log(dayjs(startTime).tz("Asia/Bangkok").format("HH:mm"));
-    console.log(dayjs(endTime).tz("Asia/Bangkok").format("HH:mm"));
-  }; */
-  const [percent, setPercent] = useState(0);
-  useEffect(() => {
-    if (space?.maxSeat)
-      setPercent(Math.floor((availableSeat / space?.maxSeat) * 100));
-    setSetStyle(`w-[${percent}%]`);
-  }, [availableSeat]);
+    console.log(timeData?.startTime);
+    console.log(startTime);
+  };
 
   return (
     <div className="flex justify-center my-20 flex-col gap-5 items-center">
@@ -319,20 +326,20 @@ export default function ReservationDetail({ params }: Props) {
             Reservation
           </div>
         ) : (
-          <Skeleton className="h-10 w-[900px] bg-[#E5E7EB]" />
+          <Skeleton className="h-10 w-[900px] bg-[#E5E7EB] shadow-lg" />
         )}
       </h1>
-      <div className="bg-white relative flex justify-center items-center p-4 gap-14 pl-10 rounded-3xl w-max h-[613px]">
+      <div className="bg-white shadow-2xl relative flex justify-center items-center p-4 gap-14 pl-10 rounded-3xl w-max h-[613px]">
         {space?.image ? (
           <div
-            className="bg-gray-200 w-[512px] h-[478px] rounded-2xl"
+            className="bg-gray-200 w-[512px] h-[478px] rounded-2xl shadow-2xl"
             style={{
               backgroundImage: `url(${space?.image})`,
               backgroundSize: "cover",
             }}
           />
         ) : (
-          <Skeleton className="h-[478px] w-[512px] bg-[#E5E7EB]" />
+          <Skeleton className="h-[478px] shadow-2xl w-[512px] bg-[#E5E7EB] shadow-lg" />
         )}
 
         <div>
@@ -349,7 +356,7 @@ export default function ReservationDetail({ params }: Props) {
                     </div>
                   </div>
                 ) : (
-                  <Skeleton className="h-10 w-[450px] bg-[#E5E7EB]" />
+                  <Skeleton className="h-10 w-[450px] bg-[#E5E7EB] shadow-lg" />
                 )}
               </div>
               {space?.openTime && space?.closeTime ? (
@@ -361,7 +368,7 @@ export default function ReservationDetail({ params }: Props) {
                   </p>
                 </div>
               ) : (
-                <Skeleton className="h-4 w-[450px] bg-[#E5E7EB]" />
+                <Skeleton className="h-4 w-[450px] bg-[#E5E7EB] shadow-lg" />
               )}
               <hr />
               {space?.address && space?.tel ? (
@@ -371,9 +378,9 @@ export default function ReservationDetail({ params }: Props) {
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
-                  <Skeleton className="h-4 w-[400px] bg-[#E5E7EB]" />
-                  <Skeleton className="h-4 w-[350px] bg-[#E5E7EB]" />
-                  <Skeleton className="h-4 w-[250px] bg-[#E5E7EB]" />
+                  <Skeleton className="h-4 w-[400px] bg-[#E5E7EB] shadow-lg" />
+                  <Skeleton className="h-4 w-[350px] bg-[#E5E7EB] shadow-lg" />
+                  <Skeleton className="h-4 w-[250px] bg-[#E5E7EB] shadow-lg" />
                 </div>
               )}
             </div>
@@ -389,7 +396,7 @@ export default function ReservationDetail({ params }: Props) {
                     value={date ? dayjs(date) : undefined} // Set value to date if it exists
                   />
                 ) : (
-                  <Skeleton className="h-[32px] w-[138px] bg-[#E5E7EB]" />
+                  <Skeleton className="h-[32px] w-[138px] bg-[#E5E7EB] shadow-lg" />
                 )}
               </div>
             </div>
@@ -406,7 +413,7 @@ export default function ReservationDetail({ params }: Props) {
                     defultTime={dayjs(timeData?.startTime)}
                   />
                 ) : (
-                  <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB]" />
+                  <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
                 )}
                 <div className="text-center self-center text-[#736868] font-semibold text-base">
                   To
@@ -419,7 +426,7 @@ export default function ReservationDetail({ params }: Props) {
                     typeTime="end"
                   />
                 ) : (
-                  <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB]" />
+                  <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
                 )}
               </div>
             </div>
@@ -442,8 +449,8 @@ export default function ReservationDetail({ params }: Props) {
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
-                  <Skeleton className="h-4 w-[150px] bg-[#E5E7EB]" />
-                  <Skeleton className="h-3 bg-[#E5E7EB]" />
+                  <Skeleton className="h-4 w-[150px] bg-[#E5E7EB] shadow-lg" />
+                  <Skeleton className="h-3 bg-[#E5E7EB] shadow-lg" />
                 </div>
               )}
             </div>
