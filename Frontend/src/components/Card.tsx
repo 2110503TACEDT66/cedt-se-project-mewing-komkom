@@ -19,7 +19,7 @@ interface Props {
 }
 
 export default function Card({ data }: Props) {
-  const [availableSeat, setAvailableSeat] = useState<number>(0);
+  const [availableSeat, setAvailableSeat] = useState<number | null>(null);
   if (!data) return;
   useEffect(() => {
     const fetchAvailable = async () => {
@@ -51,8 +51,15 @@ export default function Card({ data }: Props) {
           backgroundSize: "cover",
         }}
       ></div>
-
-      {availableSeat > 0 ? (
+      {availableSeat === null ? (
+        <div className="flex text-sm items-center gap-2 absolute top-5 left-5 bg-white px-3 py-1 rounded-full text-gray-500">
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-700"></span>
+          </span>
+          Loading
+        </div>
+      ) : availableSeat !== null && availableSeat > 0 ? (
         <div className="flex text-sm items-center gap-2 absolute top-5 left-5 bg-white px-3 py-1 rounded-full text-green-700">
           <span className="relative flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
