@@ -315,7 +315,7 @@ export default function ReservationDetail({ params }: Props) {
         hello
       </button>
       <h1 className="text-center text-4xl font-bold">
-        {space?.name ? (
+        {space ? (
           <div>
             Edit Your
             <span style={{ color: "#2B5B93" }}> {space?.name} </span>
@@ -326,7 +326,7 @@ export default function ReservationDetail({ params }: Props) {
         )}
       </h1>
       <div className="bg-white shadow-2xl relative flex justify-center items-center p-4 gap-14 pl-10 rounded-3xl w-max h-[613px]">
-        {space?.image ? (
+        {space ? (
           <div
             className="bg-gray-200 w-[512px] h-[478px] rounded-2xl shadow-2xl"
             style={{
@@ -342,7 +342,7 @@ export default function ReservationDetail({ params }: Props) {
           <div className="flex flex-col justify-between p-10">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                {space?.name ? (
+                {space ? (
                   <div className="flex gap-5">
                     <h1 className="text-4xl font-bold">{space?.name}</h1>
                     <div className="flex justify-center items-center">
@@ -355,7 +355,7 @@ export default function ReservationDetail({ params }: Props) {
                   <Skeleton className="h-10 w-[450px] bg-[#E5E7EB] shadow-lg" />
                 )}
               </div>
-              {space?.openTime && space?.closeTime ? (
+              {space ? (
                 <div className="flex items-center gap-3">
                   <FaClock />
                   <p>
@@ -367,7 +367,7 @@ export default function ReservationDetail({ params }: Props) {
                 <Skeleton className="h-4 w-[450px] bg-[#E5E7EB] shadow-lg" />
               )}
               <hr />
-              {space?.address && space?.tel ? (
+              {space ? (
                 <div>
                   <p>{space?.address}</p>
                   <p>{space?.tel}</p>
@@ -401,7 +401,7 @@ export default function ReservationDetail({ params }: Props) {
                 Time
               </label>
               <div className="col-span-3 flex gap-3">
-                {space?.openTime ? (
+                {space ? (
                   <TimeSelection
                     handleTimeChange={handleTimeChange}
                     disabledTime={disabledStartTime}
@@ -414,7 +414,7 @@ export default function ReservationDetail({ params }: Props) {
                 <div className="text-center self-center text-[#736868] font-semibold text-base">
                   To
                 </div>
-                {space?.closeTime ? (
+                {space ? (
                   <TimeSelection
                     handleTimeChange={handleTimeChange}
                     disabledTime={disabledEndTime}
@@ -431,7 +431,7 @@ export default function ReservationDetail({ params }: Props) {
                 Available Seat
               </div>
 
-              {space?.maxSeat ? (
+              {space && timeData ? (
                 <div className="flex flex-col gap-2">
                   <div className="flex gap-2 items-end">
                     <div className="font-bold text-base">{percent}%</div>
