@@ -10,7 +10,7 @@ export default function TopMenuItem({ title, href }: Props) {
   return (
     <Link
       href={href}
-      className="bg-slate-200 py-2 px-4 rounded-full duration-150 hover:bg-slate-200"
+      className="bg-slate-200 py-2 px-4 rounded-full duration-150 hover:bg-slate-300"
     >
       <p>{title}</p>
     </Link>
