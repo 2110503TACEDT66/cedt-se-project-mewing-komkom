@@ -277,7 +277,6 @@ const SpaceDetail = ({ params }: Props) => {
         <h1 className="text-center text-4xl font-bold">
           {space ? (
             <div>
-              Edit Your
               <span style={{ color: "#2B5B93" }}> {space?.name} </span>
               Reservation
             </div>
