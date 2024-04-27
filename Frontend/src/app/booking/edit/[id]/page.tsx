@@ -339,7 +339,7 @@ export default function ReservationDetail({ params }: Props) {
             }}
           />
         ) : (
-          <Skeleton className="h-[478px] shadow-2xl w-[512px] bg-[#E5E7EB] shadow-lg" />
+          <Skeleton className="h-[478px] w-[512px] shadow-2xl bg-[#E5E7EB]" />
         )}
 
         <div>
