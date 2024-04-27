@@ -22,7 +22,7 @@ export default async function TopMenu() {
     <div className="flex justify-between items-center px-7 py-4 top-0 fixed z-10 bg-bg w-full">
       <div className="flex gap-5 items-center">
         <Link href="/">
-          <SiStarship className="text-blue-500" size={40} />
+          <SiStarship className="text-blue-500 hover:text-blue-700 duration-200" size={40} />
         </Link>
 
         {isAdminOrModerator ? <TopMenuItem title="Admin Dashboard" href="/adminpage" /> : ""}
