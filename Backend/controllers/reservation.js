@@ -265,27 +265,36 @@ exports.getUserReservation = async (req, res, next) => {
 };
 
 exports.getUserReservationQuota = async (req, res, next) => {
-  const selectedDate = req.body.selectedDate;
-  if (!selectedDate)
-    selectedDate = new Date();
   try {
-    const userQuotaLeft = await getUserAvailableQuota(selectedDate, req.user.id);
+    const userQuotaLeft = await getUserAvailableQuota(req.body.selectedDate, req.user.id);
     res.status(200).json({
       success: true,
       data: userQuotaLeft,
     });
   } catch (e) {
+    console.log(e);
     return res.status(500).json({ success: false, message: "Cannot get Reservation Quota" });
   }
 }
 
 const getUserAvailableQuota = async (selectedDate, userId) => {
-  selectedDate = new Date(selectedDate).getDate();
-  const existedReservation = await Reservation.find({
-    user: userId,
-    // find the match startingdate
-    startTime: { $gte: selectedDate, $lt: selectedDate.setDate(selectedDate.getDate() + 1) },
-  });
+  let existedReservation;
+  if (!selectedDate) {
+    const today = new Date();
+    existedReservation = await Reservation.find({
+      user: userId,
+      // find the match startingdate
+      startTime: { $gte: today.setHours(0, 0, 0, 0), $lt: today.setDate(today.getDate() + 1) },
+    });
+  } else {
+    const selectedDate_ = new Date(selectedDate);
+    existedReservation = await Reservation.find({
+      user: userId,
+      // find the match startingdate
+      startTime: { $gte: selectedDate_, $lt: selectedDate_.setDate(selectedDate_.getDate() + 1) },
+    });
+  }
+
   return 3 - existedReservation.length;
 }
 
