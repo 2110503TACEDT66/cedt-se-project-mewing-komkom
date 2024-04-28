@@ -390,7 +390,7 @@ const SpaceDetail = ({ params }: Props) => {
                 <div>
                   {space ? (
                     <DatePicker
-                      className="border-[#979797]"
+                      className="border-[#979797] min-w-[150px]"
                       onChange={handleDateChange}
                     />
                   ) : (
@@ -399,7 +399,14 @@ const SpaceDetail = ({ params }: Props) => {
                 </div>
                 <div className="flex items-center gap-1">
                   <span>Remaining Quota: </span>
-                  <span className={clsx("font-bold")}>{quota}</span>
+                  <span
+                    className={clsx(
+                      "font-bold",
+                      quota !== 0 ? "text-sky-500" : "text-gray-300"
+                    )}
+                  >
+                    {quota}
+                  </span>
                   <HoverCard>
                     <HoverCardTrigger>
                       <CiCircleQuestion
@@ -499,7 +506,11 @@ const SpaceDetail = ({ params }: Props) => {
               <div className="flex justify-end mt-4">
                 <button
                   onClick={handleReserve}
-                  className="bg-black px-5 py-2 rounded-full text-white max-w-max "
+                  disabled={quota === 0}
+                  className={clsx(
+                    "bg-black px-5 py-2 rounded-full text-white max-w-max",
+                    quota === 0 && "bg-gray-300"
+                  )}
                 >
                   Reserve
                 </button>
