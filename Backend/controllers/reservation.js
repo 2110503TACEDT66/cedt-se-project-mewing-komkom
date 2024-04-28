@@ -146,7 +146,15 @@ exports.addReservation = async (req, res, next) => {
 
 exports.updateReservation = async (req, res, next) => {
   try {
-    let reservation = await Reservation.findById(req.params.id);
+    let reservation = await Reservation.findById(req.params.id)
+      .populate({
+        path: "workingSpace",
+        select: "name",
+      })
+      .populate({ path: "user", select: "name" });
+    console.log(reservation);
+    console.log(typeof reservation);
+
     if (!reservation) {
       return res.status(404).json({
         success: false,
@@ -176,7 +184,7 @@ exports.updateReservation = async (req, res, next) => {
         req.body.startTime,
         reservation.endTime,
         req.body.endTime,
-        req.user.id
+        reservation.toJSON()
       );
     reservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -194,7 +202,13 @@ exports.updateReservation = async (req, res, next) => {
 
 exports.deleteReservation = async (req, res, next) => {
   try {
-    const reservation = await Reservation.findById(req.params.id);
+    const reservation = await Reservation.findById(req.params.id)
+      .populate({
+        path: "workingSpace",
+        select: "name",
+      })
+      .populate({ path: "user", select: "name" });
+    console.log(typeof reservation);
     if (!reservation) {
       return res.status(404).json({
         success: false,
@@ -218,19 +232,10 @@ exports.deleteReservation = async (req, res, next) => {
       req.user.id !== reservation.user.toString()
     ) {
       // Log the Forced Cancel reservation
-      await addCancelReservationLog(
-        req.params.id,
-        reservation,
-        true,
-        (userid = req.user.id)
-      );
+      await addCancelReservationLog(req.params.id, reservation.toJSON(), true);
     } else {
       // Log the cancel reservation
-      await addCancelReservationLog(
-        req.params.id,
-        reservation,
-        (userid = req.user.id)
-      );
+      await addCancelReservationLog(req.params.id, reservation.toJSON());
     }
     await reservation.deleteOne();
     res.status(200).json({
@@ -303,7 +308,7 @@ const addEditReservationLog = async (
   afterEditStartTime,
   beforeEditEndTime,
   afterEditEndTime,
-  userid
+  editedReservation
 ) => {
   const reservationLog = await ReservasionLog.create({
     reservationId,
@@ -312,7 +317,7 @@ const addEditReservationLog = async (
     afterEditStartTime,
     beforeEditEndTime,
     afterEditEndTime,
-    user: userid,
+    reservationOrigin: editedReservation,
   });
   // return { success: true, message: 'Edit Reservation Log added successfully', data: reservationLog };
 };
@@ -321,14 +326,12 @@ const addEditReservationLog = async (
 const addCancelReservationLog = async (
   reservationId,
   canceledReservation,
-  forced = false,
-  userid
+  forced = false
 ) => {
   const reservationLog = await ReservasionLog.create({
     reservationId,
     action: forced ? "forceCancel" : "cancel",
-    canceledReservation,
-    user: userid,
+    reservationOrigin:canceledReservation,
   });
   // return { success: true, message: 'Cancel Reservation Log added successfully', data: reservationLog };
 };
@@ -338,7 +341,7 @@ exports.getLogReservation = async (req, res, next) => {
 
   // General users can see only their reservation
   if (req.user.role !== "admin" && req.user.role !== "moderator") {
-    query = ReservasionLog.find({user: req.user.id });
+    query = ReservasionLog.find({ user: req.user.id });
   } else {
     // if you are an admin, u can see it all
     query = ReservasionLog.find();

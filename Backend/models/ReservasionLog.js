@@ -18,11 +18,6 @@ const ReservationLogSchema = new Schema({
     enum: ["edit", "cancel", "forceCancel"],
     required: true,
   },
-  user: {
-    type: mongoose.Schema.ObjectId,
-    ref: "User",
-    required: true,
-  },
   beforeEditStartTime: {
     type: Date,
   },
@@ -35,7 +30,7 @@ const ReservationLogSchema = new Schema({
   afterEditEndTime: {
     type: Date,
   },
-  canceledReservation: {
+  reservationOrigin: {
     type: Object,
   },
 });
