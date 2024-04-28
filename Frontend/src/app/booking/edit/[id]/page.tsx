@@ -311,9 +311,7 @@ export default function ReservationDetail({ params }: Props) {
 
   return (
     <div className="flex justify-center my-20 flex-col gap-5 items-center">
-      <button className="bg-red-500 p-10" onClick={debug}>
-        hello
-      </button>
+    
       <h1 className="text-center text-4xl font-bold">
         {space ? (
           <div>
@@ -325,7 +323,7 @@ export default function ReservationDetail({ params }: Props) {
           <Skeleton className="h-10 w-[900px] bg-[#E5E7EB] shadow-lg" />
         )}
       </h1>
-      <div className="bg-white shadow-2xl relative flex justify-center items-center p-4 gap-14 pl-10 rounded-3xl w-max h-[613px]">
+      <div className="bg-white shadow-2xl relative flex justify-center items-center p-4 gap-14 pl-10 rounded-3xl max-w-7xl h-[613px]">
         {space ? (
           <div
             className="bg-gray-200 w-[512px] h-[478px] rounded-2xl shadow-2xl"
@@ -381,7 +379,7 @@ export default function ReservationDetail({ params }: Props) {
               )}
             </div>
           </div>
-          <div className="flex flex-col justify-between p-10 gap-y-5">
+          <div className="flex flex-col justify-between px-10 gap-y-5">
             <div className="flex items-center gap-5 mb-3">
               <div className="text-[#736868] font-semibold text-base">Date</div>
               <div>
