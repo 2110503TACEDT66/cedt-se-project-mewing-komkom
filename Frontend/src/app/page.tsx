@@ -45,7 +45,7 @@ export default function Home() {
                   </Link>
                 ))
               : Array.from({ length: 8 }).map((_, i) => (
-                  <Skeleton className="bg-[#E5E7EB] w-[427px] h-[320px] rounded-2xl shadow-2xl" key={i} />
+                  <Skeleton className="bg-[#E5E7EB] w-full h-[320px] rounded-2xl " key={i} />
                 ))}
           </div>
         </div>
