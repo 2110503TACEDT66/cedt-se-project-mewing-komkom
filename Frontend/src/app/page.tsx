@@ -62,7 +62,12 @@ export default function Home() {
               <HoverCardTrigger>
                 <div className="bg-slate-100 py-2 px-4 rounded-full duration-200 hover:bg-slate-200 flex items-center gap-2">
                   <span className="">Remaining Quota</span>
-                  <span className="font-extrabold text-sky-500">
+                  <span
+                    className={clsx(
+                      "font-extrabold",
+                      quota !== 0 ? "text-sky-500" : "text-gray-300"
+                    )}
+                  >
                     {quota !== null ? quota : "-"}
                   </span>
                   <CiCircleQuestion
