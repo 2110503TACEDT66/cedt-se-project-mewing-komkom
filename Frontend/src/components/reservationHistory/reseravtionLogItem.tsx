@@ -31,7 +31,7 @@ export default function ReservationLogItem({
   const startTimebefore = dayjs(logEdit.beforeEditStartTime)
     .tz("Asia/Bangkok")
     .format("HH:mm");
-  const endTimeabefore = dayjs(logEdit.beforeEditEndTime)
+  const endTimebefore = dayjs(logEdit.beforeEditEndTime)
     .tz("Asia/Bangkok")
     .format("HH:mm");
   const reservationDate = dayjs(logEdit.reservationOrigin.startTime).format(
@@ -62,28 +62,30 @@ export default function ReservationLogItem({
               </td>
             )}
 
-            {logEdit.action == ("cancel" || "forceCancel") && (
-              <td>
-                <span>{reservationDate} </span>
-              </td>
-            )}
+            {logEdit.action == "cancel" ||
+              (logEdit.action == "forceCancel" && (
+                <td>
+                  <span>{reservationDate} </span>
+                </td>
+              ))}
           </tr>
           <tr>
             <td>Time</td>
             {logEdit.action == "edit" && (
               <td>
                 <span className="line-through">
-                  {startTimebefore} - {endTimeabefore}
+                  {startTimebefore} - {endTimebefore}
                 </span>{" "}
                 to {startTimeafter} - {endTimeafter}
               </td>
             )}
 
-            {logEdit.action == ("cancel" || "forceCancel") && (
-              <td>
-                {reservationTimeStart} - {reservationTimeEnd}
-              </td>
-            )}
+            {logEdit.action == "cancel" ||
+              (logEdit.action == "forceCancel" && (
+                <td>
+                  {reservationTimeStart} - {reservationTimeEnd}
+                </td>
+              ))}
           </tr>
           <tr>
             <td>User</td>
