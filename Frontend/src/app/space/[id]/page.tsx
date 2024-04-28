@@ -11,7 +11,6 @@ import { useSession } from "next-auth/react";
 import checkAvailableSeat from "@/libs/checkAvailableSeat";
 import Swal from "sweetalert2";
 import { redirect, usePathname } from "next/navigation";
-import UserQuota from "@/libs/UserQuota";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { CiCircleQuestion } from "react-icons/ci";
@@ -21,6 +20,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import getUserReservationQuota from "@/libs/getUserReservationQuota";
 
 interface Props {
   params: { id: string };
@@ -35,6 +35,7 @@ const SpaceDetail = ({ params }: Props) => {
   const [availableSeat, setAvailableSeat] = useState<number>(0);
   const [isReserve, setIsReserve] = useState(false);
   const [percent, setPercent] = useState(0);
+  const [quota, setQuota] = useState<null | number>(null);
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -76,6 +77,21 @@ const SpaceDetail = ({ params }: Props) => {
       fetchAvailable();
     }
   }, [startTime, endTime, params.id, isReserve]);
+
+  useEffect(() => {
+    const fetchQuota = async () => {
+      try {
+        const userQuota = await getUserReservationQuota(
+          (session as any).data?.user.token,
+          date?.toString()
+        );
+        setQuota(userQuota.data);
+      } catch {
+        console.error("Error fetching quota");
+      }
+    };
+    fetchQuota();
+  }, [date]);
 
   const handleReserve = async (e: any) => {
     try {
@@ -383,9 +399,7 @@ const SpaceDetail = ({ params }: Props) => {
                 </div>
                 <div className="flex items-center gap-1">
                   <span>Remaining Quota: </span>
-                  <span className={clsx("font-bold")}>
-                    <UserQuota selectedDate={date} />
-                  </span>
+                  <span className={clsx("font-bold")}>{quota}</span>
                   <HoverCard>
                     <HoverCardTrigger>
                       <CiCircleQuestion
@@ -408,13 +422,15 @@ const SpaceDetail = ({ params }: Props) => {
                       <div className="flex-col w-full text-sm text-gray-800">
                         <div className="flex justify-between">
                           <span>Selected Date</span>
-                          <span>
+                          <span className="font-bold">
                             {date ? date.format("YYYY-MM-DD") : "Today"}
                           </span>
                         </div>
                         <div className="flex justify-between">
                           <span>Remaining</span>
-                          <UserQuota selectedDate={date} />
+                          <span className="font-bold">
+                            {quota !== null ? quota : "Loading"}
+                          </span>
                         </div>
                       </div>
 
