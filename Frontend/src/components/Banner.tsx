@@ -49,7 +49,7 @@ export default function Banner() {
         </h1>
         <p className="max-w-xl text-center mx-auto">
           Discover seamless co-working bookings. Reserve your space
-          effortlessly."
+          effortlessly.
         </p>
         {isAdmin ? (
           <Link
