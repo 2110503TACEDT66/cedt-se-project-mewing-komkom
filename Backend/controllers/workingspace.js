@@ -95,10 +95,10 @@ exports.getWorkingSpace = async (req, res, next) => {
 
 exports.createWorkingSpace = async (req, res, next) => {
   try {
-    if (WorkingSpace.find({ name: req.body.name })) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Name must be Unique" });
+    const existingWorkspace = await WorkingSpace.find({ name: req.body.name });
+
+    if (existingWorkspace.length > 0) {
+      res.status(400).json({ success: false, message: "Name must be Unique" });
     } else {
       const workingspace = await WorkingSpace.create(req.body);
       res.status(201).json({ success: true, data: workingspace });
