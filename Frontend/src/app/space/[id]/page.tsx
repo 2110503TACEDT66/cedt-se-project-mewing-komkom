@@ -237,12 +237,13 @@ const SpaceDetail = ({ params }: Props) => {
         let currentTimeMinute = dayjs().minute();
         let currentTimeHour = dayjs().hour();
         if (date?.date() === dayjs().date()) {
-        }
-        if (currentTimeHour === selectedHour) {
-          for (let i = 0; i < currentTimeMinute; i++) {
-            arrayOfMinute.push(i);
+          if (currentTimeHour === selectedHour) {
+            for (let i = 0; i < currentTimeMinute; i++) {
+              arrayOfMinute.push(i);
+            }
           }
         }
+        
         if (selectedHour === openHour) {
           for (let i = 0; i < Math.ceil(openMinute / 30); i++) {
             arrayOfMinute.push(i * 30);
@@ -266,6 +267,17 @@ const SpaceDetail = ({ params }: Props) => {
     if (space?.maxSeat)
       setPercent(Math.floor((availableSeat / space?.maxSeat) * 100));
   }, [availableSeat]);
+
+  const isOpen = (
+    openTime: string | Date,
+    closeTime: string | Date
+  ): boolean => {
+    const now = dayjs();
+    const open = dayjs(openTime).format("HH:mm");
+    const close = dayjs(closeTime).format("HH:mm");
+    const currentTime = now.format("HH:mm");
+    return currentTime >= open && currentTime <= close;
+  };
 
   if (session.status == "unauthenticated") {
     redirect(`/login`);
@@ -306,9 +318,15 @@ const SpaceDetail = ({ params }: Props) => {
                     <div className="flex gap-5">
                       <h1 className="text-4xl font-bold">{space?.name}</h1>
                       <div className="flex justify-center items-center">
-                        <span className="bg-green-400 text-white rounded-lg px-3 max-w-max">
-                          เปิดอยู่
-                        </span>
+                        {isOpen(space?.openTime, space?.closeTime) ? (
+                          <span className="bg-green-400 text-white rounded-lg px-3 max-w-max">
+                            Open
+                          </span>
+                        ) : (
+                          <span className="bg-rose-600 text-white rounded-lg px-3 max-w-max">
+                            Closed
+                          </span>
+                        )}
                       </div>
                     </div>
                   ) : (
@@ -357,6 +375,7 @@ const SpaceDetail = ({ params }: Props) => {
                   )}
                 </div>
                 Quota: <UserQuota selectedDate={date} />
+
               </div>
               <div className="flex items-center">
                 <label className="mr-5 text-[#736868] font-semibold text-base">

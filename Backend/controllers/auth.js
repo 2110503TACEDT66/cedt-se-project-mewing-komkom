@@ -66,7 +66,7 @@ exports.login = async (req, res, next) => {
     if (!isMatch) {
       return res
         .status(401)
-        .json({ success: false, msg: "Invalid credentials" });
+        .json({ success: false, msg: "Invaild credentials." });
     }
     if (user.banUntil) {
       const banUntil = user.banUntil;
