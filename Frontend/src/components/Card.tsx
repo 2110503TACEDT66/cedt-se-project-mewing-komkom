@@ -23,10 +23,10 @@ export default function Card({ data }: Props) {
   if (!data) return;
   useEffect(() => {
     const fetchAvailable = async () => {
-      const availableSeat = await checkAvailableSeat(
-        { startTime: dayjs(), endTime: dayjs().add(2, "hour") },
-        data.id || ""
-      );
+      const availableSeat = await checkAvailableSeat(data.id || "", {
+        startTime: dayjs(),
+        endTime: dayjs().add(2, "hour"),
+      });
       if (!availableSeat) return;
       setAvailableSeat(availableSeat.availableSeats);
     };
@@ -75,6 +75,8 @@ export default function Card({ data }: Props) {
         <div className="flex items-center gap-2">
           <FaClock />
           <p>
+            {dayjs(data.openTime).tz("Asia/Bangkok").format("HH:mm")} -{" "}
+            {dayjs(data.closeTime).tz("Asia/Bangkok").format("HH:mm")}
             {dayjs(data.openTime).format("HH:mm a")} -{" "}
             {dayjs(data.closeTime).format("HH:mm a")}
           </p>
