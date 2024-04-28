@@ -59,9 +59,9 @@ export default function page({ params }: { params: { id: string } }) {
                 />
                 <label>เวลาเปิด:</label>
                 <div className="col-span-3 flex gap-3">
-                  <TimePicker className=" " id="Edit-openTime" disabled />
+                  <TimePicker className=" " id="Edit-openTime" disabled minuteStep={30} />
                   <div className="text-center self-center">ถึง</div>
-                  <TimePicker className=" " id="Edit-closeTime" disabled />
+                  <TimePicker className=" " id="Edit-closeTime" disabled minuteStep={30} />
                 </div>
                 <label>รายละเอียด:</label>
                 <Textarea

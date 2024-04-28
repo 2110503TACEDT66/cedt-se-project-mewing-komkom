@@ -95,6 +95,7 @@ export default function CoWorkForm({ data }: Props) {
             className=" "
             id="openTime"
             onChange={handleOpenChange}
+            minuteStep={30}
             /* defaultValue={dayjs(data?.openTime, 'HH:mm')} */
           />
           <div className="text-center self-center">ถึง</div>
@@ -104,6 +105,7 @@ export default function CoWorkForm({ data }: Props) {
             className=" "
             id="closeTime"
             onChange={handleCloseChange}
+            minuteStep={30}
             /* defaultValue={dayjs(data?.closeTime, 'HH:mm')} */
           />
         </div>
