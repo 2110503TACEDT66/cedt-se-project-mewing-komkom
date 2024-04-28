@@ -7,7 +7,7 @@ import ModalCreateNew from "@/components/admin/ModalCreateNew";
 import ModalCreateNewHandle from "@/components/admin/ModalCreateNewHandle";
 import checkAvailableSeat from "@/libs/checkAvailableSeat";
 import dayjs from "dayjs";
-import QuotaBanner from "@/components/QuotaBanner";
+import UserQuota from "@/libs/UserQuota";
 
 export default async function Home() {
   const spaces: SpaceJson = await getSpaces();
@@ -17,9 +17,12 @@ export default async function Home() {
       <Banner />
       <div className="-mt-96 pt-96  pb-20 bg-white">
         <div className="mx-20" id="booking">
-          <div className="">
+          <div className="flex justify-between items-center">
             <h1 className="text-5xl text-">Available Co-working Space</h1>
-            <QuotaBanner />
+            <div className="">
+              <span>Remaining Quota for today: </span>
+              <UserQuota />
+            </div>
           </div>
           <div className="grid grid-cols-4 gap-9 py-10">
             {spaces.data.map((item: SpaceItem) => (

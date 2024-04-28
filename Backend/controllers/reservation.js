@@ -273,7 +273,10 @@ exports.getUserReservation = async (req, res, next) => {
 
 exports.getUserReservationQuota = async (req, res, next) => {
   try {
+    console.log(req.body.selectedDate, req.user.id)
     const userQuotaLeft = await getUserAvailableQuota(req.body.selectedDate, req.user.id);
+
+    console.log("date: ", req.body.selectedDate, "quota: ", userQuotaLeft)
     res.status(200).json({
       success: true,
       data: userQuotaLeft,
@@ -288,13 +291,16 @@ const getUserAvailableQuota = async (selectedDate, userId) => {
   let existedReservation;
   if (!selectedDate) {
     const today = new Date();
+    console.log("searching for today:", today.toLocaleDateString())
     existedReservation = await Reservation.find({
       user: userId,
       // find the match startingdate
-      startTime: { $gte: today.setHours(0, 0, 0, 0), $lt: today.setDate(today.getDate() + 1) },
+      startTime: { $gte: today, $lt: today.setDate(today.getDate() + 1) },
     });
   } else {
+    console.log("receive dt string:", selectedDate)
     const selectedDate_ = new Date(selectedDate);
+    console.log("searching for  date:", selectedDate_.toLocaleDateString())
     existedReservation = await Reservation.find({
       user: userId,
       // find the match startingdate
