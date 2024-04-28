@@ -25,7 +25,7 @@ export default async function TopMenu() {
           <SiStarship className="text-blue-500 hover:text-blue-700 duration-200" size={40} />
         </Link>
 
-        {isAdminOrModerator ? <TopMenuItem title="Admin Dashboard" href="/adminpage" /> : ""}
+        {isAdminOrModerator ? <TopMenuItem title="Manage Co-Working Spaces" href="/adminpage" /> : ""}
         {isModerator ? <><TopMenuItem title="Manage Account" href="/moderatorpage" />
                         <TopMenuItem title="Ban User" href="/ban" /></> : ""}
       </div>
