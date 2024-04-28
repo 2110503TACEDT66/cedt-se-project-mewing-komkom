@@ -32,10 +32,9 @@ export default function CoWorkForm({ data }: Props) {
       {
         name: card.name,
         address: card.address,
-        tel: "081530",
         openTime: card.openTime,
         closeTime: card.closeTime,
-        maxSeat: card.remaining,
+        maxSeat: card.maxSeat,
         image: card.image,
       },
       session.data!.user.token
@@ -44,6 +43,12 @@ export default function CoWorkForm({ data }: Props) {
 
   return (
     <div className=" bg-white rounded-2xl shadow-2xl">
+      {/* {card.name}
+      {card.address}
+      {card.openTime}
+      {card.closeTime}
+      {card.maxSeat}
+      {card.image} */}
       <form onSubmit={onSubmit} className="p-20 grid grid-cols-4 gap-10 ">
         <label htmlFor="image-upload">รูปภาพ:</label>
         {/* <Input
@@ -121,7 +126,7 @@ export default function CoWorkForm({ data }: Props) {
             className=" rounded-lg p-3"
             /* value={inputValue} */
             onChange={handleFormChange}
-            id="remaining"
+            id="maxSeat"
             defaultValue={1}
             min={1}
           />

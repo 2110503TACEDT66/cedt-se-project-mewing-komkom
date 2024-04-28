@@ -79,7 +79,9 @@ exports.getAllWorkingSpace = async (req, res, next) => {
 
 exports.getWorkingSpace = async (req, res, next) => {
   try {
-    const workingspace = await WorkingSpace.findById(req.params.id).populate('reservation');
+    const workingspace = await WorkingSpace.findById(req.params.id).populate(
+      "reservation"
+    );
 
     if (!workingspace) {
       return res.status(400).json({ success: false });
@@ -92,18 +94,30 @@ exports.getWorkingSpace = async (req, res, next) => {
 };
 
 exports.createWorkingSpace = async (req, res, next) => {
-  console.log(req.body);
-  const workingspace = await WorkingSpace.create(req.body);
+  try {
+    const existingWorkspace = await WorkingSpace.find({ name: req.body.name });
 
-  res.status(201).json({ success: true, data: workingspace });
+    if (existingWorkspace.length > 0) {
+      res.status(400).json({ success: false, message: "Name must be Unique" });
+    } else {
+      const workingspace = await WorkingSpace.create(req.body);
+      res.status(201).json({ success: true, data: workingspace });
+    }
+  } catch (error) {
+    res.status(400).json({ success: false });
+  }
 };
 
 exports.updateWorkingSpace = async (req, res, next) => {
   try {
-    const workingspace = await WorkingSpace.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const workingspace = await WorkingSpace.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!workingspace) {
       return res.status(400).json({ success: false });
@@ -131,36 +145,38 @@ exports.deleteWorkingSpace = async (req, res, next) => {
   }
 };
 
-
 exports.checkAvailableSeat = async (req, res, next) => {
   try {
     const { startTime, endTime } = req.body;
-    
     const workingSpaceId = req.params.id;
-    console.log("this is id = ",workingSpaceId);
-    const workingspace = await WorkingSpace.findById(workingSpaceId).populate('reservation');
-    if (!workingspace) {
-      return res.status(404).json({ success: false, message: "Working space not found" });
-    }
-
-    const overlappingReservations = await Reservation.find({
-      workingSpace: workingSpaceId,
-      startTime: { $lt: endTime },
-      endTime: { $gt: startTime }
-    });
-    let reservedSeats = 0;
-    overlappingReservations.forEach(overlappingReservations => {
-      reservedSeats += 1;
-    });
-
-    const availableSeats = workingspace.maxSeat - reservedSeats;
+    const availableSeats = await getAvailableSeat(workingSpaceId, startTime, endTime);
 
     res.status(200).json({
       success: true,
-      availableSeats: availableSeats
+      availableSeats: availableSeats,
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
+
 };
+
+async function getAvailableSeat(workingSpaceId, startTime, endTime) {
+
+  const workingspace = await WorkingSpace.findById(workingSpaceId);
+  if (!workingspace) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Working space not found" });
+  }
+  const overlappingReservations = await Reservation.find({
+    workingSpace: workingSpaceId,
+    startTime: { $lt: endTime },
+    endTime: { $gt: startTime },
+  });
+
+  const availableSeats = workingspace.maxSeat - overlappingReservations.length;
+  return availableSeats > 0 ? availableSeats : 0;
+}
+exports.getAvailableSeat = getAvailableSeat;

@@ -34,7 +34,7 @@ export default function Card({ data }: Props) {
   }, []);
 
   return (
-    <div className="relative hover:-translate-y-1 duration-150 cursor-pointer">
+    <div className="relative hover:-translate-y-1 duration-150 cursor-pointer ">
       {/* <Image
         src="https://www.terrabkk.com/images/upload/af178899ca2cc98fcf8a7114450d17a7.jpg"
         width={0}
@@ -45,7 +45,7 @@ export default function Card({ data }: Props) {
         alt=""
       /> */}
       <div
-        className="bg-gray-200 w-full h-80 rounded-3xl"
+        className="bg-gray-200 w-full h-80 rounded-3xl shadow-xl"
         style={{
           backgroundImage: `url(${data.image})`,
           backgroundSize: "cover",
@@ -77,6 +77,8 @@ export default function Card({ data }: Props) {
           <p>
             {dayjs(data.openTime).tz("Asia/Bangkok").format("HH:mm")} -{" "}
             {dayjs(data.closeTime).tz("Asia/Bangkok").format("HH:mm")}
+            {dayjs(data.openTime).format("HH:mm a")} -{" "}
+            {dayjs(data.closeTime).format("HH:mm a")}
           </p>
         </div>
       </div>

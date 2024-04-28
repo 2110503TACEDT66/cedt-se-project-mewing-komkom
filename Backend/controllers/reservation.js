@@ -1,12 +1,13 @@
 const Reservation = require("../models/Reservation");
 const WorkingSpace = require("../models/WorkingSpace");
 const ReservasionLog = require("../models/ReservasionLog");
+const { getAvailableSeat } = require("./workingspace");
 
 exports.getAllReservation = async (req, res, next) => {
   let query;
 
   // General users can see only their reservation
-  if (req.user.role !== "admin") {
+  if (req.user.role !== "admin" && req.user.role !== "moderator") {
     query = Reservation.find({ user: req.user.id }).populate({
       path: "workingSpace",
       select: "name address tel",
@@ -25,10 +26,10 @@ exports.getAllReservation = async (req, res, next) => {
         path: "workingSpace",
         select: "name address tel",
       })
-      .populate({
-        path: "user",
-        select: "name email",
-      });
+        .populate({
+          path: "user",
+          select: "name email",
+        });
     } else {
       query = Reservation.find().populate({
         path: "workingSpace",
@@ -110,16 +111,22 @@ exports.addReservation = async (req, res, next) => {
         message: `No working space with the id of ${req.params.workingSpaceId}`,
       });
     }
-
+    const availableSeat = await getAvailableSeat(req.params.workingSpaceId, req.body.startTime, req.body.endTime)
+    if (availableSeat <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: `No available seat for this time slot`,
+      });
+    }
     // add user Id to req.body
     req.body.user = req.user.id;
     // Check for existed reservation
-    const existedReservation = await Reservation.find({ user: req.user.id });
-    //If the user is not an admin, they can only create 3 reservation.
-    if (existedReservation.length >= 3 && req.user.role !== "admin" && req.user.role !== "moderator") {
+    const userQuota = await getUserAvailableQuota(req.startTime, req.user.id);
+    //If the user is not an admin, they can only create > 3 reservation/day.
+    if (userQuota <= 0 && req.user.role !== "admin" && req.user.role !== "moderator") {
       return res.status(400).json({
         success: false,
-        message: `The user with ID ${req.user.id} has already made 3 reservations`,
+        message: `The user with ID ${req.user.id} has exceeded the maximum quota of reservations`,
       });
     }
     const reservation = await Reservation.create(req.body);
@@ -185,7 +192,7 @@ exports.deleteReservation = async (req, res, next) => {
     // Make sure user is the reservation owner
     if (
       reservation.user.toString() !== req.user.id &&
-      req.user.role !== "admin"
+      req.user.role !== "admin" && req.user.role !== "moderator"
     ) {
       return res.status(401).json({
         success: false,
@@ -264,6 +271,45 @@ exports.getUserReservation = async (req, res, next) => {
   }
 };
 
+exports.getUserReservationQuota = async (req, res, next) => {
+  try {
+    console.log(req.body.selectedDate, req.user.id)
+    const userQuotaLeft = await getUserAvailableQuota(req.body.selectedDate, req.user.id);
+
+    console.log("date: ", req.body.selectedDate, "quota: ", userQuotaLeft)
+    res.status(200).json({
+      success: true,
+      data: userQuotaLeft,
+    });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ success: false, message: "Cannot get Reservation Quota" });
+  }
+}
+
+const getUserAvailableQuota = async (selectedDate, userId) => {
+  let existedReservation;
+  if (!selectedDate) {
+    const today = new Date();
+    console.log("searching for today:", today.toLocaleDateString())
+    existedReservation = await Reservation.find({
+      user: userId,
+      // find the match startingdate
+      startTime: { $gte: today, $lt: today.setDate(today.getDate() + 1) },
+    });
+  } else {
+    console.log("receive dt string:", selectedDate)
+    const selectedDate_ = new Date(selectedDate);
+    console.log("searching for  date:", selectedDate_.toLocaleDateString())
+    existedReservation = await Reservation.find({
+      user: userId,
+      // find the match startingdate
+      startTime: { $gte: selectedDate_, $lt: selectedDate_.setDate(selectedDate_.getDate() + 1) },
+    });
+  }
+
+  return 3 - existedReservation.length;
+}
 
 // Function to add reservation log for editing
 const addEditReservationLog = async (reservationId, beforeEditStartTime, afterEditStartTime, beforeEditEndTime, afterEditEndTime) => {
