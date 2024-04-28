@@ -30,7 +30,19 @@ describe('Make reservation page', () => {
     cy.visit('/space/6621e0dd0ca3b59b54586983');
   });
 
-  it('should successfully make a reservation', () => {
+  it('No date provided', () => {
     cy.contains('button', 'Reserve').click();
+    cy.contains('Please provide date').should('be.visible');
   });
+
+  it('No date provided', () => {
+    // cy.contains('date-picker-input').type('01/05/2024')
+    cy.get('DatePicker').should('exist')
+    // cy.contains('button', 'Reserve').click();
+    // cy.contains('Please provide date').should('be.visible');
+  });
+
+  // it('successfully makes a reservation with valid data', () => {
+    
+  // });
 })
