@@ -75,13 +75,14 @@ export default function ModeratorPage() {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {users
-              .filter((item: any) => {
+              .filter((item: User) => {
                 return (
                   item.name.toLowerCase().includes(search.toLowerCase()) ||
                   item.role.toLowerCase().includes(search.toLowerCase()) ||
                   item.email.toLowerCase().includes(search.toLowerCase())
                 );
               })
+              .sort((a: User, b: User) => b.role.localeCompare(a.role))
               .map((eachadmin: User) => (
                 <AdminItem admin={eachadmin} />
               ))}
