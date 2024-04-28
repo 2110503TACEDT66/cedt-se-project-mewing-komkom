@@ -8,7 +8,6 @@ import ModalCreateNew from "@/components/admin/ModalCreateNew";
 import ModalCreateNewHandle from "@/components/admin/ModalCreateNewHandle";
 import checkAvailableSeat from "@/libs/checkAvailableSeat";
 import dayjs from "dayjs";
-import UserQuota from "@/libs/UserQuota";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import clsx from "clsx";
@@ -18,9 +17,16 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { CiCircleQuestion } from "react-icons/ci";
+import getUserReservationQuota from "@/libs/getUserReservationQuota";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
   const [spaces, setSpaces] = useState<SpaceJson>();
+  const [quota, setQuota] = useState<null | number>(null);
+
+  const { data: session } = useSession();
+  if (!session) return null;
+
   useEffect(() => {
     const fetchSpace = async () => {
       try {
@@ -32,6 +38,19 @@ export default function Home() {
     };
     fetchSpace();
   }, []);
+
+  useEffect(() => {
+    const fetchQuota = async () => {
+      try {
+        const userQuota = await getUserReservationQuota(session.user.token);
+        setQuota(userQuota.data);
+      } catch {
+        console.error("Error fetching quota");
+      }
+    };
+    fetchQuota();
+  }, []);
+
   return (
     <main>
       <Banner />
@@ -41,10 +60,10 @@ export default function Home() {
             <h1 className="text-5xl text-">Available Co-working Space</h1>
             <HoverCard>
               <HoverCardTrigger>
-                <div className="bg-slate-200 py-2 px-4 rounded-full duration-200 hover:bg-slate-300 flex items-center gap-2">
+                <div className="bg-slate-100 py-2 px-4 rounded-full duration-200 hover:bg-slate-200 flex items-center gap-2">
                   <span className="">Remaining Quota</span>
                   <span className="font-extrabold text-sky-500">
-                    <UserQuota />
+                    {quota !== null ? quota : "-"}
                   </span>
                   <CiCircleQuestion
                     className="text-gray-500"
@@ -71,7 +90,7 @@ export default function Home() {
                   </div>
                   <div className="flex justify-between">
                     <span>Remaining</span>
-                    <UserQuota />
+                    {quota}
                   </div>
                 </div>
 
