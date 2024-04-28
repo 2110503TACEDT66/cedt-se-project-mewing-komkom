@@ -3,8 +3,12 @@ import React, { createContext, useState, useContext, ReactNode } from "react";
 import { SetPreviewCard, SpaceItem } from "../../interface";
 import type { TimePickerProps } from "antd";
 import moment from "moment";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 const CardContext = createContext<any>(undefined);
-
+dayjs.extend(utc);
+dayjs.extend(timezone);
 export function CardProvider({ children }: { children: React.ReactNode }) {
   const newCard: SpaceItem = {
     image: "",
@@ -49,7 +53,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
         ...prevCard,
         [e.target.id.substring(5)]: value,
       }));
-      if (id === "Edit-remaining") {
+      if (id === "Edit-maxSeat") {
         setCardEdit((prevCard) => ({
           ...prevCard,
           [e.target.id.substring(5)]: Math.abs(Number(value)),
@@ -70,7 +74,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
         [id]: value,
       }));
 
-      if (id === "remaining") {
+      if (id === "maxSeat") {
         setCard((prevCard) => ({
           ...prevCard,
           [id]: Math.abs(Number(value)),
@@ -118,40 +122,29 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
   };
 
   const handleOpenChange: TimePickerProps["onChange"] = (time: any) => {
-    const hour = time.$H;
-    const minute = time.$m;
-    const m = moment(`${hour}-${minute}`, "HH:mm");
-    const formattedTime = m.format("HH:mm");
+    const formattedTime = dayjs(time).format();
+    console.log(formattedTime);
     setCard((prevCard) => ({
       ...prevCard,
       openTime: formattedTime,
     }));
   };
   const handleEditOpenChange: TimePickerProps["onChange"] = (time: any) => {
-    const hour = time.$H;
-    const minute = time.$m;
-    const m = moment(`${hour}-${minute}`, "HH:mm");
-    const formattedTime = m.format("HH:mm");
+    const formattedTime = dayjs(time).format();
     setCardEdit((prevCard) => ({
       ...prevCard,
       openTime: formattedTime,
     }));
   };
   const handleCloseChange: TimePickerProps["onChange"] = (time: any) => {
-    const hour = time.$H;
-    const minute = time.$m;
-    const m = moment(`${hour}-${minute}`, "HH:mm");
-    const formattedTime = m.format("HH:mm");
+    const formattedTime = dayjs(time).format();
     setCard((prevCard) => ({
       ...prevCard,
       closeTime: formattedTime,
     }));
   };
   const handleEditCloseChange: TimePickerProps["onChange"] = (time: any) => {
-    const hour = time.$H;
-    const minute = time.$m;
-    const m = moment(`${hour}-${minute}`, "HH:mm");
-    const formattedTime = m.format("HH:mm");
+    const formattedTime = dayjs(time).format();
     setCardEdit((prevCard) => ({
       ...prevCard,
       closeTime: formattedTime,
