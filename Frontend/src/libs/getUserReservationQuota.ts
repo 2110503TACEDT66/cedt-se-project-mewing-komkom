@@ -1,13 +1,15 @@
 export default async function getUserReservationQuota(
   token: string,
-  date?: Date
+  date?: string
 ) {
-  const requestBody = date ? { date: date } : {};
+  const requestBody = date ? { selectedDate: date } : {};
+
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation/quota`,
     {
       method: "POST",
       headers: {
+        "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(requestBody),
