@@ -118,14 +118,14 @@ const SpaceDetail = ({ params }: Props) => {
 
   const handleDateChange: DatePickerProps["onChange"] = (date, dateString) => {
     setDate(date);
-    if (date) {
-      setStartTime(
-        date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
-      );
-      setEndTime(
-        date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0)
-      );
-    }
+    // if (date) {
+    //   setStartTime(
+    //     date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
+    //   );
+    //   setEndTime(
+    //     date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0)
+    //   );
+    // }
   };
 
   const handleTimeChange = (time: Dayjs | null, timeType: string) => {
@@ -356,7 +356,7 @@ const SpaceDetail = ({ params }: Props) => {
                     <Skeleton className="h-[32px] w-[138px] bg-[#E5E7EB] shadow-lg" />
                   )}
                 </div>
-                <UserQuota selectedDate={date}/>
+                Quota: <UserQuota selectedDate={date} />
               </div>
               <div className="flex items-center">
                 <label className="mr-5 text-[#736868] font-semibold text-base">
@@ -368,6 +368,7 @@ const SpaceDetail = ({ params }: Props) => {
                       handleTimeChange={handleTimeChange}
                       disabledTime={disabledStartTime}
                       typeTime="start"
+
                     />
                   ) : (
                     <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
@@ -386,36 +387,39 @@ const SpaceDetail = ({ params }: Props) => {
                   )}
                 </div>
               </div>
-              <div>
-                <div className="flex text-[#0043CE] font-bold text-base">
-                  Available Seat
-                </div>
+              {startTime && endTime && date && (
+                <div className="my-4">
+                  <div className="flex text-[#0043CE] font-bold text-base">
+                    Available Seat
+                  </div>
 
-                {space ? (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex gap-2 items-end">
-                      <div className="font-bold text-base">{percent}%</div>
-                      <div className="text-xs pb-[3px] text-[#6F6F6F]">
-                        {availableSeat} seat left
+                  {space ? (
+                    <div className="flex flex-col gap-2">
+                      <div className="flex gap-2 items-end">
+                        <div className="font-bold text-base">{percent}%</div>
+                        <div className="text-xs pb-[3px] text-[#6F6F6F]">
+                          {availableSeat} seat left
+                        </div>
+                      </div>
+                      <div>
+                        <Progress className="h-3" value={percent} />
                       </div>
                     </div>
-                    <div>
-                      <Progress className="h-3" value={percent} />
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      <Skeleton className="h-4 w-[150px] bg-[#E5E7EB] shadow-lg" />
+                      <Skeleton className="h-3 bg-[#E5E7EB] shadow-lg" />
                     </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-3">
-                    <Skeleton className="h-4 w-[150px] bg-[#E5E7EB] shadow-lg" />
-                    <Skeleton className="h-3 bg-[#E5E7EB] shadow-lg" />
-                  </div>
-                )}
-              </div>
-              <div className="flex justify-end">
+                  )}
+                </div>
+              )}
+
+              <div className="flex justify-end mt-4">
                 <button
                   onClick={handleReserve}
                   className="bg-black px-5 py-2 rounded-full text-white max-w-max "
                 >
-                  Save Changes
+                  Reserve
                 </button>
               </div>
             </div>
