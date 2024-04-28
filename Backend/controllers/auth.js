@@ -57,7 +57,7 @@ exports.login = async (req, res, next) => {
     if (!user) {
       return res
         .status(400)
-        .json({ success: false, msg: "Invalid credentials" });
+        .json({ success: false, msg: "๊User not found." });
     }
 
     //   Check if password matches
@@ -66,7 +66,7 @@ exports.login = async (req, res, next) => {
     if (!isMatch) {
       return res
         .status(401)
-        .json({ success: false, msg: "Invalid credentials" });
+        .json({ success: false, msg: "Wrong username or password." });
     }
     if (user.banUntil) {
       const banUntil = user.banUntil;
