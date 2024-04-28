@@ -28,13 +28,10 @@ export default function page() {
   return (
     <div className="p-10">
       <div className="flex justify-center mt-10 mb-5 text-5xl font-bold">
-        <div>
           <span className="bg-gradient-to-b from-blue-700 to-blue-400 bg-clip-text text-transparent">
             Manage Co-working Space
           </span>
-        </div>
       </div>
-      <div>
         <div className="flex justify-center mb-10">
           <Link
             href="/adminpage/create"
@@ -43,7 +40,6 @@ export default function page() {
             เพิ่ม
           </Link>
         </div>
-      </div>
       {spaces ? (
         <div className="grid grid-cols-4 justify-items-center gap-10">
           {spaces?.data.map((i: any) => <PreviewCard card={i} />)}
@@ -51,9 +47,9 @@ export default function page() {
       ) : (
         <div className="grid grid-cols-4 justify-items-center gap-10">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div className="h-[520px] relative flex flex-col text-gray-700 bg-white shadow-xl bg-clip-border justify-between rounded-2xl w-96 p-3">
+            <div className="h-[520px] relative flex flex-col text-gray-700 bg-white shadow-xl bg-clip-border justify-between rounded-2xl w-full p-3">
               <div>
-                <Skeleton className="shadow-xl h-[190px] w-[360px] bg-[#E5E7EB] rounded-2xl" />
+                <Skeleton className="shadow-xl h-[190px] w-full bg-[#E5E7EB] rounded-2xl" />
                 <div className="p-4">
                   <Skeleton className="shadow-xl h-6 w-44 bg-[#E5E7EB] rounded-2xl" />
                 </div>
