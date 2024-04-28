@@ -1,21 +1,28 @@
 "use client";
 import getUserReservationQuota from "@/libs/getUserReservationQuota";
-import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import { Dayjs } from "dayjs";
 
-export default function QuotaBanner() {
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+
+type TPropQuotaBanner = {
+  selectedDate?: Dayjs;
+};
+export default function QuotaBanner({ selectedDate }: TPropQuotaBanner) {
   const [quota, setQuota] = useState<null | number>(null);
   const { data: session } = useSession();
   if (!session) return null;
 
   useEffect(() => {
     const fetchQuota = async () => {
-      const userQuota = await getUserReservationQuota(session.user.token);
+      const userQuota = await getUserReservationQuota(
+        session.user.token,
+        selectedDate?.toString()
+      );
       setQuota(userQuota.data);
     };
     fetchQuota();
-  }, []);
+  }, [selectedDate]);
 
-  if (quota === null) return <>loading</>;
-  return <div>{quota}</div>;
+  return quota;
 }

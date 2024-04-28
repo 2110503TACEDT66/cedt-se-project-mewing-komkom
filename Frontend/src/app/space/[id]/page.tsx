@@ -11,7 +11,7 @@ import { useSession } from "next-auth/react";
 import checkAvailableSeat from "@/libs/checkAvailableSeat";
 import Swal from "sweetalert2";
 import { redirect, usePathname } from "next/navigation";
-
+import UserQuota from "@/libs/UserQuota";
 interface Props {
   params: { id: string };
 }
@@ -306,6 +306,7 @@ const SpaceDetail = ({ params }: Props) => {
                     value={date}
                   />
                 </div>
+                <UserQuota selectedDate={date}/>
               </div>
               <div className="flex items-center">
                 <label className="mr-5 text-[#736868] font-semibold text-base">
