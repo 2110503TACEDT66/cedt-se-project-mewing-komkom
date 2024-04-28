@@ -279,7 +279,7 @@ exports.getUserReservationQuota = async (req, res, next) => {
     console.log("date: ", req.body.selectedDate, "quota: ", userQuotaLeft)
     res.status(200).json({
       success: true,
-      data: userQuotaLeft,
+      data: userQuotaLeft > 0 ? userQuotaLeft : 0,
     });
   } catch (e) {
     console.log(e);
@@ -291,24 +291,32 @@ const getUserAvailableQuota = async (selectedDate, userId) => {
   let existedReservation;
   if (!selectedDate) {
     const today = new Date();
-    console.log("searching for today:", today.toLocaleDateString())
+    today.setHours(0, 0, 0, 0)
+    const tomorrow = new Date();
+    tomorrow.setHours(0, 0, 0, 0)
+    tomorrow.setDate(today.getDate() + 1)
+    console.log("searching quota for today:", today.toISOString() + " till " + tomorrow.toISOString())
     existedReservation = await Reservation.find({
       user: userId,
       // find the match startingdate
-      startTime: { $gte: today, $lt: today.setDate(today.getDate() + 1) },
+      startTime: { $gte: today, $lt: tomorrow },
     });
   } else {
     console.log("receive dt string:", selectedDate)
     const selectedDate_ = new Date(selectedDate);
-    console.log("searching for  date:", selectedDate_.toLocaleDateString())
+    selectedDate_.setHours(0, 0, 0, 0)
+    const till = new Date(selectedDate);
+    till.setHours(0, 0, 0, 0)
+    till.setDate(selectedDate_.getDate() + 1)
+    console.log("searching quota for  date:", selectedDate_.toISOString() + " till " + till.toISOString())
     existedReservation = await Reservation.find({
       user: userId,
       // find the match startingdate
-      startTime: { $gte: selectedDate_, $lt: selectedDate_.setDate(selectedDate_.getDate() + 1) },
+      startTime: { $gte: selectedDate_, $lt: till },
     });
   }
 
-  return 3 - existedReservation.length;
+  return (3 - existedReservation.length);
 }
 
 // Function to add reservation log for editing
