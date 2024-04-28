@@ -237,12 +237,13 @@ const SpaceDetail = ({ params }: Props) => {
         let currentTimeMinute = dayjs().minute();
         let currentTimeHour = dayjs().hour();
         if (date?.date() === dayjs().date()) {
-        }
-        if (currentTimeHour === selectedHour) {
-          for (let i = 0; i < currentTimeMinute; i++) {
-            arrayOfMinute.push(i);
+          if (currentTimeHour === selectedHour) {
+            for (let i = 0; i < currentTimeMinute; i++) {
+              arrayOfMinute.push(i);
+            }
           }
         }
+        
         if (selectedHour === openHour) {
           for (let i = 0; i < Math.ceil(openMinute / 30); i++) {
             arrayOfMinute.push(i * 30);
