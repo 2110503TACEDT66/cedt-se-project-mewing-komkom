@@ -14,6 +14,13 @@ import { redirect, usePathname } from "next/navigation";
 import UserQuota from "@/libs/UserQuota";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
+import { CiCircleQuestion } from "react-icons/ci";
+import clsx from "clsx";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 interface Props {
   params: { id: string };
@@ -243,7 +250,7 @@ const SpaceDetail = ({ params }: Props) => {
             }
           }
         }
-        
+
         if (selectedHour === openHour) {
           for (let i = 0; i < Math.ceil(openMinute / 30); i++) {
             arrayOfMinute.push(i * 30);
@@ -374,8 +381,49 @@ const SpaceDetail = ({ params }: Props) => {
                     <Skeleton className="h-[32px] w-[138px] bg-[#E5E7EB] shadow-lg" />
                   )}
                 </div>
-                Quota: <UserQuota selectedDate={date} />
+                <div className="flex items-center gap-1">
+                  <span>Remaining Quota: </span>
+                  <span className={clsx("font-bold")}>
+                    <UserQuota selectedDate={date} />
+                  </span>
+                  <HoverCard>
+                    <HoverCardTrigger>
+                      <CiCircleQuestion
+                        className="text-gray-500"
+                        size={16}
+                        strokeWidth={0.75}
+                      />
+                    </HoverCardTrigger>
 
+                    <HoverCardContent>
+                      <h2 className="font-bold text-sky-500">
+                        What's Remaining Quota?
+                      </h2>
+                      <p className="text-gray-500 font-sm">
+                        You can make 3 reservations per day for co-working
+                        spaces. Once you exceeded your quota you can find
+                        another free days Hope you productive! 🌟
+                      </p>
+                      <hr className="my-3" />
+                      <div className="flex-col w-full text-sm text-gray-800">
+                        <div className="flex justify-between">
+                          <span>Selected Date</span>
+                          <span>
+                            {date ? date.format("YYYY-MM-DD") : "Today"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Remaining</span>
+                          <UserQuota selectedDate={date} />
+                        </div>
+                      </div>
+
+                      <span className="text-gray-400 text-xs">
+                        Max Quota/Day: 3
+                      </span>
+                    </HoverCardContent>
+                  </HoverCard>
+                </div>
               </div>
               <div className="flex items-center">
                 <label className="mr-5 text-[#736868] font-semibold text-base">
@@ -387,7 +435,6 @@ const SpaceDetail = ({ params }: Props) => {
                       handleTimeChange={handleTimeChange}
                       disabledTime={disabledStartTime}
                       typeTime="start"
-
                     />
                   ) : (
                     <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
