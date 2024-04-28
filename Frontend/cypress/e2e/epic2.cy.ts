@@ -22,24 +22,24 @@ describe('Make reservation page', () => {
     // cy.visit('/space/6621e0dd0ca3b59b54586983');
     cy.visit('/login');
     cy.get('input[name="email"]').type('torrak@gmail.com');
-    cy.wait(2000);
     cy.get('input[name="password"]').type('123456');
-    cy.wait(2000);
     cy.get('button[type="submit"]').click();
     cy.wait(2000);
     cy.visit('/space/6621e0dd0ca3b59b54586983');
   });
 
-  it('No date provided', () => {
+  // it('No date provided', () => {
+  //   cy.contains('button', 'Reserve').click();
+  //   cy.contains('Please provide date').should('be.visible');
+  // });
+
+  it('Reserve successfully', () => {
+    // cy.contains('date-picker-input').type('01/05/2024')
+    cy.get('[data-testid="spaceDatePicker"]').type("2024-05-01");
+    cy.get('[data-testid="startTimePicker"]').type("17:00");
+    cy.get('[data-testid="endTimePicker"]').type("18:00");
     cy.contains('button', 'Reserve').click();
     cy.contains('Please provide date').should('be.visible');
-  });
-
-  it('No date provided', () => {
-    // cy.contains('date-picker-input').type('01/05/2024')
-    cy.get('DatePicker').should('exist')
-    // cy.contains('button', 'Reserve').click();
-    // cy.contains('Please provide date').should('be.visible');
   });
 
   // it('successfully makes a reservation with valid data', () => {

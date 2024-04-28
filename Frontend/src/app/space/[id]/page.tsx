@@ -369,6 +369,7 @@ const SpaceDetail = ({ params }: Props) => {
                     <DatePicker
                       className="border-[#979797]"
                       onChange={handleDateChange}
+                      data-testid="spaceDatePicker"
                     />
                   ) : (
                     <Skeleton className="h-[32px] w-[138px] bg-[#E5E7EB] shadow-lg" />
@@ -387,7 +388,7 @@ const SpaceDetail = ({ params }: Props) => {
                       handleTimeChange={handleTimeChange}
                       disabledTime={disabledStartTime}
                       typeTime="start"
-
+                      data-testid="startTimePicker"
                     />
                   ) : (
                     <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
@@ -400,6 +401,7 @@ const SpaceDetail = ({ params }: Props) => {
                       handleTimeChange={handleTimeChange}
                       disabledTime={disabledEndTime}
                       typeTime="end"
+                      data-testid="endTimePicker"
                     />
                   ) : (
                     <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
