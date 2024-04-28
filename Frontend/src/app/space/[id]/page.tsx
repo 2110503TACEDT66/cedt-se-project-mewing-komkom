@@ -54,10 +54,10 @@ const SpaceDetail = ({ params }: Props) => {
     if (startTime && endTime) {
       const fetchAvailable = async () => {
         try {
-          const availableseatha = await checkAvailableSeat(
-            { startTime, endTime },
-            params.id
-          );
+          const availableseatha = await checkAvailableSeat(params.id, {
+            startTime,
+            endTime,
+          });
           if (!availableseatha) {
             throw new Error("cannot fetch");
           }

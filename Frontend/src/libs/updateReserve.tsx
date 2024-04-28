@@ -1,14 +1,17 @@
 import Swal from "sweetalert2";
+import { Reservation } from "../../interface";
 export default async function UpdateReservation(
   id: string,
   token: string,
-  date: string
+  date: Reservation
 ) {
-  const body = JSON.stringify({ reserveDate: date }); // Construct the request body
+  const body = JSON.stringify({
+    startTime: date.startTime,
+    endTime: date.endTime,
+  }); // Construct the request body
 
   const response = await fetch(
-   `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation/` +
-      id,
+    `${process.env.NEXT_PUBLIC_BACKEND_URI}/reservation/` + id,
     {
       method: "PUT",
       headers: {
@@ -23,7 +26,7 @@ export default async function UpdateReservation(
 
     Swal.fire({
       title: "Error!",
-      text: ans.message ||"Cannot Update #" + id,
+      text: ans.message || "Cannot Update #" + id,
       icon: "error",
     });
   } else {
