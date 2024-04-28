@@ -49,3 +49,11 @@
     --ring: 224.3 76.3% 48%;
   }
 }
+/* time input: OK btn text disappered */
+.ant-btn-primary {
+  color: black;
+}
+.ant-btn-primary:hover {
+  color: white !important;
+}
+
