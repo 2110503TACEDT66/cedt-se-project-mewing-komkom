@@ -327,7 +327,7 @@ const SpaceDetail = ({ params }: Props) => {
                 )}
                 <hr />
                 {space ? (
-                  <div>
+                  <div className="max-w-lg flex flex-col gap-3">
                     <p>{space?.address}</p>
                     <p>{space?.tel}</p>
                   </div>
@@ -340,7 +340,7 @@ const SpaceDetail = ({ params }: Props) => {
                 )}
               </div>
             </div>
-            <div className="flex flex-col justify-between p-10 gap-y-5">
+            <div className="flex flex-col justify-between pb-10 px-10 gap-y-2">
               <div className="flex items-center gap-5 mb-3">
                 <div className="text-[#736868] font-semibold text-base">
                   Date
