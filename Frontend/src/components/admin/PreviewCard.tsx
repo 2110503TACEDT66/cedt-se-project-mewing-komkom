@@ -20,8 +20,16 @@ export default function PreviewCard({ card }: { card?: SpaceItem }) {
   const pathname = usePathname();
   const descc =
     "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fuga obcaecati nemo veniam minus, omnis, nam, labore sint ab dolor quisquam ipsa possimus. Itaque reprehenderit temporibus animi minima repellendus distinctio similique.";
+
+  const isInvalid = (time: string) => {
+    if (time == "Invalid Date") {
+      return "";
+    } else {
+      return time;
+    }
+  };
   return (
-    <div className="h-[520px] relative flex flex-col text-gray-700 bg-white shadow-xl bg-clip-border justify-between rounded-2xl w-96 p-3">
+    <div className="h-[520px] relative flex flex-col text-gray-700 bg-white shadow-xl bg-clip-border justify-between rounded-2xl w-full p-3">
       <div>
         {card?.image ? (
           <div className="relative h-[180px] mx-4 mt-4 overflow-hidden text-white shadow-lg bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
@@ -42,8 +50,8 @@ export default function PreviewCard({ card }: { card?: SpaceItem }) {
             <div>
               {card?.openTime || card?.closeTime ? (
                 <div>
-                  {" "}
-                  {`${dayjs(card?.openTime).format("HH:mm a")} - ${dayjs(card?.closeTime).format("HH:mm a")}`}{" "}
+                  {isInvalid(dayjs(card?.openTime).format("HH:mm"))} -{" "}
+                  {isInvalid(dayjs(card?.closeTime).format("HH:mm"))}
                 </div>
               ) : (
                 "เวลาเปิด - เวลาปิด"

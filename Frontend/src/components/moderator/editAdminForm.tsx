@@ -56,7 +56,7 @@ export default function EditAdminForm({
         </div>
 
         <div className="flex items-center">
-          <label className="w-32">ชื่อ:</label>
+          <label className="w-32">Name:</label>
           <Input
             type="text"
             placeholder="name"
@@ -72,7 +72,7 @@ export default function EditAdminForm({
         </div>
 
         <div className="flex items-center">
-          <label className="w-32">เบอร์โทร:</label>
+          <label className="w-32">Tel:</label>
           <Input
             type="tel"
             placeholder="tel"
@@ -89,7 +89,7 @@ export default function EditAdminForm({
         </div>
 
         <div className="flex items-center">
-          <label className="w-32">อีเมล:</label>
+          <label className="w-32">Email:</label>
           <Input
             type="email"
             placeholder="email"
