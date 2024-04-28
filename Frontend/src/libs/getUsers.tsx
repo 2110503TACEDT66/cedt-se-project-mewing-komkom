@@ -5,6 +5,7 @@ export default async function getAllUser(token: string) {
         method: "GET",
         headers: {
           authorization: `Bearer ${token}`,
+          "mode": "cors"
         },
       }
     );
