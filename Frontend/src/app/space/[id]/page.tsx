@@ -320,11 +320,11 @@ const SpaceDetail = ({ params }: Props) => {
                       <div className="flex justify-center items-center">
                         {isOpen(space?.openTime, space?.closeTime) ? (
                           <span className="bg-green-400 text-white rounded-lg px-3 max-w-max">
-                            เปิดอยู่
+                            Open
                           </span>
                         ) : (
                           <span className="bg-rose-600 text-white rounded-lg px-3 max-w-max">
-                            ปิดแล้ว
+                            Closed
                           </span>
                         )}
                       </div>
