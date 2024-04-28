@@ -8,6 +8,7 @@ import ModalCreateNew from "@/components/admin/ModalCreateNew";
 import ModalCreateNewHandle from "@/components/admin/ModalCreateNewHandle";
 import checkAvailableSeat from "@/libs/checkAvailableSeat";
 import dayjs from "dayjs";
+import UserQuota from "@/libs/UserQuota";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -29,7 +30,13 @@ export default function Home() {
       <Banner />
       <div className="-mt-96 pt-96  pb-20 bg-white">
         <div className="mx-20" id="booking">
-          <h1 className="text-5xl text-">Available Co-working Space</h1>
+          <div className="flex justify-between items-center">
+            <h1 className="text-5xl text-">Available Co-working Space</h1>
+            <div className="">
+              <span>Remaining Quota for today: </span>
+              <UserQuota />
+            </div>
+          </div>
           <div className="grid grid-cols-4 gap-9 py-10">
             {spaces
               ? spaces.data.map((item: SpaceItem) => (
