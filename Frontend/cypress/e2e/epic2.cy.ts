@@ -20,17 +20,17 @@ describe('Make reservation page', () => {
   beforeEach(() => {
     // Visit the login page and login
     // cy.visit('/space/6621e0dd0ca3b59b54586983');
-    // // cy.visit('/login');
-    // cy.get('input[name="email"]').type('torrak@gmail.com');
-    // cy.wait(2000);
-    // cy.get('input[name="password"]').type('123456');
-    // cy.wait(2000);
-    // cy.get('button[type="submit"]').click();
-    // cy.wait(2000);
-    //cy.visit('/space/6621e0dd0ca3b59b54586983');
+    cy.visit('/login');
+    cy.get('input[name="email"]').type('torrak@gmail.com');
+    cy.wait(2000);
+    cy.get('input[name="password"]').type('123456');
+    cy.wait(2000);
+    cy.get('button[type="submit"]').click();
+    cy.wait(2000);
+    cy.visit('/space/6621e0dd0ca3b59b54586983');
   });
 
   it('should successfully make a reservation', () => {
-    cy.contains('button', 'Save Changes').click();
+    cy.contains('button', 'Reserve').click();
   });
 })
