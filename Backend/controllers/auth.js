@@ -134,7 +134,7 @@ exports.getAllRoles = async (req, res, next) => {
     success: true,
     data: user,
   });
-};
+}; 
 
 // delete user
 exports.deleteUser = async (req, res, next) => {
