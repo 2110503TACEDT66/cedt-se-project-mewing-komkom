@@ -111,7 +111,8 @@ exports.addReservation = async (req, res, next) => {
         message: `No working space with the id of ${req.params.workingSpaceId}`,
       });
     }
-    if(getAvailableSeat(req.params.workingSpaceId, req.body.startTime, req.body.endTime) == 0){
+    const availableSeat = await getAvailableSeat(req.params.workingSpaceId, req.body.startTime, req.body.endTime)
+    if (availableSeat <= 0) {
       return res.status(400).json({
         success: false,
         message: `No available seat for this time slot`,
@@ -120,15 +121,14 @@ exports.addReservation = async (req, res, next) => {
     // add user Id to req.body
     req.body.user = req.user.id;
     // Check for existed reservation
-    // const existedReservation = await Reservation.find({ user: req.user.id });
-    //If the user is not an admin, they can only create 3 reservation.
-    // if (existedReservation.length >= 3 && req.user.role !== "admin" && req.user.role !== "moderator") {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: `The user with ID ${req.user.id} has already made 3 reservations`,
-    //   });
-    // }
-    // TODO: QUOTA 
+    const userQuota = await getUserAvailableQuota(req.startTime, req.user.id);
+    //If the user is not an admin, they can only create > 3 reservation/day.
+    if (userQuota <= 0 && req.user.role !== "admin" && req.user.role !== "moderator") {
+      return res.status(400).json({
+        success: false,
+        message: `The user with ID ${req.user.id} has exceeded the maximum quota of reservations`,
+      });
+    }
     const reservation = await Reservation.create(req.body);
     res.status(200).json({
       success: true,
@@ -271,6 +271,45 @@ exports.getUserReservation = async (req, res, next) => {
   }
 };
 
+exports.getUserReservationQuota = async (req, res, next) => {
+  try {
+    console.log(req.body.selectedDate, req.user.id)
+    const userQuotaLeft = await getUserAvailableQuota(req.body.selectedDate, req.user.id);
+
+    console.log("date: ", req.body.selectedDate, "quota: ", userQuotaLeft)
+    res.status(200).json({
+      success: true,
+      data: userQuotaLeft,
+    });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ success: false, message: "Cannot get Reservation Quota" });
+  }
+}
+
+const getUserAvailableQuota = async (selectedDate, userId) => {
+  let existedReservation;
+  if (!selectedDate) {
+    const today = new Date();
+    console.log("searching for today:", today.toLocaleDateString())
+    existedReservation = await Reservation.find({
+      user: userId,
+      // find the match startingdate
+      startTime: { $gte: today, $lt: today.setDate(today.getDate() + 1) },
+    });
+  } else {
+    console.log("receive dt string:", selectedDate)
+    const selectedDate_ = new Date(selectedDate);
+    console.log("searching for  date:", selectedDate_.toLocaleDateString())
+    existedReservation = await Reservation.find({
+      user: userId,
+      // find the match startingdate
+      startTime: { $gte: selectedDate_, $lt: selectedDate_.setDate(selectedDate_.getDate() + 1) },
+    });
+  }
+
+  return 3 - existedReservation.length;
+}
 
 // Function to add reservation log for editing
 const addEditReservationLog = async (reservationId, beforeEditStartTime, afterEditStartTime, beforeEditEndTime, afterEditEndTime) => {
