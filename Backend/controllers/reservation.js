@@ -139,7 +139,7 @@ exports.addReservation = async (req, res, next) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: `The user with ID ${req.user.id} has exceeded the maximum quota of reservations`,
+        message: `You has exceeded the maximum quota of reservations`,
       });
     }
     const reservation = await Reservation.create(req.body);
