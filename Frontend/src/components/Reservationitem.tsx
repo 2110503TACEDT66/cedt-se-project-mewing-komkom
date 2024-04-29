@@ -19,8 +19,10 @@ dayjs.extend(timezone);
 
 export default function ReservationItem({
   reservation,
+  datatestid
 }: {
   reservation: Reservation;
+  datatestid: string
 }) {
   const session = useSession();
   const router = useRouter();
@@ -45,7 +47,7 @@ export default function ReservationItem({
   const endTime = dayjs(reservation.endTime).tz('Asia/Bangkok').format('HH:mm');
 
   return (
-    <div key={reservation._id} className={`border p-4 my-4 ${hide}`}>
+    <div key={reservation._id} data-testid={datatestid} className={`border p-4 my-4 ${hide}`}>
       <h1 className="text-xl font-medium mb-2">{reservation.workingSpace?.name}</h1>
       <table className="border-separate border-spacing-x-3">
         <tbody>

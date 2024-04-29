@@ -15,7 +15,7 @@ export default async function managePage() {
       <div>
         <div className="text-3xl m-4">All Reservation</div>
         {reservationData.map((reservation: Reservation) => (
-          <ReservationItem reservation={reservation} />
+          <ReservationItem reservation={reservation} datatestid={"reservationtest"}/>
         ))}
       </div>
     </main>
