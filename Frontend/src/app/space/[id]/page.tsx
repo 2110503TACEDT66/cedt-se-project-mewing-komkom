@@ -104,6 +104,14 @@ const SpaceDetail = ({ params }: Props) => {
         });
         return;
       }
+      if (!startTime || !endTime) {
+        Swal.fire({
+          title: "Error!",
+          text: "Please provide time ",
+          icon: "error",
+        });
+        return;
+      }
       if ((availableSeat as number) <= 0) {
         Swal.fire({
           title: "Error!",
