@@ -7,6 +7,7 @@ const {
   deleteReservation,
   clearSpace,
   getUserReservation,
+  getUserReservationQuota
 } = require("../controllers/reservation");
 
 const router = express.Router({ mergeParams: true });
@@ -27,5 +28,5 @@ router
   .get(protect, getUserReservation)
 
 router.route("/clear/:id").delete(protect, authorize("admin", "moderator"), clearSpace);
-
+router.route('/quota').post(protect, getUserReservationQuota);
 module.exports = router;

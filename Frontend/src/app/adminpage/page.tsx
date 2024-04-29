@@ -1,27 +1,37 @@
+"use client";
 import PreviewCard from "@/components/admin/PreviewCard";
 import getSpaces from "@/libs/getSpaces";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SpaceJson } from "../../../interface";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import getUserProfile from "@/libs/getUserProfile";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default async function page() {
-  const data: SpaceJson = await getSpaces();
-  const ready = data.data;
+export default function page() {
+  const [spaces, setSpaces] = useState<SpaceJson>();
+  useEffect(() => {
+    const fetchSpace = async () => {
+      try {
+        const res = await getSpaces();
+        setSpaces(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchSpace();
+  });
+
   return (
     <div className="p-10">
       <div className="flex justify-center mt-10 mb-5 text-5xl font-bold">
-        <div>
           <span className="bg-gradient-to-b from-blue-700 to-blue-400 bg-clip-text text-transparent">
             Manage Co-working Space
           </span>
-        </div>
       </div>
-      <div>
         <div className="flex justify-center mb-10">
           <Link
             href="/adminpage/create"
@@ -30,12 +40,40 @@ export default async function page() {
             เพิ่ม
           </Link>
         </div>
-      </div>
-      <div className="grid grid-cols-4 justify-items-center gap-10">
-        {ready.map((i: any) => (
-          <PreviewCard card={i} />
-        ))}
-      </div>
+      {spaces ? (
+        <div className="grid grid-cols-4 justify-items-center gap-10">
+          {spaces?.data.map((i: any) => <PreviewCard card={i} />)}
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 justify-items-center gap-10">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div className="h-[520px] relative flex flex-col text-gray-700 bg-white shadow-xl bg-clip-border justify-between rounded-2xl w-full p-3">
+              <div>
+                <Skeleton className="shadow-xl h-[190px] w-full bg-[#E5E7EB] rounded-2xl" />
+                <div className="p-4">
+                  <Skeleton className="shadow-xl h-6 w-44 bg-[#E5E7EB] rounded-2xl" />
+                </div>
+                <div className="px-4">
+                  <hr />
+                </div>
+                <div className="flex flex-col gap-3 px-4 mt-6">
+                  <Skeleton className="shadow-xl h-3 w-72 bg-[#E5E7EB] rounded-2xl" />
+                  <Skeleton className="shadow-xl h-3 w-60 bg-[#E5E7EB] rounded-2xl" />
+                  <Skeleton className="shadow-xl h-3 w-72 bg-[#E5E7EB] rounded-2xl" />
+                  <Skeleton className="shadow-xl h-3 w-60 bg-[#E5E7EB] rounded-2xl" />
+                  <Skeleton className="shadow-xl h-3 w-40 bg-[#E5E7EB] rounded-2xl" />
+                </div>
+                <div className="mt-8 px-4">
+                  <Skeleton className="shadow-xl h-6 w-44 bg-[#E5E7EB] rounded-2xl" />
+                </div>
+                <div className="flex justify-end px-4 mt-1">
+                  <Skeleton className="shadow-xl h-9 w-28 bg-[#E5E7EB] rounded-full" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

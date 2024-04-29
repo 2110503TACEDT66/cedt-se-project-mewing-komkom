@@ -48,7 +48,13 @@ app.use(limiter);
 app.use(hpp());
 
 // Enable CORS
-app.use(cors());
+const corsOptions = {
+  origin: '*', // อนุญาติให้รับคำขอจากโดเมนนี้เท่านั้น
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // อนุญาติให้ใช้เมทอดเหล่านี้
+  allowedHeaders: ['Content-Type', 'Authorization','mode'], // อนุญาติให้ใช้ header เหล่านี้
+  credentials: true // อนุญาติให้ใช้งาน credentials
+};
+app.use(cors(corsOptions));
 
 // Cookie parser
 app.use(cookieParser());

@@ -66,7 +66,7 @@ exports.login = async (req, res, next) => {
     if (!isMatch) {
       return res
         .status(401)
-        .json({ success: false, msg: "Invalid credentials" });
+        .json({ success: false, msg: "Invaild credentials." });
     }
     if (user.banUntil) {
       const banUntil = user.banUntil;
@@ -121,12 +121,21 @@ exports.getMe = async (req, res, next) => {
 
 // implement get all user
 exports.getAllUsers = async (req, res, next) => {
-  const user = await User.find({ role: "user" });
-  res.status(200).json({
-    success: true,
-    data: user,
-  });
+  try {
+    let users = await User.find({ role: "user" });
+    const user = await checkTimeoutBan(users);
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
 };
+
 
 exports.getAllRoles = async (req, res, next) => {
   const user = await User.find();
@@ -134,7 +143,7 @@ exports.getAllRoles = async (req, res, next) => {
     success: true,
     data: user,
   });
-};
+}; 
 
 // delete user
 exports.deleteUser = async (req, res, next) => {
@@ -206,3 +215,17 @@ exports.createAdmin = async (req, res, next) => {
     console.log(error.stack);
   }
 };
+
+const checkTimeoutBan = async (users) => {
+  const currentDate = new Date();
+  const userData = users
+  for (let i = 0; i < userData.length; i++) {
+    const user = userData[i];
+    if (currentDate > user.banUntil) {
+      await User.findByIdAndUpdate(user._id, { banUntil: null, banReason: null });
+      userData[i] = await User.findById(user._id);
+    }
+  }
+  return userData;
+};
+
