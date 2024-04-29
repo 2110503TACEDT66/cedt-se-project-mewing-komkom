@@ -32,7 +32,7 @@ export default function PreviewCard({ card }: { card?: SpaceItem }) {
     <div className=" relative flex flex-col text-gray-700 bg-white shadow-xl bg-clip-border justify-between rounded-2xl w-full p-3">
       <div>
         {card?.image ? (
-          <div className="relative mx-4 mt-4 overflow-hidden text-white shadow-lg bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
+          <div className="relative aspect-video mx-4 mt-4 overflow-hidden text-white shadow-lg bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
             <img src={card?.image} alt="card-image" className="w-full" />
           </div>
         ) : (
