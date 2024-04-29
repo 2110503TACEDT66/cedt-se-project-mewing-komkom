@@ -1,10 +1,4 @@
 "use client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-
-import getAllReservation from "@/libs/getallReserve";
-import { revalidateTag } from "next/cache";
-import { redirect } from "next/navigation";
 import { Reservation } from "../../interface";
 import DeleteReservation from "@/libs/deleteReserve";
 import { useSession } from "next-auth/react";
@@ -12,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone"
+import timezone from "dayjs/plugin/timezone";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -33,7 +27,7 @@ export default function ReservationItem({
     e.preventDefault();
     const result = DeleteReservation(reservation._id, session.data!.user.token);
 
-    setHide("hidden")
+    setHide("hidden");
   };
 
   const handleEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -42,9 +36,11 @@ export default function ReservationItem({
     router.push(`/booking/edit/${reservation._id}`); // Navigate to the manage page with the reservation ID
   };
 
-  const date = dayjs(reservation.startTime).format('DD MMMM YYYY');
-  const startTime = dayjs(reservation.startTime).tz('Asia/Bangkok').format('HH:mm');
-  const endTime = dayjs(reservation.endTime).tz('Asia/Bangkok').format('HH:mm');
+  const date = dayjs(reservation.startTime).format("DD MMMM YYYY");
+  const startTime = dayjs(reservation.startTime)
+    .tz("Asia/Bangkok")
+    .format("HH:mm");
+  const endTime = dayjs(reservation.endTime).tz("Asia/Bangkok").format("HH:mm");
 
   return (
     <div key={reservation._id} data-testid={datatestid} className={`border p-4 my-4 ${hide}`}>
@@ -57,7 +53,9 @@ export default function ReservationItem({
           </tr>
           <tr>
             <td>Time</td>
-            <td>{startTime} - {endTime}</td>
+            <td>
+              {startTime} - {endTime}
+            </td>
           </tr>
           <tr>
             <td>User</td>

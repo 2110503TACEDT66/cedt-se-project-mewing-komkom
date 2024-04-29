@@ -7,6 +7,19 @@ export interface Reservation {
   createdAt: Date;
   __v: number;
 }
+export interface LogEditReservation {
+  _id: string;
+  reservationId: any;
+  action: string;
+  user: string;
+  beforeEditStartTime?: Date;
+  afterEditStartTime?: Date;
+  beforeEditEndTime?: Date;
+  afterEditEndTime?: Date;
+  reservationOrigin:Reservation;
+  createdAt: Date;
+  __v: number;
+}
 export interface RefWorkingSpace {
   _id: string;
   name: string;

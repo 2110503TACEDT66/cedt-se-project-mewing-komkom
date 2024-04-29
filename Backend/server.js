@@ -16,7 +16,7 @@ const workingSpace = require("./routes/workingSpace");
 const reservation = require("./routes/reservation");
 const user = require("./routes/user");
 const auth = require("./routes/auth");
-
+const reservationLog = require("./routes/log");
 // Load env vars
 dotenv.config({ path: "./config/config.env" });
 
@@ -28,7 +28,7 @@ const app = express();
 // Body parser
 app.use(express.json());
 
-// Sanitize data 
+// Sanitize data
 app.use(mongoSanitize());
 
 // Set security headers
@@ -68,7 +68,7 @@ const swaggerOptions = {
       description: "A simple Express Co-Space API",
     },
     servers: [
-      { 
+      {
         url: "http://localhost:1200/api/v1",
       },
     ],
@@ -83,6 +83,8 @@ app.use("/api/v1/workingspace", workingSpace);
 app.use("/api/v1/reservation", reservation);
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/user", user);
+app.use("/api/v1/log", reservationLog);
+
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(
