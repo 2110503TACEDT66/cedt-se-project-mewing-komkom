@@ -10,13 +10,16 @@ export default async function historyPage() {
   const logEdit = await getLogReservation(session.user.token);
   const logeditData = logEdit.data;
   return (
-    <main>
-      <div>
-        <div className="text-3xl m-4">Reservation History</div>
+    <>
+      <div className="">
+        <div className="text-3xl ">Reservation History</div>
+        {logeditData.length == 0 && (
+          <h2 className="text-2xl">You haven't edit any reservation yet.</h2>
+        )}
         {logeditData.map((logedit: LogEditReservation) => (
           <ReservationLogItem logEdit={logedit} />
         ))}
       </div>
-    </main>
+    </>
   );
 }
