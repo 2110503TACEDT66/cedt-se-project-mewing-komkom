@@ -17,9 +17,9 @@ export default async function managePage() {
           <div className="text-3xl ">All Reservation</div>
           <Link
             href={"/booking/history"}
-            className="py-2 px-5 flex items-center justify-center bg-slate-300 px-4 text-base font-medium rounded-[10px] duration-200 hover:bg-slate-400"
+            className="py-2 px-5 flex items-center justify-center bg-slate-300 text-base font-medium rounded-[10px] duration-200 hover:bg-slate-400"
           >
-            Your Histories
+            Your History
           </Link>
         </div>
         {reservationData.length == 0 && (
