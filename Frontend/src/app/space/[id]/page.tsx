@@ -411,7 +411,7 @@ const SpaceDetail = ({ params }: Props) => {
                 </div>
               </div>
               {startTime && endTime && date && (
-                <div className="my-4">
+                <div className="my-4" data-testid="availableSeat">
                   <div className="flex text-[#0043CE] font-bold text-base">
                     Available Seat
                   </div>
