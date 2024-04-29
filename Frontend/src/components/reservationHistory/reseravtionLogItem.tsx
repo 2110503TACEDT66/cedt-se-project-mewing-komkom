@@ -20,8 +20,8 @@ export default function ReservationLogItem({
   const router = useRouter();
 
   const [hide, setHide] = useState("");
-  const datebefore = dayjs(logEdit.afterEditStartTime).format("DD MMMM YYYY");
-  const dateafter = dayjs(logEdit.beforeEditStartTime).format("DD MMMM YYYY");
+  const datebefore = dayjs(logEdit.beforeEditStartTime).format("DD MMMM YYYY");
+  const dateafter = dayjs(logEdit.afterEditStartTime).format("DD MMMM YYYY");
   const startTimeafter = dayjs(logEdit.afterEditStartTime)
     .tz("Asia/Bangkok")
     .format("HH:mm");
