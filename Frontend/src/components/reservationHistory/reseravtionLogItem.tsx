@@ -50,7 +50,7 @@ export default function ReservationLogItem({
     actionText = "Forced Cancel by Admin";
     actionColor = "bg-rose-600";
   } else if (logEdit.action == "cancel") {
-    actionText = "Cancel by User";
+    actionText = "Canceled";
     actionColor = "bg-rose-600";
   } else if (logEdit.action == "edit") {
     actionText = "Edited";
@@ -59,11 +59,11 @@ export default function ReservationLogItem({
 
   return (
     <div key={logEdit._id} className={`border p-4 my-4 `}>
-      <p className="text-xl font-medium mb-2 inline">
+      <p className="text-xl font-medium mb-2 inline mr-3">
         {logEdit.reservationOrigin
           ? logEdit.reservationOrigin.workingSpace.name
           : "canceled reservation"}
-      </p>{" "}
+      </p>
       <span className={cn("text-white rounded-lg px-3 max-w-max", actionColor)}>
         {actionText}
       </span>
@@ -78,12 +78,12 @@ export default function ReservationLogItem({
               </td>
             )}
 
-            {logEdit.action == "cancel" ||
-              (logEdit.action == "forceCancel" && (
-                <td>
-                  <span>{reservationDate} </span>
-                </td>
-              ))}
+            {(logEdit.action == "cancel" ||
+              logEdit.action == "forceCancel") && (
+              <td>
+                <span>{reservationDate} </span>
+              </td>
+            )}
           </tr>
           <tr>
             <td>Time</td>
@@ -96,19 +96,22 @@ export default function ReservationLogItem({
               </td>
             )}
 
-            {logEdit.action == "cancel" ||
-              (logEdit.action == "forceCancel" && (
+            {(logEdit.action == "cancel" ||
+              logEdit.action == "forceCancel") && (
                 <td>
                   {reservationTimeStart} - {reservationTimeEnd}
                 </td>
-              ))}
+              )}
           </tr>
-          <tr>
-            <td>User</td>
-            <td className="tracking-wide">
-              {logEdit.reservationOrigin.user.name}
-            </td>
-          </tr>
+          {session.user.role == "admin" ||
+            (session.user.role == "moderator" && (
+              <tr>
+                <td>User</td>
+                <td className="tracking-wide">
+                  {logEdit.reservationOrigin.user.name}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
