@@ -1,10 +1,13 @@
-
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, getByRole } from '@testing-library/react';
 import CoWorkForm from '../src/components/admin/CreatCoWorkForm'; 
+import { useSession } from 'next-auth/react';
+import { useCardContext } from "../src/context/CardContext";
+import createCoWorkingSpace from "@/libs/createWorkingSpace";
 
 jest.mock('../src/context/CardContext.tsx'); 
-jest.mock('next-auth/react'); 
+jest.mock('next-auth/react');
+jest.mock('../src/libs/createWorkingSpace'); // Mock createCoWorkingSpace
 
 test('CoWorkForm renders and submits data correctly', async () => {
   const mockSession = { data: { user: { token: 'mock-token' } } };
@@ -29,14 +32,15 @@ test('CoWorkForm renders and submits data correctly', async () => {
 
   useCardContext.mockReturnValue(mockCardContext);
 
-  const { getByTestId, getByText, getByLabelText } = render(<CoWorkForm />);
+  const { getByTestId, getByText, getByLabelText, getByRole } = render(<CoWorkForm />);
 
   const nameInput = getByLabelText('ชื่อ:');
   const addressInput = getByLabelText('รายละเอียด:');
   const maxSeatInput = getByLabelText('จำนวนที่นั่ง:');
   const openTimePicker = getByTestId('openTime');
   const closeTimePicker = getByTestId('closeTime');
-  const submitButton = getByText('submit');
+  const submitButton = getByRole('button', { type: 'submit' });
+
 
   // Simulate user input
   fireEvent.change(nameInput, { target: { value: 'My Co-working Space' } });
@@ -48,9 +52,9 @@ test('CoWorkForm renders and submits data correctly', async () => {
   fireEvent.change(closeTimePicker, { target: { value: '18:00' } });
 
   // Submit the form
-  fireEvent.click(submitButton);
+  fireEvent.submit(submitButton);
 
-  // Assert expected behavior (modify assertions based on your logic)
+  // Assert expected behavior
   expect(mockCardContext.handleFormChange).toHaveBeenCalledTimes(5); // 5 calls for name, address, maxSeat, openTime, closeTime
   expect(mockCardContext.handleOpenChange).toHaveBeenCalledTimes(1);
   expect(mockCardContext.handleCloseChange).toHaveBeenCalledTimes(1);

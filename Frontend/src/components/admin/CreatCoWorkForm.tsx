@@ -76,7 +76,7 @@ export default function CoWorkForm({ data }: Props) {
             Upload File
           </span>
         </label> */}
-        <label>ชื่อ:</label>
+        <label htmlFor="name">ชื่อ:</label>
         <Input
           required
           type="text"
@@ -87,13 +87,14 @@ export default function CoWorkForm({ data }: Props) {
           id="name"
           defaultValue={data?.name}
         />
-        <label>เวลาเปิด:</label>
+        <label htmlFor="openTime">เวลาเปิด:</label>
         <div className="col-span-3 flex gap-3">
           <TimePicker
             required
             format={format}
             className=" "
             id="openTime"
+            data-testid="openTime"
             onChange={handleOpenChange}
             minuteStep={30}
             /* defaultValue={dayjs(data?.openTime, 'HH:mm')} */
@@ -104,12 +105,13 @@ export default function CoWorkForm({ data }: Props) {
             format={format}
             className=" "
             id="closeTime"
+            data-testid="closeTime"
             onChange={handleCloseChange}
             minuteStep={30}
             /* defaultValue={dayjs(data?.closeTime, 'HH:mm')} */
           />
         </div>
-        <label>รายละเอียด:</label>
+        <label htmlFor="address">รายละเอียด:</label>
         <Textarea
           required
           className="col-span-3 "
@@ -119,7 +121,7 @@ export default function CoWorkForm({ data }: Props) {
           id="address"
           defaultValue={data?.address}
         />
-        <label>จำนวนที่นั่ง:</label>
+        <label htmlFor="maxSeat">จำนวนที่นั่ง:</label>
         <div className="flex flex-col">
           <Input
             required
