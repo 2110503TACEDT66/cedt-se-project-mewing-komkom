@@ -1,11 +1,10 @@
 const express = require("express");
 
-
 const router = express.Router();
 
 const { protect } = require("../middleware/auth");
-const { addReservationLog } = require("../controllers/log");
+const { getLogReservation } = require("../controllers/reservation");
 
-router.route("/reservation").post(protect, addReservationLog);
+router.route("/reservation").get(protect, getLogReservation);
 
 module.exports = router;
