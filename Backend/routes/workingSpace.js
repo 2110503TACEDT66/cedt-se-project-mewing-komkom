@@ -82,38 +82,7 @@ module.exports = router;
  *         maxSeat: 20
  */
 
-/**
- * @swagger
- * /login:
- *   post:
- *     summary: User login
- *     description: Authenticate user and return JWT token for authorization.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *     responses:
- *       '200':
- *         description: User authenticated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                   description: JWT token for authentication
- *       '401':
- *         description: Invalid credentials
- */
+
 
 /**
  * @swagger
