@@ -1,12 +1,5 @@
 {
-  "ts-node": {
-    "compilerOptions": {
-      "module": "es2015",
-      "moduleResolution": "Node"
-    }
-  },
   "compilerOptions": {
-    "baseUrl": ".",
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
