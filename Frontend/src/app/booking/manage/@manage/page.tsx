@@ -13,13 +13,13 @@ export default async function managePage() {
   return (
     <main>
       <div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <div className="text-3xl m-4">All Reservation</div>
           <Link
             href={"/booking/history"}
-            className="mt-2 h-11 bg-slate-300 py-2 px-4 rounded-full duration-200 hover:bg-slate-400"
+            className="h-[34px] w-[105px] flex items-center justify-center bg-slate-300 px-4 text-base font-medium rounded-[10px] duration-200 hover:bg-slate-400"
           >
-            <p>{"History"}</p>
+            History
           </Link>
         </div>
         {reservationData.map((reservation: Reservation) => (
