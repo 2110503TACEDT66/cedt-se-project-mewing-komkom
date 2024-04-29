@@ -392,6 +392,7 @@ const SpaceDetail = ({ params }: Props) => {
                     <DatePicker
                       className="border-[#979797] min-w-[150px]"
                       onChange={handleDateChange}
+                      data-testid="spaceDatePicker"
                     />
                   ) : (
                     <Skeleton className="h-[32px] w-[138px] bg-[#E5E7EB] shadow-lg" />
@@ -453,31 +454,35 @@ const SpaceDetail = ({ params }: Props) => {
                   Time
                 </label>
                 <div className="col-span-3 flex gap-3">
-                  {space ? (
-                    <TimeSelection
-                      handleTimeChange={handleTimeChange}
-                      disabledTime={disabledStartTime}
-                      typeTime="start"
-                    />
-                  ) : (
-                    <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
-                  )}
+                  <div data-testid="spaceStartTime">
+                    {space ? (
+                      <TimeSelection
+                        handleTimeChange={handleTimeChange}
+                        disabledTime={disabledStartTime}
+                        typeTime="start"
+                      />
+                    ) : (
+                      <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
+                    )}
+                  </div>
                   <div className="text-center self-center text-[#736868] font-semibold text-base">
                     To
                   </div>
-                  {space ? (
-                    <TimeSelection
-                      handleTimeChange={handleTimeChange}
-                      disabledTime={disabledEndTime}
-                      typeTime="end"
-                    />
-                  ) : (
-                    <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
-                  )}
+                  <div data-testid="spaceEndTime">
+                    {space ? (
+                      <TimeSelection
+                        handleTimeChange={handleTimeChange}
+                        disabledTime={disabledEndTime}
+                        typeTime="end"
+                      />
+                    ) : (
+                      <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
+                    )}
+                  </div>
                 </div>
               </div>
               {startTime && endTime && date && (
-                <div className="my-4">
+                <div className="my-4" data-testid="availableSeat">
                   <div className="flex text-[#0043CE] font-bold text-base">
                     Available Seat
                   </div>
