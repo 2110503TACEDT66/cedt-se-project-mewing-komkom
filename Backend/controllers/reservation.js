@@ -205,19 +205,28 @@ exports.updateReservation = async (req, res, next) => {
       });
     }
     // Log the edit reservation
-    if (
-      req.body.startTime !== reservation.startTime ||
-      req.body.endTime !== reservation.endTime
-    )
-      await addEditReservationLog(
-        req.params.id,
-        reservation.startTime,
-        req.body.startTime,
-        reservation.endTime,
-        req.body.endTime,
-        reservation.toJSON(),
-        req.user.id
-      );
+    // compare the start time in the reservation and the new start time
+    const startTime = new Date(reservation.startTime);
+    const newStartTime = new Date(req.body.startTime);
+    const endTime = new Date(reservation.endTime);
+    const newEndTime = new Date(req.body.endTime);
+    if (startTime.toISOString() === newStartTime.toISOString() && endTime.toISOString() === newEndTime.toISOString()) {
+      return res.status(400).json({
+        success: false,
+        message: `No change in reservation`,
+      });
+    }
+
+    await addEditReservationLog(
+      req.params.id,
+      reservation.startTime,
+      req.body.startTime,
+      reservation.endTime,
+      req.body.endTime,
+      reservation.toJSON(),
+      req.user.id
+    );
+
     reservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
