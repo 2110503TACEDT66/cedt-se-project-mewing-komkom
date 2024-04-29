@@ -12,18 +12,29 @@ export default async function managePage() {
   const reservationData = reservations.data;
   return (
     <main>
-      <div>
+      <div className="p-10">
         <div className="flex justify-between items-center">
-          <div className="text-3xl m-4">All Reservation</div>
+          <div className="text-3xl ">All Reservation</div>
           <Link
             href={"/booking/history"}
-            className="h-[34px] w-[105px] flex items-center justify-center bg-slate-300 px-4 text-base font-medium rounded-[10px] duration-200 hover:bg-slate-400"
+            className="py-2 px-5 flex items-center justify-center bg-slate-300 px-4 text-base font-medium rounded-[10px] duration-200 hover:bg-slate-400"
           >
-            History
+            Your Histories
           </Link>
         </div>
+        {reservationData.length == 0 && (
+          <h2 className="text-xl">
+            You haven't made any reservation yet.{" "}
+            <Link href="/#booking" className="text-sky-500 underline">
+              Book here
+            </Link>
+          </h2>
+        )}
         {reservationData.map((reservation: Reservation) => (
-          <ReservationItem reservation={reservation} datatestid={"reservationtest"}/>
+          <ReservationItem
+            reservation={reservation}
+            datatestid={"reservationtest"}
+          />
         ))}
       </div>
     </main>
