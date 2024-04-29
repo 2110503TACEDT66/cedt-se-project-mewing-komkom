@@ -21,7 +21,7 @@ describe('US2-1 User should make a reservation with valid time', () => {
   it('Provide date but no time provided', () => {
     cy.get('[data-testid="spaceDatePicker"]').type("2024-06-01").type('{enter}');
     cy.contains('button', 'Reserve').click();
-    cy.contains('The seats are fully occupied. Unable to reserve.').should('be.visible');
+    cy.contains('Please provide time').should('be.visible');
   });
 
   it('Provide date and time which endDate is less than startDate', () => {
@@ -30,7 +30,7 @@ describe('US2-1 User should make a reservation with valid time', () => {
     cy.get('[data-testid="spaceEndTime"]').type("9:00").type('{enter}');
     cy.wait(2000);
     cy.contains('button', 'Reserve').click();
-    cy.contains('The seats are fully occupied. Unable to reserve.').should('be.visible');
+    cy.contains('Invalid end time').should('be.visible');
   });
 
   it('Provide date and time which endDate is equal to startDate', () => {
@@ -39,7 +39,7 @@ describe('US2-1 User should make a reservation with valid time', () => {
     cy.get('[data-testid="spaceEndTime"]').type("10:00").type('{enter}');
     cy.wait(2000);
     cy.contains('button', 'Reserve').click();
-    cy.contains('The seats are fully occupied. Unable to reserve.').should('be.visible');
+    cy.contains('Invalid end time').should('be.visible');
   });
 
   it('Provide date and time which endDate is greater than startDate', () => {
