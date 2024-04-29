@@ -19,7 +19,7 @@ describe('US2-1 User should make a reservation with valid time', () => {
   });
 
   it('Provide date but no time provided', () => {
-    cy.get('[data-testid="spaceDatePicker"]').type("2024-05-01").type('{enter}');
+    cy.get('[data-testid="spaceDatePicker"]').type("2024-06-01").type('{enter}');
     cy.contains('button', 'Reserve').click();
     cy.contains('The seats are fully occupied. Unable to reserve.').should('be.visible');
   });
@@ -95,7 +95,6 @@ describe('US2-3 User should edit a reservation with valid time', () => {
     cy.wait(5000)
   });
 
-  
 
   it('Provide valid time', () => {
     cy.get('[data-testid="spaceDatePicker"]').clear().type("2024-05-03").type('{enter}');
