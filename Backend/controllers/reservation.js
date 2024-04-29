@@ -24,14 +24,6 @@ exports.getAllReservation = async (req, res, next) => {
 
       query = Reservation.find({
         workingSpace: req.params.workingSpaceId,
-      }).populate({
-        path: "workingSpace",
-        select: "name address tel",
-      })
-        .populate({
-          path: "user",
-          select: "name email",
-        });
       })
         .populate({
           path: "workingSpace",
@@ -124,7 +116,11 @@ exports.addReservation = async (req, res, next) => {
         message: `No working space with the id of ${req.params.workingSpaceId}`,
       });
     }
-    const availableSeat = await getAvailableSeat(req.params.workingSpaceId, req.body.startTime, req.body.endTime)
+    const availableSeat = await getAvailableSeat(
+      req.params.workingSpaceId,
+      req.body.startTime,
+      req.body.endTime
+    );
     if (availableSeat <= 0) {
       return res.status(400).json({
         success: false,
@@ -136,7 +132,11 @@ exports.addReservation = async (req, res, next) => {
     // Check for existed reservation
     const userQuota = await getUserAvailableQuota(req.startTime, req.user.id);
     //If the user is not an admin, they can only create > 3 reservation/day.
-    if (userQuota <= 0 && req.user.role !== "admin" && req.user.role !== "moderator") {
+    if (
+      userQuota <= 0 &&
+      req.user.role !== "admin" &&
+      req.user.role !== "moderator"
+    ) {
       return res.status(400).json({
         success: false,
         message: `The user with ID ${req.user.id} has exceeded the maximum quota of reservations`,
@@ -314,43 +314,51 @@ exports.getUserReservation = async (req, res, next) => {
 
 exports.getUserReservationQuota = async (req, res, next) => {
   try {
-    console.log(req.body.selectedDate, req.user.id)
-    const userQuotaLeft = await getUserAvailableQuota(req.body.selectedDate, req.user.id);
+    console.log(req.body.selectedDate, req.user.id);
+    const userQuotaLeft = await getUserAvailableQuota(
+      req.body.selectedDate,
+      req.user.id
+    );
 
-    console.log("date: ", req.body.selectedDate, "quota: ", userQuotaLeft)
+    console.log("date: ", req.body.selectedDate, "quota: ", userQuotaLeft);
     res.status(200).json({
       success: true,
       data: userQuotaLeft,
     });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false, message: "Cannot get Reservation Quota" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Cannot get Reservation Quota" });
   }
-}
+};
 
 const getUserAvailableQuota = async (selectedDate, userId) => {
   let existedReservation;
   if (!selectedDate) {
     const today = new Date();
-    console.log("searching for today:", today.toLocaleDateString())
+    console.log("searching for today:", today.toLocaleDateString());
     existedReservation = await Reservation.find({
       user: userId,
       // find the match startingdate
       startTime: { $gte: today, $lt: today.setDate(today.getDate() + 1) },
     });
   } else {
-    console.log("receive dt string:", selectedDate)
+    console.log("receive dt string:", selectedDate);
     const selectedDate_ = new Date(selectedDate);
-    console.log("searching for  date:", selectedDate_.toLocaleDateString())
+    console.log("searching for  date:", selectedDate_.toLocaleDateString());
     existedReservation = await Reservation.find({
       user: userId,
       // find the match startingdate
-      startTime: { $gte: selectedDate_, $lt: selectedDate_.setDate(selectedDate_.getDate() + 1) },
+      startTime: {
+        $gte: selectedDate_,
+        $lt: selectedDate_.setDate(selectedDate_.getDate() + 1),
+      },
     });
   }
 
   return 3 - existedReservation.length;
-}
+};
 
 // Function to add reservation log for editing
 const addEditReservationLog = async (
@@ -382,7 +390,7 @@ const addCancelReservationLog = async (
   const reservationLog = await ReservasionLog.create({
     reservationId,
     action: forced ? "forceCancel" : "cancel",
-    reservationOrigin:canceledReservation,
+    reservationOrigin: canceledReservation,
   });
   // return { success: true, message: 'Cancel Reservation Log added successfully', data: reservationLog };
 };
