@@ -224,7 +224,7 @@ exports.updateReservation = async (req, res, next) => {
       reservation.endTime,
       req.body.endTime,
       reservation.toJSON(),
-      req.user.id
+      reservation.user.id
     );
 
     reservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, {
@@ -277,7 +277,7 @@ exports.deleteReservation = async (req, res, next) => {
         req.params.id,
         reservation.toJSON(),
         true,
-        req.user.id
+        reservation.user.id
       );
     } else {
       // Log the cancel reservation
@@ -285,7 +285,7 @@ exports.deleteReservation = async (req, res, next) => {
         req.params.id,
         reservation.toJSON(),
         false,
-        req.user.id
+        reservation.user.id
       );
     }
     await reservation.deleteOne();
