@@ -4,13 +4,15 @@ import { Dayjs } from "dayjs";
 interface TimeSelectionProps {
   handleTimeChange: (time: Dayjs, timeType: string) => void;
   disabledTime: (current: Dayjs) => any;
-  typeTime:string
+  typeTime: string;
+  defultTime?: Dayjs;
 }
 
 const TimeSelection: React.FC<TimeSelectionProps> = ({
   handleTimeChange,
   disabledTime,
-  typeTime
+  typeTime,
+  defultTime,
 }) => {
   return (
     <TimePicker
@@ -20,6 +22,7 @@ const TimeSelection: React.FC<TimeSelectionProps> = ({
       minuteStep={30}
       disabledTime={disabledTime}
       showNow={false}
+      defaultValue={defultTime}
     />
   );
 };

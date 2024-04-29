@@ -23,10 +23,10 @@ export default function Card({ data }: Props) {
   if (!data) return;
   useEffect(() => {
     const fetchAvailable = async () => {
-      const availableSeat = await checkAvailableSeat(
-        { startTime: dayjs(), endTime: dayjs().add(2, "hour") },
-        data.id || ""
-      );
+      const availableSeat = await checkAvailableSeat(data.id || "", {
+        startTime: dayjs(),
+        endTime: dayjs().add(2, "hour"),
+      });
       if (!availableSeat) return;
       setAvailableSeat(availableSeat.availableSeats);
     };
@@ -34,18 +34,9 @@ export default function Card({ data }: Props) {
   }, []);
 
   return (
-    <div className="relative hover:-translate-y-1 duration-150 cursor-pointer">
-      {/* <Image
-        src="https://www.terrabkk.com/images/upload/af178899ca2cc98fcf8a7114450d17a7.jpg"
-        width={0}
-        height={0}
-        sizes="100vw"
-        className="w-full rounded-3xl "
-        unoptimized
-        alt=""
-      /> */}
+    <div className="relative hover:-translate-y-1 duration-150 cursor-pointer ">
       <div
-        className="bg-gray-200 w-full h-80 rounded-3xl"
+        className="bg-gray-200 w-full h-80 rounded-3xl shadow-xl"
         style={{
           backgroundImage: `url(${data.image})`,
           backgroundSize: "cover",
@@ -75,8 +66,9 @@ export default function Card({ data }: Props) {
         <div className="flex items-center gap-2">
           <FaClock />
           <p>
-            {dayjs(data.openTime).format("HH:mm a")} -{" "}
-            {dayjs(data.closeTime).format("HH:mm a")}
+            {dayjs(data.openTime).tz("Asia/Bangkok").format("HH:mm")} -{" "}
+            {dayjs(data.closeTime).tz("Asia/Bangkok").format("HH:mm")}
+           
           </p>
         </div>
       </div>

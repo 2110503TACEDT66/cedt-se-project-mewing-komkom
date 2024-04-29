@@ -22,11 +22,11 @@ export default function Modalupdate({ isOpen, handleClose, data, id }: Props) {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const result = UpdateReservation(
+    /* const result = UpdateReservation(
       id,
       session.data!.user.token,
       date!.$d as string
-    );
+    ); */
     handleClose();
     router.push("/booking/manage");
   };
