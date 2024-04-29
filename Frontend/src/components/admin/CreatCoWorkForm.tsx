@@ -9,6 +9,7 @@ import createCoWorkingSpace from "@/libs/createWorkingSpace";
 import { SetPreviewCard } from "../../../interface";
 import { useSession } from "next-auth/react";
 import updateWorkingSpace from "@/libs/updateWorkingSpace";
+import Swal from "sweetalert2";
 
 interface Props {
   data?: any;
@@ -28,6 +29,14 @@ export default function CoWorkForm({ data }: Props) {
   const session = useSession();
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if(dayjs(card.openTime).isAfter(card.closeTime) || dayjs(card.openTime).isSame(card.closeTime)){
+      Swal.fire({
+        title: "Error!",
+        text: "Invalid close time",
+        icon: "error",
+      });
+      return;
+    }
     createCoWorkingSpace(
       {
         name: card.name,
