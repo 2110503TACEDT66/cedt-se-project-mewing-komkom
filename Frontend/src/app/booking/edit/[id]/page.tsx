@@ -68,6 +68,8 @@ export default function ReservationDetail({ params }: Props) {
             startTime: startTime,
             endTime: endTime,
           });
+          setStartTime(startTime);
+          setEndTime(endTime);
         }
         try {
           const spacedata = await getSpace(fetchReserve.data.workingSpace._id);
@@ -122,10 +124,10 @@ export default function ReservationDetail({ params }: Props) {
         });
         return;
       }
-      if ((availableSeat as number) <= 0) {
+      if(!startTime || !endTime){
         Swal.fire({
           title: "Error!",
-          text: "The seats are fully occupied. Unable to reserve.",
+          text: "Please provide time ",
           icon: "error",
         });
         return;
@@ -138,10 +140,20 @@ export default function ReservationDetail({ params }: Props) {
         });
         return;
       }
+      if ((availableSeat as number) <= 0) {
+        Swal.fire({
+          title: "Error!",
+          text: "The seats are fully occupied. Unable to reserve.",
+          icon: "error",
+        });
+        return;
+      }
+
       const data = {
-        startTime: startTime ? startTime : timeData?.startTime,
-        endTime: endTime ? endTime : timeData?.endTime,
+        startTime: startTime,
+        endTime: endTime,
       };
+      console.log(data);
       const reservation = await UpdateReservation(
         params.id,
         session.data?.user.token,
@@ -159,6 +171,20 @@ export default function ReservationDetail({ params }: Props) {
   const handleDateChange: DatePickerProps["onChange"] = (date, dateString) => {
     setDate(date);
     if (date) {
+      console.log(
+        "starttime is " +
+          date
+            .hour(startTime?.hour() || 0)
+            .minute(startTime?.minute() || 0)
+            .format()
+      );
+      console.log(
+        "endtime is " +
+          date
+            .hour(endTime?.hour() || 0)
+            .minute(endTime?.minute() || 0)
+            .format()
+      );
       setStartTime(
         date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
       );
@@ -176,10 +202,18 @@ export default function ReservationDetail({ params }: Props) {
     if (timewithdate) {
       if (timeType === "start") {
         setStartTime(
-          timewithdate.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
-            timewithdate
+          time == null
+            ? null
+            : timewithdate
+                .hour(time?.hour() || 0)
+                .minute(time?.minute() || 0) || timewithdate
         );
       } else if (timeType === "end") {
+        if (time == null) {
+          setEndTime(null);
+          return;
+        }
+        console.log("time is null " + (time == null));
         setEndTime(
           timewithdate.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
             timewithdate
@@ -311,7 +345,6 @@ export default function ReservationDetail({ params }: Props) {
 
   return (
     <div className="flex justify-center my-20 flex-col gap-5 items-center">
-    
       <h1 className="text-center text-4xl font-bold">
         {space ? (
           <div>
@@ -388,6 +421,7 @@ export default function ReservationDetail({ params }: Props) {
                     className="border-[#979797]"
                     onChange={handleDateChange}
                     defaultValue={dayjs(date)}
+                    data-testid="spaceDatePicker"
                   />
                 ) : (
                   <Skeleton className="h-[32px] w-[138px] bg-[#E5E7EB] shadow-lg" />
@@ -399,29 +433,33 @@ export default function ReservationDetail({ params }: Props) {
                 Time
               </label>
               <div className="col-span-3 flex gap-3">
-                {space ? (
-                  <TimeSelection
-                    handleTimeChange={handleTimeChange}
-                    disabledTime={disabledStartTime}
-                    typeTime="start"
-                    defultTime={dayjs(timeData?.startTime)}
-                  />
-                ) : (
-                  <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
-                )}
+                <div data-testid="spaceStartTime">
+                  {space ? (
+                    <TimeSelection
+                      handleTimeChange={handleTimeChange}
+                      disabledTime={disabledStartTime}
+                      typeTime="start"
+                      defultTime={dayjs(timeData?.startTime)}
+                    />
+                  ) : (
+                    <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
+                  )}
+                </div>
                 <div className="text-center self-center text-[#736868] font-semibold text-base">
                   To
                 </div>
-                {space ? (
-                  <TimeSelection
-                    handleTimeChange={handleTimeChange}
-                    disabledTime={disabledEndTime}
-                    defultTime={dayjs(timeData?.endTime)}
-                    typeTime="end"
-                  />
-                ) : (
-                  <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
-                )}
+                <div data-testid="spaceEndTime">
+                  {space ? (
+                    <TimeSelection
+                      handleTimeChange={handleTimeChange}
+                      disabledTime={disabledEndTime}
+                      defultTime={dayjs(timeData?.endTime)}
+                      typeTime="end"
+                    />
+                  ) : (
+                    <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
+                  )}
+                </div>
               </div>
             </div>
             <div>
