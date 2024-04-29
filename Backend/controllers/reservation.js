@@ -130,7 +130,7 @@ exports.addReservation = async (req, res, next) => {
     // add user Id to req.body
     req.body.user = req.user.id;
     // Check for existed reservation
-    const userQuota = await getUserAvailableQuota(req.startTime, req.user.id);
+    const userQuota = await getUserAvailableQuota(req.body.startTime, req.user.id);
     //If the user is not an admin, they can only create > 3 reservation/day.
     if (
       userQuota <= 0 &&
@@ -139,7 +139,7 @@ exports.addReservation = async (req, res, next) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: `The user with ID ${req.user.id} has exceeded the maximum quota of reservations`,
+        message: `You has exceeded the maximum quota of reservations`,
       });
     }
     const reservation = await Reservation.create(req.body);
@@ -157,14 +157,34 @@ exports.addReservation = async (req, res, next) => {
 // ok
 exports.updateReservation = async (req, res, next) => {
   try {
+    if (req.body.startTime || req.body.endTime) {
+      if (!req.body.startTime) {
+        return res.status(400).json({
+          success: false,
+          message: `User does not provided start time`,
+        });
+      }
+      if (!req.body.endTime) {
+        return res.status(400).json({
+          success: false,
+          message: `User does not provided end time`,
+        });
+      }
+      if (req.body.endTime <= req.body.startTime) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid end time`,
+        });
+      }
+    }
+
     let reservation = await Reservation.findById(req.params.id)
       .populate({
         path: "workingSpace",
         select: "name",
       })
       .populate({ path: "user", select: "name" });
-    console.log(reservation);
-    console.log(typeof reservation);
+
 
     if (!reservation) {
       return res.status(404).json({
@@ -185,19 +205,28 @@ exports.updateReservation = async (req, res, next) => {
       });
     }
     // Log the edit reservation
-    if (
-      req.body.startTime !== reservation.startTime ||
-      req.body.endTime !== reservation.endTime
-    )
-      await addEditReservationLog(
-        req.params.id,
-        reservation.startTime,
-        req.body.startTime,
-        reservation.endTime,
-        req.body.endTime,
-        reservation.toJSON(),
-        req.user.id
-      );
+    // compare the start time in the reservation and the new start time
+    const startTime = new Date(reservation.startTime);
+    const newStartTime = new Date(req.body.startTime);
+    const endTime = new Date(reservation.endTime);
+    const newEndTime = new Date(req.body.endTime);
+    if (startTime.toISOString() === newStartTime.toISOString() && endTime.toISOString() === newEndTime.toISOString()) {
+      return res.status(400).json({
+        success: false,
+        message: `No change in reservation`,
+      });
+    }
+
+    await addEditReservationLog(
+      req.params.id,
+      reservation.startTime,
+      req.body.startTime,
+      reservation.endTime,
+      req.body.endTime,
+      reservation.toJSON(),
+      req.user.id
+    );
+
     reservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -241,7 +270,7 @@ exports.deleteReservation = async (req, res, next) => {
     }
     if (
       (req.user.role === "admin" || req.user.role === "moderator") &&
-      req.user.id !== reservation.user.toString()
+      req.user.id !== reservation.user.id
     ) {
       // Log the Forced Cancel reservation
       await addCancelReservationLog(

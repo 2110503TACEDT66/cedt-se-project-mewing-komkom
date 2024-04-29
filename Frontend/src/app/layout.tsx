@@ -43,7 +43,7 @@ export default async function RootLayout({
     <html lang="en" className="bg-bg">
       <body className={line.className}>
         <NextAuthProvider session={nextAuthSession}>
-          <div className="pt-16">
+          <div className="mt-16">
             <TopMenu />
             {children}
           </div>

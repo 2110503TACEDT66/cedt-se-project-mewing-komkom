@@ -120,6 +120,14 @@ const SpaceDetail = ({ params }: Props) => {
         });
         return;
       }
+      // set the startTime date to the selected date
+
+      // setStartTime(
+      //   date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
+      // );
+      // setEndTime(
+      //   date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0)
+      // );
 
       if (dayjs().isAfter(startTime)) {
         Swal.fire({
@@ -149,14 +157,19 @@ const SpaceDetail = ({ params }: Props) => {
 
   const handleDateChange: DatePickerProps["onChange"] = (date, dateString) => {
     setDate(date);
-    // if (date) {
-    //   setStartTime(
-    //     date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
-    //   );
-    //   setEndTime(
-    //     date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0)
-    //   );
-    // }
+
+    if (date) {
+      if (startTime) {
+        setStartTime(
+          date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
+        );
+      }
+      if (endTime) {
+        setEndTime(
+          date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0)
+        );
+      }
+    }
   };
 
   const handleTimeChange = (time: Dayjs | null, timeType: string) => {
@@ -407,7 +420,7 @@ const SpaceDetail = ({ params }: Props) => {
                   )}
                 </div>
                 <div className="flex items-center gap-1">
-                  <span>Remaining Quota: </span>
+                  <span>Reservation Quota: </span>
                   <span
                     className={clsx(
                       "font-bold",
@@ -427,7 +440,7 @@ const SpaceDetail = ({ params }: Props) => {
 
                     <HoverCardContent>
                       <h2 className="font-bold text-sky-500">
-                        What's Remaining Quota?
+                        What's Reservation Quota?
                       </h2>
                       <p className="text-gray-500 font-sm">
                         You can make 3 reservations per day for co-working

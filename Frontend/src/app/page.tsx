@@ -61,7 +61,7 @@ export default function Home() {
             <HoverCard>
               <HoverCardTrigger>
                 <div className="bg-slate-100 py-2 px-4 rounded-full duration-200 hover:bg-slate-200 flex items-center gap-2">
-                  <span className="">Remaining Quota</span>
+                  <span className="">Reservation Quota</span>
                   <span
                     className={clsx(
                       "font-extrabold",
@@ -80,7 +80,7 @@ export default function Home() {
 
               <HoverCardContent>
                 <h2 className="font-bold text-sky-500">
-                  What's Remaining Quota?
+                  What's Reservation Quota?
                 </h2>
                 <p className="text-gray-500 font-sm">
                   You can make 3 reservations per day for co-working spaces.
