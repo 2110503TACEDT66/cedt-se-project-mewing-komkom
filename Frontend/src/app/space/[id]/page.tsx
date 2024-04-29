@@ -120,6 +120,14 @@ const SpaceDetail = ({ params }: Props) => {
         });
         return;
       }
+      // set the startTime date to the selected date
+
+      // setStartTime(
+      //   date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
+      // );
+      // setEndTime(
+      //   date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0)
+      // );
 
       if (dayjs().isAfter(startTime)) {
         Swal.fire({
@@ -149,14 +157,19 @@ const SpaceDetail = ({ params }: Props) => {
 
   const handleDateChange: DatePickerProps["onChange"] = (date, dateString) => {
     setDate(date);
-    // if (date) {
-    //   setStartTime(
-    //     date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
-    //   );
-    //   setEndTime(
-    //     date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0)
-    //   );
-    // }
+
+    if (date) {
+      if (startTime) {
+        setStartTime(
+          date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
+        );
+      }
+      if (endTime) {
+        setEndTime(
+          date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0)
+        );
+      }
+    }
   };
 
   const handleTimeChange = (time: Dayjs | null, timeType: string) => {
