@@ -4,8 +4,8 @@ describe('US2-1 User should make a reservation with valid time', () => {
   beforeEach(() => {
     // Visit the login page and login
     cy.visit('/login');
-    cy.get('input[name="email"]').type('torrak@gmail.com');
-    cy.get('input[name="password"]').type('123456');
+    cy.get('input[name="email"]').type('fortesting@gmail.com');
+    cy.get('input[name="password"]').type('1234567');
     cy.get('button[type="submit"]').click();
     cy.wait(2000);
     // Visit one space page
@@ -57,8 +57,8 @@ describe('US2-2 User can view amount of available seats of selected time', () =>
   beforeEach(() => {
     // Visit the login page and login
     cy.visit('/login');
-    cy.get('input[name="email"]').type('torrak@gmail.com');
-    cy.get('input[name="password"]').type('123456');
+    cy.get('input[name="email"]').type('fortesting@gmail.com');
+    cy.get('input[name="password"]').type('1234567');
     cy.get('button[type="submit"]').click();
     cy.wait(2000);
     // Visit one space page
@@ -85,8 +85,8 @@ describe('US2-3 User should edit a reservation with valid time', () => {
     // Visit the login page and login
     // cy.visit('/space/6621e0dd0ca3b59b54586983');
     cy.visit('/login');
-    cy.get('input[name="email"]').type('torrak@gmail.com');
-    cy.get('input[name="password"]').type('123456');
+    cy.get('input[name="email"]').type('fortesting@gmail.com');
+    cy.get('input[name="password"]').type('1234567');
     cy.get('button[type="submit"]').click();
     cy.wait(2000);
     cy.visit('/booking/manage');
@@ -94,7 +94,6 @@ describe('US2-3 User should edit a reservation with valid time', () => {
     cy.get('[data-testid="reservationtest"]').last().contains('Edit').click();
     cy.wait(5000)
   });
-
 
   it('Provide valid time', () => {
     cy.get('[data-testid="spaceDatePicker"]').clear().type("2024-05-03").type('{enter}');
