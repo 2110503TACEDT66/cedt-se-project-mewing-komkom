@@ -407,7 +407,7 @@ const SpaceDetail = ({ params }: Props) => {
                   )}
                 </div>
                 <div className="flex items-center gap-1">
-                  <span>Remaining Quota: </span>
+                  <span>Reservation Quota: </span>
                   <span
                     className={clsx(
                       "font-bold",
@@ -427,7 +427,7 @@ const SpaceDetail = ({ params }: Props) => {
 
                     <HoverCardContent>
                       <h2 className="font-bold text-sky-500">
-                        What's Remaining Quota?
+                        What's Reservation Quota?
                       </h2>
                       <p className="text-gray-500 font-sm">
                         You can make 3 reservations per day for co-working
