@@ -157,14 +157,34 @@ exports.addReservation = async (req, res, next) => {
 // ok
 exports.updateReservation = async (req, res, next) => {
   try {
+    if (req.body.startTime || req.body.endTime) {
+      if (!req.body.startTime) {
+        return res.status(400).json({
+          success: false,
+          message: `User does not provided start time`,
+        });
+      }
+      if (!req.body.endTime) {
+        return res.status(400).json({
+          success: false,
+          message: `User does not provided end time`,
+        });
+      }
+      if (req.body.endTime <= req.body.startTime) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid end time`,
+        });
+      }
+    }
+
     let reservation = await Reservation.findById(req.params.id)
       .populate({
         path: "workingSpace",
         select: "name",
       })
       .populate({ path: "user", select: "name" });
-    console.log(reservation);
-    console.log(typeof reservation);
+
 
     if (!reservation) {
       return res.status(404).json({
