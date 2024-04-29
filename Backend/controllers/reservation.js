@@ -130,7 +130,7 @@ exports.addReservation = async (req, res, next) => {
     // add user Id to req.body
     req.body.user = req.user.id;
     // Check for existed reservation
-    const userQuota = await getUserAvailableQuota(req.startTime, req.user.id);
+    const userQuota = await getUserAvailableQuota(req.body.startTime, req.user.id);
     //If the user is not an admin, they can only create > 3 reservation/day.
     if (
       userQuota <= 0 &&
