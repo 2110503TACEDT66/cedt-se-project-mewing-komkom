@@ -40,7 +40,7 @@ export default function EditCoWorkForm({ data }: Props) {
   return (
     <div className=" bg-white rounded-2xl shadow-2xl">
       <form onSubmit={onSubmit} className="p-20 grid grid-cols-4 gap-10 ">
-        <label htmlFor="image-upload">รูปภาพ:</label>
+        <label htmlFor="image-upload">Image:</label>
         {/* <Input
             type="file"
             className="col-span-1 max-w-60 text-gray-400"
@@ -65,7 +65,7 @@ export default function EditCoWorkForm({ data }: Props) {
             Upload File
           </span>
         </label> */}
-        <label>ชื่อ:</label>
+        <label>Name:</label>
         <Input
           type="text"
           placeholder="co-working space's name"
@@ -75,7 +75,7 @@ export default function EditCoWorkForm({ data }: Props) {
           id="Edit-name"
           defaultValue={data?.name}
         />
-        <label>เวลาเปิด:</label>
+        <label>Open Time:</label>
         <div className="col-span-3 flex gap-3">
           <TimePicker
             format={format}
@@ -85,7 +85,7 @@ export default function EditCoWorkForm({ data }: Props) {
             defaultValue={dayjs(data?.openTime)}
             minuteStep={30}
           />
-          <div className="text-center self-center">ถึง</div>
+          <div className="text-center self-center">to</div>
           <TimePicker
             format={format}
             className=" "
@@ -95,7 +95,7 @@ export default function EditCoWorkForm({ data }: Props) {
             minuteStep={30}
           />
         </div>
-        <label>รายละเอียด:</label>
+        <label>Description:</label>
         <Textarea
           className="col-span-3 "
           placeholder="co-working space's detail"
@@ -104,7 +104,7 @@ export default function EditCoWorkForm({ data }: Props) {
           id="Edit-address"
           defaultValue={data?.address}
         />
-        <label>จำนวนที่นั่ง:</label>
+        <label>Seat:</label>
         <div className="flex flex-col">
           <Input
             required

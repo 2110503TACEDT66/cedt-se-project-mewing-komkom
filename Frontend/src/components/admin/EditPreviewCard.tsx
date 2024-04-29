@@ -48,7 +48,7 @@ export default function Test({ data }: { data?: SpaceItem }) {
           </div>
         </div>
         <hr />
-        <div className=" mt-2 text-lg font-medium text-black">รายละเอียด</div>
+        <div className=" mt-2 text-lg font-medium text-black">Description</div>
         <div className=" break-words h-24 text-base antialiased font-light leading-relaxed text-inherit">
           {cardEdit?.address ? cardEdit?.address : data?.address}
         </div>
@@ -56,14 +56,14 @@ export default function Test({ data }: { data?: SpaceItem }) {
 
       <div className="px-4">
         <div className="mt-2 flex gap-3 ">
-          <div>จำนวนที่นั่ง :</div>
+          <div>Seat :</div>
           <div>{cardEdit?.maxSeat ? cardEdit?.maxSeat : data?.maxSeat}</div>
         </div>
       </div>
 
       <div className=" flex justify-end ">
         <button className="align-middle select-none text-base font-normal text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none py-1 px-7 rounded-full bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none">
-          แก้ไข
+          Edit
         </button>
       </div>
     </div>
