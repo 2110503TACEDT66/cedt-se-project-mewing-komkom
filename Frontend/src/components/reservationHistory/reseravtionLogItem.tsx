@@ -7,6 +7,7 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { cn } from "@/lib/utils";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -16,10 +17,8 @@ export default function ReservationLogItem({
 }: {
   logEdit: LogEditReservation;
 }) {
-  const session = useSession();
-  const router = useRouter();
+  const { data: session } = useSession();
 
-  const [hide, setHide] = useState("");
   const datebefore = dayjs(logEdit.beforeEditStartTime).format("DD MMMM YYYY");
   const dateafter = dayjs(logEdit.afterEditStartTime).format("DD MMMM YYYY");
   const startTimeafter = dayjs(logEdit.afterEditStartTime)
@@ -44,20 +43,37 @@ export default function ReservationLogItem({
     .tz("Asia/Bangkok")
     .format("HH:mm");
 
+  if (!session) return null;
+  let actionColor = "";
+  let actionText = "";
+  if (logEdit.action == "forceCancel") {
+    actionText = "Forced Cancel by Admin";
+    actionColor = "bg-rose-600";
+  } else if (logEdit.action == "cancel") {
+    actionText = "Cancel by User";
+    actionColor = "bg-rose-600";
+  } else if (logEdit.action == "edit") {
+    actionText = "Edited";
+    actionColor = "bg-blue-600";
+  }
+
   return (
-    <div key={logEdit._id} className={`border p-4 my-4 ${hide}`}>
-      <h1 className="text-xl font-medium mb-2">
+    <div key={logEdit._id} className={`border p-4 my-4 `}>
+      <p className="text-xl font-medium mb-2 inline">
         {logEdit.reservationOrigin
           ? logEdit.reservationOrigin.workingSpace.name
           : "canceled reservation"}
-      </h1>
+      </p>{" "}
+      <span className={cn("text-white rounded-lg px-3 max-w-max", actionColor)}>
+        {actionText}
+      </span>
       <table className="border-separate border-spacing-x-3">
         <tbody>
           <tr>
             <td>Date</td>
             {logEdit.action == "edit" && (
               <td>
-                <span className="line-through">{datebefore}</span> to{" "}
+                <span className="line-through text-gray-400">{datebefore}</span>{" "}
                 {dateafter}
               </td>
             )}
@@ -73,7 +89,7 @@ export default function ReservationLogItem({
             <td>Time</td>
             {logEdit.action == "edit" && (
               <td>
-                <span className="line-through">
+                <span className="line-through text-gray-400">
                   {startTimebefore} - {endTimebefore}
                 </span>{" "}
                 to {startTimeafter} - {endTimeafter}
@@ -95,11 +111,6 @@ export default function ReservationLogItem({
           </tr>
         </tbody>
       </table>
-      <div className="flex justify-end">
-        <button className="mr-2 px-4 py-2 bg-slate-200 text-black rounded">
-          {logEdit.action}
-        </button>
-      </div>
     </div>
   );
 }
