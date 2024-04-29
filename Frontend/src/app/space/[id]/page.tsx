@@ -386,7 +386,6 @@ const SpaceDetail = ({ params }: Props) => {
                   <div data-testid="spaceStartTime">
                     {space ? (
                       <TimeSelection
-                        data-cy="start"
                         handleTimeChange={handleTimeChange}
                         disabledTime={disabledStartTime}
                         typeTime="start"
@@ -404,7 +403,6 @@ const SpaceDetail = ({ params }: Props) => {
                         handleTimeChange={handleTimeChange}
                         disabledTime={disabledEndTime}
                         typeTime="end"
-                        data-testid="endTimePicker"
                       />
                     ) : (
                       <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
