@@ -383,29 +383,33 @@ const SpaceDetail = ({ params }: Props) => {
                   Time
                 </label>
                 <div className="col-span-3 flex gap-3">
-                  {space ? (
-                    <TimeSelection
-                      handleTimeChange={handleTimeChange}
-                      disabledTime={disabledStartTime}
-                      typeTime="start"
-                      data-testid="startTimePicker"
-                    />
-                  ) : (
-                    <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
-                  )}
+                  <div data-testid="spaceStartTime">
+                    {space ? (
+                      <TimeSelection
+                        data-cy="start"
+                        handleTimeChange={handleTimeChange}
+                        disabledTime={disabledStartTime}
+                        typeTime="start"
+                      />
+                    ) : (
+                      <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
+                    )}
+                  </div>
                   <div className="text-center self-center text-[#736868] font-semibold text-base">
                     To
                   </div>
-                  {space ? (
-                    <TimeSelection
-                      handleTimeChange={handleTimeChange}
-                      disabledTime={disabledEndTime}
-                      typeTime="end"
-                      data-testid="endTimePicker"
-                    />
-                  ) : (
-                    <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
-                  )}
+                  <div data-testid="spaceEndTime">
+                    {space ? (
+                      <TimeSelection
+                        handleTimeChange={handleTimeChange}
+                        disabledTime={disabledEndTime}
+                        typeTime="end"
+                        data-testid="endTimePicker"
+                      />
+                    ) : (
+                      <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
+                    )}
+                  </div>
                 </div>
               </div>
               {startTime && endTime && date && (
