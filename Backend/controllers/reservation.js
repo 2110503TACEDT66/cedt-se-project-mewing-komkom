@@ -154,7 +154,7 @@ exports.addReservation = async (req, res, next) => {
       .json({ success: false, message: "Cannot create Reservation" });
   }
 };
-
+// ok
 exports.updateReservation = async (req, res, next) => {
   try {
     let reservation = await Reservation.findById(req.params.id)
@@ -176,8 +176,7 @@ exports.updateReservation = async (req, res, next) => {
     //Make sure user is the reservation owner
     if (
       reservation.user.toString() !== req.user.id &&
-      req.user.role !== "admin" &&
-      req.user.role !== "moderator"
+      req.user.role !== "admin" && req.user.role !== "moderator"
     ) {
       return res.status(401).json({
         success: false,
