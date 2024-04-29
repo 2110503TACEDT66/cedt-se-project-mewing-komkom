@@ -9,6 +9,7 @@ import createCoWorkingSpace from "@/libs/createWorkingSpace";
 import { SetPreviewCard, SpaceItem } from "../../../interface";
 import { useSession } from "next-auth/react";
 import updateWorkingSpace from "@/libs/updateWorkingSpace";
+import Swal from "sweetalert2";
 
 interface Props {
   data?: any;
@@ -27,11 +28,27 @@ export default function EditCoWorkForm({ data }: Props) {
   const session = useSession();
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("opentime is ", cardEdit.openTime || data.openTime);
+    console.log("closetime is ", cardEdit.closeTime || data.closeTime);
+    console.log("card is ",cardEdit.openTime);
+    if (
+      dayjs(cardEdit.openTime || data.openTime).isAfter(cardEdit.closeTime || data.closeTime) ||
+      dayjs(cardEdit.openTime || data.openTime).isSame(cardEdit.closeTime || data.closeTime) 
+    ) {
+      Swal.fire({
+        title: "Error!",
+        text: "Invalid close time",
+        icon: "error",
+      });
+      return;
+    }
     updateWorkingSpace(data.id, session.data!.user.token, {
       name: cardEdit.name ? cardEdit.name : data.name,
       address: cardEdit.address ? cardEdit.address : data.address,
-      openTime: cardEdit.openTime ? cardEdit.openTime : data.openTime,
-      closeTime: cardEdit.closeTime ? cardEdit.closeTime : data.closeTime,
+      openTime: cardEdit.openTime ? dayjs(cardEdit.openTime).toString() : dayjs(data.openTime).utcOffset(+7).toString(),
+      closeTime: cardEdit.closeTime
+        ? dayjs(cardEdit.closeTime).toString()
+        : dayjs(data.closeTime).utcOffset(+7).toString(),
       maxSeat: cardEdit.maxSeat ? cardEdit.maxSeat : data.maxSeat,
       image: cardEdit.image ? cardEdit.image : data.image,
     });
