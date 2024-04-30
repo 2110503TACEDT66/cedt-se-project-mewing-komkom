@@ -1,5 +1,9 @@
 const User = require("../models/User");
 const generator = require("generate-password");
+const dayjs = require('dayjs');
+require('dayjs/locale/th'); // เพิ่ม locale สำหรับภาษาไทย
+const utc = require('dayjs/plugin/utc'); // เพิ่ม plugin สำหรับการจัดการกับ timezone
+dayjs.extend(utc);
 exports.register = async (req, res, next) => {
   try {
     const { name, email, password, tel } = req.body;
@@ -69,14 +73,14 @@ exports.login = async (req, res, next) => {
         .json({ success: false, msg: "Invaild credentials." });
     }
     if (user.banUntil) {
-      const banUntil = user.banUntil;
-      const now = new Date();
-      if (now < banUntil) {
+      const banUntil = dayjs(user.banUntil).utcOffset(7); // UTC+7 เป็น timezone ของไทย
+      const now = dayjs().utcOffset(7); // UTC+7 เป็น timezone ของไทย
+      if (now.isBefore(banUntil)) {
         return res.status(401).json({
           success: false,
-          msg: "You are banned until " + banUntil,
+          msg: "You are banned until " + banUntil.format('dddd YYYY-MM-DD HH:mm:ss'),
           ban: true,
-          banUntil: banUntil,
+          banUntil: banUntil.format('YYYY-MM-DD HH:mm:ss'),
           banReason: user.banReason
         });
       }
