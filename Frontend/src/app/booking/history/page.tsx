@@ -17,7 +17,7 @@ export default async function historyPage() {
           <h2 className="text-2xl">You haven't edit any reservation yet.</h2>
         )}
         {logeditData.map((logedit: LogEditReservation) => (
-          <ReservationLogItem logEdit={logedit} />
+          <ReservationLogItem logEdit={logedit} datatestid="reservationLog" />
         ))}
       </div>
     </>

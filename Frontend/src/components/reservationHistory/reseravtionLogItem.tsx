@@ -60,7 +60,7 @@ export default function ReservationLogItem({
   }
 
   return (
-    <div key={logEdit._id} className={`border p-4 my-4 `}>
+    <div key={logEdit._id} data-testid={datatestid} className={`border p-4 my-4 `}>
       <p className="text-xl font-medium mb-2 inline mr-3">
         {logEdit.reservationOrigin
           ? logEdit.reservationOrigin.workingSpace.name
