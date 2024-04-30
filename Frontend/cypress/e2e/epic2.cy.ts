@@ -122,7 +122,7 @@ import { request } from "http"
 //   });
 // })
 
-describe('US2-3 User should be able to view reservation history', () => {
+describe('US2-4 User should be able to view reservation history', () => {
   // it('User who has already edited at least 1 reservation can view history', () => {
   //   // Visit the login page and login
   //   cy.visit('/login');
@@ -154,6 +154,6 @@ describe('US2-3 User should be able to view reservation history', () => {
     cy.get('a[href="/booking/history"]').should('exist');
     cy.get('a[href="/booking/history"]').click();
     cy.wait(3000);
-    cy.contains('h1', "You haven't edit any reservation yet.").should('be.visible');
+    cy.contains('h2', "You haven't edit any reservation yet.").should('be.visible');
   })
 })
