@@ -22,6 +22,14 @@ import timezone from "dayjs/plugin/timezone";
 import { max } from "moment";
 import { Progress } from "@/components/ui/progress";
 import { start } from "repl";
+import { CiCircleQuestion } from "react-icons/ci";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import clsx from "clsx";
+import getUserReservationQuota from "@/libs/getUserReservationQuota";
 
 interface Props {
   params: { id: string };
@@ -45,6 +53,30 @@ export default function ReservationDetail({ params }: Props) {
   const [availableSeat, setAvailableSeat] = useState<number>(0);
   const [timeData, setTimeData] = useState<DateProps>();
   const [percent, setPercent] = useState(0);
+  const [quota, setQuota] = useState<null | number>(null);
+
+  const [dataPreFetch, setDataPreFetch] = useState<number>(0);
+  const [isSubmit, setIsSubmit] = useState(false);
+  useEffect(() => {
+    const fetchAvailable = async () => {
+      try {
+        const data = await getReservation(params.id, session.data.user.token);
+        const startTime = dayjs(data.data.startTime);
+        const endTime = dayjs(data.data.endTime);
+        const availableseatha = await checkAvailableSeat(space?._id as any, {
+          startTime,
+          endTime,
+        });
+        if (!availableseatha) {
+          throw new Error("cannot fetch");
+        }
+        setDataPreFetch(availableseatha.availableSeats);
+      } catch (error) {
+        console.error("error ja", error);
+      }
+    };
+    fetchAvailable();
+  });
 
   useEffect(() => {
     const fetchReserve = async () => {
@@ -109,6 +141,21 @@ export default function ReservationDetail({ params }: Props) {
   }, [startTime, endTime, params.id, isReserve]);
 
   useEffect(() => {
+    const fetchQuota = async () => {
+      try {
+        const userQuota = await getUserReservationQuota(
+          (session as any).data?.user.token,
+          date?.toString()
+        );
+        setQuota(userQuota.data);
+      } catch {
+        console.error("Error fetching quota");
+      }
+    };
+    fetchQuota();
+  }, [date, isSubmit]);
+
+  useEffect(() => {
     if (space?.maxSeat)
       setPercent(Math.floor((availableSeat / space?.maxSeat) * 100));
   }, [availableSeat]);
@@ -124,7 +171,7 @@ export default function ReservationDetail({ params }: Props) {
         });
         return;
       }
-      if(!startTime || !endTime){
+      if (!startTime || !endTime) {
         Swal.fire({
           title: "Error!",
           text: "Please provide time ",
@@ -158,7 +205,7 @@ export default function ReservationDetail({ params }: Props) {
         });
         return;
       }
-
+      
       const data = {
         startTime: startTime,
         endTime: endTime,
@@ -170,6 +217,7 @@ export default function ReservationDetail({ params }: Props) {
         data as any
       );
       setIsReserve((prev) => !prev);
+      setIsSubmit(!isSubmit);
       if (!reservation) {
         throw new Error("cannot create.!!");
       }
@@ -347,7 +395,15 @@ export default function ReservationDetail({ params }: Props) {
     };
   };
 
+  const [DataPercent, setDataPercent] = useState(0);
+
+  useEffect(() => {
+    if (space?.maxSeat)
+      setDataPercent(Math.floor((dataPreFetch / space?.maxSeat) * 100));
+  }, [dataPreFetch]);
+
   const debug = () => {
+    console.log(dataPreFetch);
     console.log(availableSeat);
     console.log(timeData?.startTime);
     console.log(startTime);
@@ -409,7 +465,7 @@ export default function ReservationDetail({ params }: Props) {
               )}
               <hr />
               {space ? (
-                <div>
+                <div className="max-w-lg">
                   <p>{space?.address}</p>
                   <p>{space?.tel}</p>
                 </div>
@@ -436,6 +492,56 @@ export default function ReservationDetail({ params }: Props) {
                 ) : (
                   <Skeleton className="h-[32px] w-[138px] bg-[#E5E7EB] shadow-lg" />
                 )}
+              </div>
+              <div className="flex items-center gap-1">
+                <span>Reservation Quota: </span>
+                <span
+                  className={clsx(
+                    "font-bold",
+                    quota !== 0 ? "text-sky-500" : "text-gray-300"
+                  )}
+                >
+                  {quota}
+                </span>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <CiCircleQuestion
+                      className="text-gray-500"
+                      size={16}
+                      strokeWidth={0.75}
+                    />
+                  </HoverCardTrigger>
+
+                  <HoverCardContent>
+                    <h2 className="font-bold text-sky-500">
+                      What's Reservation Quota?
+                    </h2>
+                    <p className="text-gray-500 font-sm">
+                      You can make 3 reservations per day for co-working spaces.
+                      Once you exceeded your quota you can find another free
+                      days Hope you productive! 🌟
+                    </p>
+                    <hr className="my-3" />
+                    <div className="flex-col w-full text-sm text-gray-800">
+                      <div className="flex justify-between">
+                        <span>Selected Date</span>
+                        <span className="font-bold">
+                          {date ? date.format("YYYY-MM-DD") : "Today"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Remaining</span>
+                        <span className="font-bold">
+                          {quota !== null ? quota : "Loading"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <span className="text-gray-400 text-xs">
+                      Max Quota/Day: 3
+                    </span>
+                  </HoverCardContent>
+                </HoverCard>
               </div>
             </div>
             <div className="flex items-center">
@@ -477,7 +583,7 @@ export default function ReservationDetail({ params }: Props) {
                 Available Seat
               </div>
 
-              {space && timeData ? (
+              {availableSeat ? (
                 <div className="flex flex-col gap-2">
                   <div className="flex gap-2 items-end">
                     <div className="font-bold text-base">{percent}%</div>
@@ -487,6 +593,18 @@ export default function ReservationDetail({ params }: Props) {
                   </div>
                   <div>
                     <Progress className="h-3" value={percent} />
+                  </div>
+                </div>
+              ) : dataPreFetch ? (
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-2 items-end">
+                    <div className="font-bold text-base">{DataPercent}%</div>
+                    <div className="text-xs pb-[3px] text-[#6F6F6F]">
+                      {dataPreFetch} seat left
+                    </div>
+                  </div>
+                  <div>
+                    <Progress className="h-3" value={DataPercent} />
                   </div>
                 </div>
               ) : (
@@ -499,7 +617,11 @@ export default function ReservationDetail({ params }: Props) {
             <div className="flex justify-end">
               <button
                 onClick={handleReserve}
-                className="bg-black px-5 py-2 rounded-full text-white max-w-max "
+                disabled={quota === 0}
+                className={clsx(
+                  "bg-black px-5 py-2 rounded-full text-white max-w-max",
+                  quota === 0 && "bg-gray-300"
+                )}
               >
                 Save Changes
               </button>

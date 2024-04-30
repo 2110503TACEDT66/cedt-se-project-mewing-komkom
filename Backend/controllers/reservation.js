@@ -2,7 +2,12 @@ const Reservation = require("../models/Reservation");
 const WorkingSpace = require("../models/WorkingSpace");
 const ReservasionLog = require("../models/ReservasionLog");
 const { getAvailableSeat } = require("./workingspace");
+const dayjs = require('dayjs')
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
 
+dayjs.extend(utc)
+dayjs.extend(timezone);
 exports.getAllReservation = async (req, res, next) => {
   let query;
 
@@ -130,7 +135,7 @@ exports.addReservation = async (req, res, next) => {
     // add user Id to req.body
     req.body.user = req.user.id;
     // Check for existed reservation
-    const userQuota = await getUserAvailableQuota(req.startTime, req.user.id);
+    const userQuota = await getUserAvailableQuota(req.body.startTime, req.user.id);
     //If the user is not an admin, they can only create > 3 reservation/day.
     if (
       userQuota <= 0 &&
@@ -139,7 +144,7 @@ exports.addReservation = async (req, res, next) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: `The user with ID ${req.user.id} has exceeded the maximum quota of reservations`,
+        message: `You has exceeded the maximum quota of reservations`,
       });
     }
     const reservation = await Reservation.create(req.body);
@@ -157,14 +162,34 @@ exports.addReservation = async (req, res, next) => {
 // ok
 exports.updateReservation = async (req, res, next) => {
   try {
+    if (req.body.startTime || req.body.endTime) {
+      if (!req.body.startTime) {
+        return res.status(400).json({
+          success: false,
+          message: `User does not provided start time`,
+        });
+      }
+      if (!req.body.endTime) {
+        return res.status(400).json({
+          success: false,
+          message: `User does not provided end time`,
+        });
+      }
+      if (req.body.endTime <= req.body.startTime) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid end time`,
+        });
+      }
+    }
+
     let reservation = await Reservation.findById(req.params.id)
       .populate({
         path: "workingSpace",
         select: "name",
       })
       .populate({ path: "user", select: "name" });
-    console.log(reservation);
-    console.log(typeof reservation);
+
 
     if (!reservation) {
       return res.status(404).json({
@@ -185,19 +210,28 @@ exports.updateReservation = async (req, res, next) => {
       });
     }
     // Log the edit reservation
-    if (
-      req.body.startTime !== reservation.startTime ||
-      req.body.endTime !== reservation.endTime
-    )
-      await addEditReservationLog(
-        req.params.id,
-        reservation.startTime,
-        req.body.startTime,
-        reservation.endTime,
-        req.body.endTime,
-        reservation.toJSON(),
-        req.user.id
-      );
+    // compare the start time in the reservation and the new start time
+    const startTime = new Date(reservation.startTime);
+    const newStartTime = new Date(req.body.startTime);
+    const endTime = new Date(reservation.endTime);
+    const newEndTime = new Date(req.body.endTime);
+    if (startTime.toISOString() === newStartTime.toISOString() && endTime.toISOString() === newEndTime.toISOString()) {
+      return res.status(400).json({
+        success: false,
+        message: `No change in reservation`,
+      });
+    }
+
+    await addEditReservationLog(
+      req.params.id,
+      reservation.startTime,
+      req.body.startTime,
+      reservation.endTime,
+      req.body.endTime,
+      reservation.toJSON(),
+      reservation.user.id
+    );
+
     reservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -241,14 +275,14 @@ exports.deleteReservation = async (req, res, next) => {
     }
     if (
       (req.user.role === "admin" || req.user.role === "moderator") &&
-      req.user.id !== reservation.user.toString()
+      req.user.id !== reservation.user.id
     ) {
       // Log the Forced Cancel reservation
       await addCancelReservationLog(
         req.params.id,
         reservation.toJSON(),
         true,
-        req.user.id
+        reservation.user.id
       );
     } else {
       // Log the cancel reservation
@@ -256,7 +290,7 @@ exports.deleteReservation = async (req, res, next) => {
         req.params.id,
         reservation.toJSON(),
         false,
-        req.user.id
+        reservation.user.id
       );
     }
     await reservation.deleteOne();
@@ -347,29 +381,26 @@ exports.getUserReservationQuota = async (req, res, next) => {
 const getUserAvailableQuota = async (selectedDate, userId) => {
   let existedReservation;
   if (!selectedDate) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0)
-    const tomorrow = new Date();
-    tomorrow.setHours(0, 0, 0, 0)
-    tomorrow.setDate(today.getDate() + 1)
-    console.log("searching quota for today:", today.toISOString() + " till " + tomorrow.toISOString())
+
+    const today = dayjs().utc().startOf('day').toDate()
+    const till = dayjs().utc().endOf('day').toDate()
+
+    console.log("searching quota for today:", today.toISOString + " till " + till.toISOString())
     existedReservation = await Reservation.find({
       user: userId,
       // find the match startingdate
-      startTime: { $gte: today, $lt: tomorrow },
+      startTime: { $gte: today, $lte: till },
     });
   } else {
     console.log("receive dt string:", selectedDate);
-    const selectedDate_ = new Date(selectedDate);
-    selectedDate_.setHours(0, 0, 0, 0)
-    const till = new Date(selectedDate);
-    till.setHours(0, 0, 0, 0)
-    till.setDate(selectedDate_.getDate() + 1)
+    const selectedDate_ = dayjs(selectedDate).utc().startOf('day').toDate()
+    const till = dayjs(selectedDate).utc().endOf('day').toDate()
+
     console.log("searching quota for  date:", selectedDate_.toISOString() + " till " + till.toISOString())
     existedReservation = await Reservation.find({
       user: userId,
       // find the match startingdate
-      startTime: { $gte: selectedDate_, $lt: till },
+      startTime: { $gte: selectedDate_, $lte: till },
     });
   }
 
