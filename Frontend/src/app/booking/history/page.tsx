@@ -13,11 +13,11 @@ export default async function historyPage() {
     <main>
       <div>
         <div className="text-3xl m-4">Reservation History</div>
-        <div data-testid="reservationLog">
+        
           {logeditData.map((logedit: LogEditReservation) => (
-            <ReservationLogItem logEdit={logedit} data-testid="reservationLog"/>
+            <ReservationLogItem logEdit={logedit} datatestid="reservationLog"/>
           ))}
-        </div>
+        
         
       </div>
     </main>

@@ -124,6 +124,14 @@ export default function ReservationDetail({ params }: Props) {
         });
         return;
       }
+      if(!startTime || !endTime){
+        Swal.fire({
+          title: "Error!",
+          text: "Please provide start time or end time ",
+          icon: "error",
+        });
+        return;
+      }
       if ((availableSeat as number) <= 0) {
         Swal.fire({
           title: "Error!",

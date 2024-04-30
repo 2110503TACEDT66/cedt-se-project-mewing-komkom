@@ -13,8 +13,10 @@ dayjs.extend(timezone);
 
 export default function ReservationLogItem({
   logEdit,
+  datatestid
 }: {
   logEdit: LogEditReservation;
+  datatestid:string
 }) {
   const session = useSession();
   const router = useRouter();
@@ -45,7 +47,7 @@ export default function ReservationLogItem({
     .format("HH:mm");
 
   return (
-    <div data-testid="reservationLog" key={logEdit._id} className={`border p-4 my-4 ${hide}`}>
+    <div key={logEdit._id} data-testid={datatestid} className={`border p-4 my-4 ${hide}`}>
       <h1 className="text-xl font-medium mb-2">
         {logEdit.reservationOrigin
           ? logEdit.reservationOrigin.workingSpace.name
