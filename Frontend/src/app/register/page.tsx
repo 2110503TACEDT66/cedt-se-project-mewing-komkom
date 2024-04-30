@@ -27,7 +27,7 @@ export default function Register() {
         return;
       }
 
-      if (password.length <= 6) {
+      if (password.length < 6) {
         setError("Password must have at least 6 characters.");
         
         return;
