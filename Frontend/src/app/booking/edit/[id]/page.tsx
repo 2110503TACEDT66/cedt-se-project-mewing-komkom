@@ -140,6 +140,16 @@ export default function ReservationDetail({ params }: Props) {
         });
         return;
       }
+
+      if (dayjs(timeData?.startTime).isSame(startTime) && dayjs(timeData?.endTime).isSame(endTime)) {
+        Swal.fire({
+          title: "No update!",
+          text: "No changes have been made.",
+          icon: "info",
+        });
+        return;
+      }
+
       if ((availableSeat as number) <= 0) {
         Swal.fire({
           title: "Error!",

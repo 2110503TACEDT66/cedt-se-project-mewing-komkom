@@ -1,58 +1,58 @@
 import { request } from "http"
 
-describe('US2-1 User should make a reservation with valid time', () => {
-  beforeEach(() => {
-    // Visit the login page and login
-    cy.visit('/login');
-    cy.get('input[name="email"]').type('fortesting@gmail.com');
-    cy.get('input[name="password"]').type('1234567');
-    cy.get('button[type="submit"]').click();
-    cy.wait(2000);
-    // Visit one space page
-    cy.visit('/space/662f51b9519d18088daacf91');
-    cy.wait(3000)
-  });
+// describe('US2-1 User should make a reservation with valid time', () => {
+//   beforeEach(() => {
+//     // Visit the login page and login
+//     cy.visit('/login');
+//     cy.get('input[name="email"]').type('fortesting@gmail.com');
+//     cy.get('input[name="password"]').type('1234567');
+//     cy.get('button[type="submit"]').click();
+//     cy.wait(2000);
+//     // Visit one space page
+//     cy.visit('/space/662f51b9519d18088daacf91');
+//     cy.wait(3000)
+//   });
 
-  // it('No date and time provided', () => {
-  //   cy.contains('button', 'Reserve').click();
-  //   cy.contains('Please provide date').should('be.visible');
-  // });
+//   it('No date and time provided', () => {
+//     cy.contains('button', 'Reserve').click();
+//     cy.contains('Please provide date').should('be.visible');
+//   });
 
-  // it('Provide date but no time provided', () => {
-  //   cy.get('[data-testid="spaceDatePicker"]').type("2024-06-01").type('{enter}');
-  //   cy.contains('button', 'Reserve').click();
-  //   cy.contains('Please provide time').should('be.visible');
-  // });
+//   it('Provide date but no time provided', () => {
+//     cy.get('[data-testid="spaceDatePicker"]').type("2024-06-01").type('{enter}');
+//     cy.contains('button', 'Reserve').click();
+//     cy.contains('Please provide time').should('be.visible');
+//   });
 
-  // it('Provide date and time which endDate is less than startDate', () => {
-  //   cy.get('[data-testid="spaceDatePicker"]').type("2024-05-01").type('{enter}');
-  //   cy.get('[data-testid="spaceEndTime"]').type("9:00").type('{enter}');
-  //   cy.get('[data-testid="spaceStartTime"]').type("10:00").type('{enter}');
-  //   //cy.get('[data-testid="spaceEndTime"]').type("9:00").type('{enter}');
-  //   cy.wait(2000);
-  //   cy.contains('button', 'Reserve').click();
-  //   cy.contains('Please provide time').should('be.visible');
-  // });
+//   it('Provide date and time which endDate is less than startDate', () => {
+//     cy.get('[data-testid="spaceDatePicker"]').type("2024-05-01").type('{enter}');
+//     cy.get('[data-testid="spaceEndTime"]').type("9:00").type('{enter}');
+//     cy.get('[data-testid="spaceStartTime"]').type("10:00").type('{enter}');
+//     //cy.get('[data-testid="spaceEndTime"]').type("9:00").type('{enter}');
+//     cy.wait(2000);
+//     cy.contains('button', 'Reserve').click();
+//     cy.contains('Please provide time').should('be.visible');
+//   });
 
-  // it('Provide date and time which endDate is equal to startDate', () => {
-  //   cy.get('[data-testid="spaceDatePicker"]').type("2024-05-01").type('{enter}');
-  //   cy.get('[data-testid="spaceStartTime"]').type("10:00").type('{enter}');
-  //   cy.get('[data-testid="spaceEndTime"]').type("10:00").type('{enter}');
-  //   cy.wait(2000);
-  //   cy.contains('button', 'Reserve').click();
-  //   cy.contains('Please provide time').should('be.visible');
-  // });
+//   it('Provide date and time which endDate is equal to startDate', () => {
+//     cy.get('[data-testid="spaceDatePicker"]').type("2024-05-01").type('{enter}');
+//     cy.get('[data-testid="spaceStartTime"]').type("10:00").type('{enter}');
+//     cy.get('[data-testid="spaceEndTime"]').type("10:00").type('{enter}');
+//     cy.wait(2000);
+//     cy.contains('button', 'Reserve').click();
+//     cy.contains('Please provide time').should('be.visible');
+//   });
 
-  // it('Provide date and time which endDate is greater than startDate', () => {
-  //   cy.get('[data-testid="spaceDatePicker"]').type("2024-05-01").type('{enter}');
-  //   cy.get('[data-testid="spaceStartTime"]').type("10:00").type('{enter}');
-  //   cy.get('[data-testid="spaceEndTime"]').type("11:00").type('{enter}');
-  //   cy.wait(2000);
-  //   cy.contains
-  //   cy.contains('button', 'Reserve').click();
-  //   cy.contains('Create successfully').should('be.visible');
-  // });
-})
+//   it('Provide date and time which endDate is greater than startDate', () => {
+//     cy.get('[data-testid="spaceDatePicker"]').type("2024-05-01").type('{enter}');
+//     cy.get('[data-testid="spaceStartTime"]').type("10:00").type('{enter}');
+//     cy.get('[data-testid="spaceEndTime"]').type("11:00").type('{enter}');
+//     cy.wait(2000);
+//     cy.contains
+//     cy.contains('button', 'Reserve').click();
+//     cy.contains('Create successfully').should('be.visible');
+//   });
+// })
 
 // describe('US2-2 User can view amount of available seats of selected time', () => {
 //   beforeEach(() => {
@@ -96,55 +96,52 @@ describe('US2-3 User should edit a reservation with valid time', () => {
     cy.wait(5000)
   });
 
-  // //wait for nonny correction
-  // it('Does not change any data', () => {
-  //   cy.wait(3000);
-  //   cy.contains('button', 'Save Change').click();
-  //   cy.contains('No change in reservation').should('be.visible');
-  // });
-  // it('TC25 everything is null', () => {
-  //   cy.get(".ant-picker-clear").eq(0).click();
-  //   cy.get(".ant-picker-clear").eq(1).click();
-  //   cy.get(".ant-picker-clear").click();
-  //   cy.wait(2000)
-  //   cy.contains('button', 'Save Change').click();
-  //   cy.contains('Please provide date').should('be.visible');
-  // });
+  it('TC25 everything is null', () => {
+    cy.get(".ant-picker-clear").eq(0).click();
+    cy.get(".ant-picker-clear").eq(1).click();
+    cy.get(".ant-picker-clear").click();
+    cy.wait(2000)
+    cy.contains('button', 'Save Change').click();
+    cy.contains('Please provide date').should('be.visible');
+  });
 
 
-  // it('TC26 start and end time is null', () => {
-  //   cy.get('[data-testid="spaceDatePicker"]').clear().type("2024-06-01").type('{enter}');
-  //   cy.get(".ant-picker-clear").eq(1).click();
-  //   cy.get(".ant-picker-clear").eq(1).click();
-  //   cy.wait(1000)
-  //   cy.contains('button', 'Save Change').click();
-  //   cy.wait(2000)
-  //   cy.contains('Please provide start time or end time ').should('be.visible');
-  // });
+  it('TC26 start and end time is null', () => {
+    cy.get('[data-testid="spaceDatePicker"]').clear().type("2024-06-01").type('{enter}');
+    cy.get(".ant-picker-clear").eq(1).click();
+    cy.get(".ant-picker-clear").eq(1).click();
+    cy.wait(1000)
+    cy.contains('button', 'Save Change').click();
+    cy.wait(2000)
+    cy.contains('Please provide time').should('be.visible');
+  });
 
-  // it('TC27 start time is after end time', () => {
-  //   cy.get('[data-testid="spaceDatePicker"]').clear().type("2024-06-02").type('{enter}');
-  //   cy.get('[data-testid="spaceStartTime"]').clear().type("10:00").type('{enter}');
-  //   cy.get('[data-testid="spaceEndTime"]').clear().type("09:00").type('{enter}');
-  //   cy.contains("Date").click();
-  //   cy.wait(1000)
-  //   // cy.contains('button', 'Save Change').click();
-  //   cy.get('[data-testid="spaceEndTime"]').should('have.value', null);
-  //   cy.wait(2000)
-  //   // cy.contains('Invalid end time').should('be.visible');
-  // });
+it('TC27 start time is after end time', () => {
+  cy.get('[data-testid="spaceEndTime"] input').invoke('val').then(value => {
+      let initialEndTime = value;
+      console.log(initialEndTime);
+      cy.get('[data-testid="spaceDatePicker"]').clear().type("2024-06-02").type('{enter}');
+      cy.get('[data-testid="spaceStartTime"]').clear().type("10:00").type('{enter}');
+      cy.get('[data-testid="spaceEndTime"]').clear().type("09:00").type('{enter}');
+      cy.contains("Date").click();
+      cy.get('[data-testid="spaceEndTime"] input').should('have.value', initialEndTime);
+      
+  });
+});
 
 
 
-//   it('TC28 start time is same end time', () => {
-//     cy.get('[data-testid="spaceDatePicker"]').clear().type("2024-06-02").type('{enter}');
-//     cy.get('[data-testid="spaceStartTime"]').clear().type("10:00").type('{enter}');
-//     cy.get('[data-testid="spaceEndTime"]').clear().type("10:00").type('{enter}');
-//     cy.wait(1000);
-//     cy.contains('button', 'Save Change').click();
-//     cy.wait(2000);
-//     cy.contains('Please provide time').should('be.visible');
-// });
+  it('TC28 start time is same end time', () => {
+    cy.get('[data-testid="spaceEndTime"] input').invoke('val').then(value => {
+      let initialEndTime = value;
+      console.log(initialEndTime);
+      cy.get('[data-testid="spaceDatePicker"]').clear().type("2024-06-02").type('{enter}');
+      cy.get('[data-testid="spaceStartTime"]').clear().type("10:00").type('{enter}');
+      cy.get('[data-testid="spaceEndTime"]').clear().type("10:00").type('{enter}');
+      cy.contains("Date").click();
+      cy.get('[data-testid="spaceEndTime"] input').should('have.value', initialEndTime);
+    })
+});
   
   it('TC29 Provide valid time', () => {
     cy.get('[data-testid="spaceDatePicker"]').clear().type("2024-06-02").type('{enter}');
@@ -155,44 +152,44 @@ describe('US2-3 User should edit a reservation with valid time', () => {
     cy.contains('Update successfully').should('be.visible');
   });
 
-  it('TC30 Provide valid time', () => {
+  it('TC30 does not change anything', () => {
     cy.contains('button', 'Save Change').click();
-    cy.contains('Update successfully').should('be.visible');
+    cy.contains('No changes have been made.').should('be.visible');
   });
 })
 
-describe('US2-4 User should be able to view reservation history', () => {
-  // it('User who has already edited at least 1 reservation can view history', () => {
-  //   // Visit the login page and login
-  //   cy.visit('/login');
-  //   cy.get('input[name="email"]').type('fortesting@gmail.com');
-  //   cy.get('input[name="password"]').type('1234567');
-  //   cy.get('button[type="submit"]').click();
-  //   cy.wait(2000);
-  //   // Visit one space page
-  //   cy.visit('/booking/manage');
-  //   cy.wait(3000)
+// describe('US2-4 User should be able to view reservation history', () => {
+//   it('User who has already edited at least 1 reservation can view history', () => {
+//     // Visit the login page and login
+//     cy.visit('/login');
+//     cy.get('input[name="email"]').type('fortesting@gmail.com');
+//     cy.get('input[name="password"]').type('1234567');
+//     cy.get('button[type="submit"]').click();
+//     cy.wait(2000);
+//     // Visit one space page
+//     cy.visit('/booking/manage');
+//     cy.wait(3000)
 
-  //   cy.get('a[href="/booking/history"]').should('exist');
-  //   cy.get('a[href="/booking/history"]').click();
-  //   cy.wait(3000);
-  //   cy.get('[data-testid="reservationLog"]').should('be.visible');
-  // })
+//     cy.get('a[href="/booking/history"]').should('exist');
+//     cy.get('a[href="/booking/history"]').click();
+//     cy.wait(3000);
+//     cy.get('[data-testid="reservationLog"]').should('be.visible');
+//   })
 
-  // it('User who have not edited any reervation yet', () => {
-  //   // Visit the login page and login
-  //   cy.visit('/login');
-  //   cy.get('input[name="email"]').type('fornohistorytesting@gmail.com');
-  //   cy.get('input[name="password"]').type('1234567');
-  //   cy.get('button[type="submit"]').click();
-  //   cy.wait(2000);
-  //   // Visit one space page
-  //   cy.visit('/booking/manage');
-  //   cy.wait(3000)
+//   it('User who have not edited any reervation yet', () => {
+//     // Visit the login page and login
+//     cy.visit('/login');
+//     cy.get('input[name="email"]').type('fornohistorytesting@gmail.com');
+//     cy.get('input[name="password"]').type('1234567');
+//     cy.get('button[type="submit"]').click();
+//     cy.wait(2000);
+//     // Visit one space page
+//     cy.visit('/booking/manage');
+//     cy.wait(3000)
 
-  //   cy.get('a[href="/booking/history"]').should('exist');
-  //   cy.get('a[href="/booking/history"]').click();
-  //   cy.wait(3000);
-  //   cy.contains('h2', "You haven't edit any reservation yet.").should('be.visible');
-  // })
-})
+//     cy.get('a[href="/booking/history"]').should('exist');
+//     cy.get('a[href="/booking/history"]').click();
+//     cy.wait(3000);
+//     cy.contains('h2', "You haven't edit any reservation yet.").should('be.visible');
+//   })
+// })

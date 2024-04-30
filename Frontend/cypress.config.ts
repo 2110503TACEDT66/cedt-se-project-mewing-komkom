@@ -5,6 +5,6 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    baseUrl: 'https://cedt-se-project-mewing-komkom.vercel.app',
+    baseUrl: 'http://localhost:3000',
   },
 });
