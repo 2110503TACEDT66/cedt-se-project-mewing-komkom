@@ -7,7 +7,7 @@ services:
       - "1200:1200"
     environment:
       - PORT=1200
-      - NODE_ENV=development
+      - NODE_ENV=production
       - MONGO_URI=mongodb+srv://whitemalt:jangratchanon@workingreservation.09hfldw.mongodb.net/
       - JWT_SECRET=asdfjkl;;lkjfdsa
       - JWT_EXPIRE=30d
