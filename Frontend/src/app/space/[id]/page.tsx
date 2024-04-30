@@ -130,7 +130,7 @@ const SpaceDetail = ({ params }: Props) => {
         });
         return;
       }
-      setIsSubmit(!isSubmit);
+
       const data = {
         startTime: startTime,
         endTime: endTime,
@@ -141,6 +141,7 @@ const SpaceDetail = ({ params }: Props) => {
         (session as any).data?.user.token
       );
       setIsReserve((prev) => !prev);
+      setIsSubmit(!isSubmit);
       if (!reservation) {
         throw new Error("cannot create.!!");
       }
