@@ -21,6 +21,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import getUserReservationQuota from "@/libs/getUserReservationQuota";
+import { set } from "node_modules/cypress/types/lodash";
 
 interface Props {
   params: { id: string };
@@ -36,7 +37,7 @@ const SpaceDetail = ({ params }: Props) => {
   const [isReserve, setIsReserve] = useState(false);
   const [percent, setPercent] = useState(0);
   const [quota, setQuota] = useState<null | number>(null);
-
+  const [isSubmit, setIsSubmit] = useState(false);
   useEffect(() => {
     const fetchSpace = async () => {
       try {
@@ -91,7 +92,7 @@ const SpaceDetail = ({ params }: Props) => {
       }
     };
     fetchQuota();
-  }, [date]);
+  }, [date, isReserve]);
 
   const handleReserve = async (e: any) => {
     try {
@@ -120,14 +121,6 @@ const SpaceDetail = ({ params }: Props) => {
         });
         return;
       }
-      // set the startTime date to the selected date
-
-      // setStartTime(
-      //   date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
-      // );
-      // setEndTime(
-      //   date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0)
-      // );
 
       if (dayjs().isAfter(startTime)) {
         Swal.fire({
@@ -137,6 +130,7 @@ const SpaceDetail = ({ params }: Props) => {
         });
         return;
       }
+
       const data = {
         startTime: startTime,
         endTime: endTime,
@@ -147,6 +141,7 @@ const SpaceDetail = ({ params }: Props) => {
         (session as any).data?.user.token
       );
       setIsReserve((prev) => !prev);
+      setIsSubmit(!isSubmit);
       if (!reservation) {
         throw new Error("cannot create.!!");
       }

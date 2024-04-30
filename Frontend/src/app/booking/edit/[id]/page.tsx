@@ -23,7 +23,11 @@ import { max } from "moment";
 import { Progress } from "@/components/ui/progress";
 import { start } from "repl";
 import { CiCircleQuestion } from "react-icons/ci";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import clsx from "clsx";
 import getUserReservationQuota from "@/libs/getUserReservationQuota";
 
@@ -52,7 +56,7 @@ export default function ReservationDetail({ params }: Props) {
   const [quota, setQuota] = useState<null | number>(null);
 
   const [dataPreFetch, setDataPreFetch] = useState<number>(0);
-
+  const [isSubmit, setIsSubmit] = useState(false);
   useEffect(() => {
     const fetchAvailable = async () => {
       try {
@@ -149,7 +153,7 @@ export default function ReservationDetail({ params }: Props) {
       }
     };
     fetchQuota();
-  }, [date]);
+  }, [date, isSubmit]);
 
   useEffect(() => {
     if (space?.maxSeat)
@@ -191,7 +195,7 @@ export default function ReservationDetail({ params }: Props) {
         });
         return;
       }
-
+      
       const data = {
         startTime: startTime,
         endTime: endTime,
@@ -203,6 +207,7 @@ export default function ReservationDetail({ params }: Props) {
         data as any
       );
       setIsReserve((prev) => !prev);
+      setIsSubmit(!isSubmit);
       if (!reservation) {
         throw new Error("cannot create.!!");
       }
@@ -396,7 +401,6 @@ export default function ReservationDetail({ params }: Props) {
 
   return (
     <div className="flex justify-center my-20 flex-col gap-5 items-center">
-      <button onClick={debug}>hi</button>
       <h1 className="text-center text-4xl font-bold">
         {space ? (
           <div>
@@ -480,55 +484,55 @@ export default function ReservationDetail({ params }: Props) {
                 )}
               </div>
               <div className="flex items-center gap-1">
-                  <span>Reservation Quota: </span>
-                  <span
-                    className={clsx(
-                      "font-bold",
-                      quota !== 0 ? "text-sky-500" : "text-gray-300"
-                    )}
-                  >
-                    {quota}
-                  </span>
-                  <HoverCard>
-                    <HoverCardTrigger>
-                      <CiCircleQuestion
-                        className="text-gray-500"
-                        size={16}
-                        strokeWidth={0.75}
-                      />
-                    </HoverCardTrigger>
+                <span>Reservation Quota: </span>
+                <span
+                  className={clsx(
+                    "font-bold",
+                    quota !== 0 ? "text-sky-500" : "text-gray-300"
+                  )}
+                >
+                  {quota}
+                </span>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <CiCircleQuestion
+                      className="text-gray-500"
+                      size={16}
+                      strokeWidth={0.75}
+                    />
+                  </HoverCardTrigger>
 
-                    <HoverCardContent>
-                      <h2 className="font-bold text-sky-500">
-                        What's Reservation Quota?
-                      </h2>
-                      <p className="text-gray-500 font-sm">
-                        You can make 3 reservations per day for co-working
-                        spaces. Once you exceeded your quota you can find
-                        another free days Hope you productive! 🌟
-                      </p>
-                      <hr className="my-3" />
-                      <div className="flex-col w-full text-sm text-gray-800">
-                        <div className="flex justify-between">
-                          <span>Selected Date</span>
-                          <span className="font-bold">
-                            {date ? date.format("YYYY-MM-DD") : "Today"}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Remaining</span>
-                          <span className="font-bold">
-                            {quota !== null ? quota : "Loading"}
-                          </span>
-                        </div>
+                  <HoverCardContent>
+                    <h2 className="font-bold text-sky-500">
+                      What's Reservation Quota?
+                    </h2>
+                    <p className="text-gray-500 font-sm">
+                      You can make 3 reservations per day for co-working spaces.
+                      Once you exceeded your quota you can find another free
+                      days Hope you productive! 🌟
+                    </p>
+                    <hr className="my-3" />
+                    <div className="flex-col w-full text-sm text-gray-800">
+                      <div className="flex justify-between">
+                        <span>Selected Date</span>
+                        <span className="font-bold">
+                          {date ? date.format("YYYY-MM-DD") : "Today"}
+                        </span>
                       </div>
+                      <div className="flex justify-between">
+                        <span>Remaining</span>
+                        <span className="font-bold">
+                          {quota !== null ? quota : "Loading"}
+                        </span>
+                      </div>
+                    </div>
 
-                      <span className="text-gray-400 text-xs">
-                        Max Quota/Day: 3
-                      </span>
-                    </HoverCardContent>
-                  </HoverCard>
-                </div>
+                    <span className="text-gray-400 text-xs">
+                      Max Quota/Day: 3
+                    </span>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
             </div>
             <div className="flex items-center">
               <label className="mr-5 text-[#736868] font-semibold text-base">
@@ -603,11 +607,11 @@ export default function ReservationDetail({ params }: Props) {
             <div className="flex justify-end">
               <button
                 onClick={handleReserve}
-                  disabled={quota === 0}
-                  className={clsx(
-                    "bg-black px-5 py-2 rounded-full text-white max-w-max",
-                    quota === 0 && "bg-gray-300"
-                  )}
+                disabled={quota === 0}
+                className={clsx(
+                  "bg-black px-5 py-2 rounded-full text-white max-w-max",
+                  quota === 0 && "bg-gray-300"
+                )}
               >
                 Save Changes
               </button>
