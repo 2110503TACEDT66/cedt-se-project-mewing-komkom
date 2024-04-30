@@ -6,7 +6,7 @@ exports.createWorkingSpace = async (req, res, next) => {
   
       if (existingWorkspace.length > 0) {
         res.status(400).json({ success: false, message: "Name must be Unique" });
-      } if(existingWorkspace.length <= 0){
+      } else{
         const workingspace = await WorkingSpace.create(req.body);
         res.status(201).json({ success: true, data: workingspace });
       }
