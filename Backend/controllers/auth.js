@@ -123,10 +123,10 @@ exports.getMe = async (req, res, next) => {
 exports.getAllUsers = async (req, res, next) => {
   try {
     let users = await User.find({ role: "user" });
-    const user = await checkTimeoutBan(users);
+    // const user = await checkTimeoutBan(users);
     res.status(200).json({
       success: true,
-      data: user,
+      data: users,
     });
   } catch (error) {
     res.status(500).json({
@@ -216,16 +216,16 @@ exports.createAdmin = async (req, res, next) => {
   }
 };
 
-const checkTimeoutBan = async (users) => {
-  const currentDate = new Date();
-  const userData = users
-  for (let i = 0; i < userData.length; i++) {
-    const user = userData[i];
-    if (currentDate > user.banUntil) {
-      await User.findByIdAndUpdate(user._id, { banUntil: null, banReason: null });
-      userData[i] = await User.findById(user._id);
-    }
-  }
-  return userData;
-};
+// const checkTimeoutBan = async (users) => {
+//   const currentDate = new Date();
+//   const userData = users
+//   for (let i = 0; i < userData.length; i++) {
+//     const user = userData[i];
+//     if (currentDate > user.banUntil) {
+//       await User.findByIdAndUpdate(user._id, { banUntil: null, banReason: null });
+//       userData[i] = await User.findById(user._id);
+//     }
+//   }
+//   return userData;
+// };
 
