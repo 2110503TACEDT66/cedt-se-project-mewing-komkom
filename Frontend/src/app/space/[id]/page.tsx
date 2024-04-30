@@ -92,7 +92,7 @@ const SpaceDetail = ({ params }: Props) => {
       }
     };
     fetchQuota();
-  }, [date, isReserve]);
+  }, [date, isSubmit]);
 
   const handleReserve = async (e: any) => {
     try {
