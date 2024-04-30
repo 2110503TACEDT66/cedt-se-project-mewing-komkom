@@ -377,9 +377,10 @@ const getUserAvailableQuota = async (selectedDate, userId) => {
   let existedReservation;
   if (!selectedDate) {
     const today = new Date();
-    today.setHours(0, 0, 0, 0)
+    //  set the utc time to 17:00 according to the Thai timezone 24:00
+    today.setUTCHours(17, 0, 0, 0);
     const tomorrow = new Date();
-    tomorrow.setHours(0, 0, 0, 0)
+    tomorrow.setUTCHours(17, 0, 0, 0)
     tomorrow.setDate(today.getDate() + 1)
     console.log("searching quota for today:", today.toISOString() + " till " + tomorrow.toISOString())
     existedReservation = await Reservation.find({
@@ -390,9 +391,9 @@ const getUserAvailableQuota = async (selectedDate, userId) => {
   } else {
     console.log("receive dt string:", selectedDate);
     const selectedDate_ = new Date(selectedDate);
-    selectedDate_.setHours(0, 0, 0, 0)
+    selectedDate_.setUTCHours(17, 0, 0, 0)
     const till = new Date(selectedDate);
-    till.setHours(0, 0, 0, 0)
+    till.setUTCHours(17, 0, 0, 0)
     till.setDate(selectedDate_.getDate() + 1)
     console.log("searching quota for  date:", selectedDate_.toISOString() + " till " + till.toISOString())
     existedReservation = await Reservation.find({
