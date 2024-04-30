@@ -45,7 +45,7 @@ export default function ReservationLogItem({
     .format("HH:mm");
 
   return (
-    <div key={logEdit._id} className={`border p-4 my-4 ${hide}`}>
+    <div data-testid="reservationLog" key={logEdit._id} className={`border p-4 my-4 ${hide}`}>
       <h1 className="text-xl font-medium mb-2">
         {logEdit.reservationOrigin
           ? logEdit.reservationOrigin.workingSpace.name
