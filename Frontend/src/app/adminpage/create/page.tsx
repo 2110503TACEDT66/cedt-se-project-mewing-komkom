@@ -22,7 +22,7 @@ export default function page() {
         </div>
         <div>
           <div className="font-bold text-2xl flex justify-end mb-12"></div>
-          <div className="flex justify-center">
+          <div className="flex justify-center px-14">
             <PreviewCard card={card} />
           </div>
         </div>

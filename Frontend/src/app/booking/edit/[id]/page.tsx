@@ -127,15 +127,7 @@ export default function ReservationDetail({ params }: Props) {
       if(!startTime || !endTime){
         Swal.fire({
           title: "Error!",
-          text: "Please provide start time or end time ",
-          icon: "error",
-        });
-        return;
-      }
-      if ((availableSeat as number) <= 0) {
-        Swal.fire({
-          title: "Error!",
-          text: "The seats are fully occupied. Unable to reserve.",
+          text: "Please provide time ",
           icon: "error",
         });
         return;
@@ -148,6 +140,15 @@ export default function ReservationDetail({ params }: Props) {
         });
         return;
       }
+      if ((availableSeat as number) <= 0) {
+        Swal.fire({
+          title: "Error!",
+          text: "The seats are fully occupied. Unable to reserve.",
+          icon: "error",
+        });
+        return;
+      }
+
       const data = {
         startTime: startTime,
         endTime: endTime,
@@ -170,8 +171,20 @@ export default function ReservationDetail({ params }: Props) {
   const handleDateChange: DatePickerProps["onChange"] = (date, dateString) => {
     setDate(date);
     if (date) {
-      console.log("starttime is "+date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0).format());
-      console.log("endtime is "+date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0).format());
+      console.log(
+        "starttime is " +
+          date
+            .hour(startTime?.hour() || 0)
+            .minute(startTime?.minute() || 0)
+            .format()
+      );
+      console.log(
+        "endtime is " +
+          date
+            .hour(endTime?.hour() || 0)
+            .minute(endTime?.minute() || 0)
+            .format()
+      );
       setStartTime(
         date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
       );
@@ -189,15 +202,21 @@ export default function ReservationDetail({ params }: Props) {
     if (timewithdate) {
       if (timeType === "start") {
         setStartTime(
-          time ==null? null:timewithdate.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
-          timewithdate
+          time == null
+            ? null
+            : timewithdate
+                .hour(time?.hour() || 0)
+                .minute(time?.minute() || 0) || timewithdate
         );
       } else if (timeType === "end") {
-        if(time==null){ setEndTime(null); return;}
-        console.log("time is null "+(time==null));
+        if (time == null) {
+          setEndTime(null);
+          return;
+        }
+        console.log("time is null " + (time == null));
         setEndTime(
           timewithdate.hour(time?.hour() || 0).minute(time?.minute() || 0) ||
-          timewithdate
+            timewithdate
         );
       }
     }

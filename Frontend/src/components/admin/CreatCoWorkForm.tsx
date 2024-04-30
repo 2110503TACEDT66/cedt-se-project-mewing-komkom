@@ -9,6 +9,7 @@ import createCoWorkingSpace from "@/libs/createWorkingSpace";
 import { SetPreviewCard } from "../../../interface";
 import { useSession } from "next-auth/react";
 import updateWorkingSpace from "@/libs/updateWorkingSpace";
+import Swal from "sweetalert2";
 
 interface Props {
   data?: any;
@@ -28,6 +29,14 @@ export default function CoWorkForm({ data }: Props) {
   const session = useSession();
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if(dayjs(card.openTime).isAfter(card.closeTime) || dayjs(card.openTime).isSame(card.closeTime)){
+      Swal.fire({
+        title: "Error!",
+        text: "Invalid close time",
+        icon: "error",
+      });
+      return;
+    }
     createCoWorkingSpace(
       {
         name: card.name,
@@ -50,7 +59,7 @@ export default function CoWorkForm({ data }: Props) {
       {card.maxSeat}
       {card.image} */}
       <form onSubmit={onSubmit} className="p-20 grid grid-cols-4 gap-10 ">
-        <label htmlFor="image-upload">รูปภาพ:</label>
+        <label htmlFor="image-upload">Image:</label>
         {/* <Input
             type="file"
             className="col-span-1 max-w-60 text-gray-400"
@@ -76,7 +85,7 @@ export default function CoWorkForm({ data }: Props) {
             Upload File
           </span>
         </label> */}
-        <label>ชื่อ:</label>
+        <label>Name:</label>
         <Input
           required
           type="text"
@@ -87,7 +96,7 @@ export default function CoWorkForm({ data }: Props) {
           id="name"
           defaultValue={data?.name}
         />
-        <label>เวลาเปิด:</label>
+        <label>Open Time:</label>
         <div className="col-span-3 flex gap-3">
           <TimePicker
             required
@@ -98,7 +107,7 @@ export default function CoWorkForm({ data }: Props) {
             minuteStep={30}
             /* defaultValue={dayjs(data?.openTime, 'HH:mm')} */
           />
-          <div className="text-center self-center">ถึง</div>
+          <div className="text-center self-center">to</div>
           <TimePicker
             required
             format={format}
@@ -109,7 +118,7 @@ export default function CoWorkForm({ data }: Props) {
             /* defaultValue={dayjs(data?.closeTime, 'HH:mm')} */
           />
         </div>
-        <label>รายละเอียด:</label>
+        <label>Description:</label>
         <Textarea
           required
           className="col-span-3 "
@@ -119,7 +128,7 @@ export default function CoWorkForm({ data }: Props) {
           id="address"
           defaultValue={data?.address}
         />
-        <label>จำนวนที่นั่ง:</label>
+        <label>Seat:</label>
         <div className="flex flex-col">
           <Input
             required
