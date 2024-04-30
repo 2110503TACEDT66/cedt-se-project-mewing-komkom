@@ -140,6 +140,7 @@ export default function CoWorkForm({ data }: Props) {
             id="maxSeat"
             defaultValue={1}
             min={1}
+            max={5000}
           />
           <div className="text-xs text-red-500 flex ml-3 mt-3">
             {isValid ? (
