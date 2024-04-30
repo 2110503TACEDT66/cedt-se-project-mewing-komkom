@@ -165,3 +165,81 @@ module.exports = router;
  *         description: Unauthorized - Missing or invalid JWT token
  */
 
+/**
+ * @swagger
+ * /workingspace/available/{id}:
+ *   post:
+ *     summary: Check available seats for a working space within a time range
+ *     description: Retrieve the number of available seats for a specific working space during the specified time period.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the working space to check
+ *         schema:
+ *           type: string
+ *       - in: body
+ *         name: body
+ *         description: Start and end time for seat availability check
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             startTime:
+ *               type: string
+ *               format: date-time
+ *               description: Start time for the availability check (ISO 8601 date-time format)
+ *             endTime:
+ *               type: string
+ *               format: date-time
+ *               description: End time for the availability check (ISO 8601 date-time format)
+ *     responses:
+ *       200:
+ *         description: Number of available seats retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the operation was successful
+ *                   example: true
+ *                 availableSeats:
+ *                   type: integer
+ *                   description: Number of available seats during the specified time period
+ *                   example: 15
+ *       400:
+ *         description: Invalid request or working space not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the operation was successful
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   description: Details about the error or failure reason
+ *                   example: Working space not found
+ */
+
+exports.checkAvailableSeat = async (req, res, next) => {
+  try {
+    const { startTime, endTime } = req.body;
+    const workingSpaceId = req.params.id;
+
+    // Retrieve the available seats
+    const availableSeats = await getAvailableSeat(workingSpaceId, startTime, endTime);
+
+    res.status(200).json({
+      success: true,
+      availableSeats: availableSeats,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
