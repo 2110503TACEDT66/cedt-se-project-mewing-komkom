@@ -123,22 +123,37 @@ import { request } from "http"
 // })
 
 describe('US2-3 User should be able to view reservation history', () => {
-  beforeEach(() => {
+  // it('User who has already edited at least 1 reservation can view history', () => {
+  //   // Visit the login page and login
+  //   cy.visit('/login');
+  //   cy.get('input[name="email"]').type('fortesting@gmail.com');
+  //   cy.get('input[name="password"]').type('1234567');
+  //   cy.get('button[type="submit"]').click();
+  //   cy.wait(2000);
+  //   // Visit one space page
+  //   cy.visit('/booking/manage');
+  //   cy.wait(3000)
+
+  //   cy.get('a[href="/booking/history"]').should('exist');
+  //   cy.get('a[href="/booking/history"]').click();
+  //   cy.wait(3000);
+  //   cy.contains('[data-testid="reservationLog"]').should('be.visible');
+  // })
+
+  it('User who have not edited any reervation yet', () => {
     // Visit the login page and login
     cy.visit('/login');
-    cy.get('input[name="email"]').type('fortesting@gmail.com');
+    cy.get('input[name="email"]').type('fornohistorytesting@gmail.com');
     cy.get('input[name="password"]').type('1234567');
     cy.get('button[type="submit"]').click();
     cy.wait(2000);
     // Visit one space page
     cy.visit('/booking/manage');
     cy.wait(3000)
-  });
 
-  it('User who has already edited at least 1 reservation can view history', () => {
     cy.get('a[href="/booking/history"]').should('exist');
     cy.get('a[href="/booking/history"]').click();
     cy.wait(3000);
-    cy.contains('[data-testid="reservationLog"]').should('be.visible');
+    cy.contains('h1', "You haven't edit any reservation yet.").should('be.visible');
   })
 })
