@@ -25,7 +25,6 @@ export default function Home() {
   const [quota, setQuota] = useState<null | number>(null);
 
   const { data: session } = useSession();
-  if (!session) return null;
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -42,7 +41,7 @@ export default function Home() {
   useEffect(() => {
     const fetchQuota = async () => {
       try {
-        const userQuota = await getUserReservationQuota(session.user.token);
+        const userQuota = await getUserReservationQuota(session!.user.token);
         setQuota(userQuota.data);
       } catch {
         console.error("Error fetching quota");
