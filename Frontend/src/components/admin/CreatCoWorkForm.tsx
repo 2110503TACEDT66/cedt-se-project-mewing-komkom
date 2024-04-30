@@ -103,6 +103,7 @@ export default function CoWorkForm({ data }: Props) {
             format={format}
             className=" "
             id="openTime"
+            data-testid="openTime"
             onChange={handleOpenChange}
             minuteStep={30}
             /* defaultValue={dayjs(data?.openTime, 'HH:mm')} */
@@ -113,6 +114,7 @@ export default function CoWorkForm({ data }: Props) {
             format={format}
             className=" "
             id="closeTime"
+            data-testid="closeTime"
             onChange={handleCloseChange}
             minuteStep={30}
             /* defaultValue={dayjs(data?.closeTime, 'HH:mm')} */
