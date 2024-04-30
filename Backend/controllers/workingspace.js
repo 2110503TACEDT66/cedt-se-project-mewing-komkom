@@ -95,16 +95,20 @@ exports.getWorkingSpace = async (req, res, next) => {
 
 exports.createWorkingSpace = async (req, res, next) => {
   try {
+    const maxSeat = req.body.maxSeat;
+    if (maxSeat < 1 || maxSeat > 5000) {
+      return res.status(400).json({ success: false, message: "Max seat must be between 1 and 5000" });
+    }
     const existingWorkspace = await WorkingSpace.find({ name: req.body.name });
 
     if (existingWorkspace.length > 0) {
-      res.status(400).json({ success: false, message: "Name must be Unique" });
+      return res.status(400).json({ success: false, message: "Name must be Unique" });
     } else {
       const workingspace = await WorkingSpace.create(req.body);
-      res.status(201).json({ success: true, data: workingspace });
+      return res.status(201).json({ success: true, data: workingspace });
     }
   } catch (error) {
-    res.status(400).json({ success: false });
+    return res.status(400).json({ success: false });
   }
 };
 
@@ -123,9 +127,9 @@ exports.updateWorkingSpace = async (req, res, next) => {
       return res.status(400).json({ success: false });
     }
 
-    res.status(200).json({ success: true, data: workingspace });
+    return res.status(200).json({ success: true, data: workingspace });
   } catch (error) {
-    res.status(400).json({ success: false });
+    return res.status(400).json({ success: false });
   }
 };
 

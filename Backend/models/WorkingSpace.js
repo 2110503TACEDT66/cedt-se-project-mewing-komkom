@@ -32,6 +32,8 @@ const WorkingStationSchema = new Schema(
       type: Number,
       required: [true, "Please add max seat"],
       default: 20,
+      max: [5000, "Max seat can not be more than 5000"],
+      min: [1, "Max seat can not be less than 1"],
     },
     image: {
       type: String,

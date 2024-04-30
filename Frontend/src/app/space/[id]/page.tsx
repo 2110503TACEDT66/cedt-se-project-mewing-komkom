@@ -11,9 +11,17 @@ import { useSession } from "next-auth/react";
 import checkAvailableSeat from "@/libs/checkAvailableSeat";
 import Swal from "sweetalert2";
 import { redirect, usePathname } from "next/navigation";
-import UserQuota from "@/libs/UserQuota";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
+import { CiCircleQuestion } from "react-icons/ci";
+import clsx from "clsx";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import getUserReservationQuota from "@/libs/getUserReservationQuota";
+import { set } from "node_modules/cypress/types/lodash";
 
 interface Props {
   params: { id: string };
@@ -28,7 +36,8 @@ const SpaceDetail = ({ params }: Props) => {
   const [availableSeat, setAvailableSeat] = useState<number>(0);
   const [isReserve, setIsReserve] = useState(false);
   const [percent, setPercent] = useState(0);
-
+  const [quota, setQuota] = useState<null | number>(null);
+  const [isSubmit, setIsSubmit] = useState(false);
   useEffect(() => {
     const fetchSpace = async () => {
       try {
@@ -70,6 +79,21 @@ const SpaceDetail = ({ params }: Props) => {
     }
   }, [startTime, endTime, params.id, isReserve]);
 
+  useEffect(() => {
+    const fetchQuota = async () => {
+      try {
+        const userQuota = await getUserReservationQuota(
+          (session as any).data?.user.token,
+          date?.toString()
+        );
+        setQuota(userQuota.data);
+      } catch {
+        console.error("Error fetching quota");
+      }
+    };
+    fetchQuota();
+  }, [date, isReserve]);
+
   const handleReserve = async (e: any) => {
     try {
       e.preventDefault();
@@ -77,6 +101,14 @@ const SpaceDetail = ({ params }: Props) => {
         Swal.fire({
           title: "Error!",
           text: "Please provide date ",
+          icon: "error",
+        });
+        return;
+      }
+      if (!startTime || !endTime) {
+        Swal.fire({
+          title: "Error!",
+          text: "Please provide time ",
           icon: "error",
         });
         return;
@@ -98,6 +130,7 @@ const SpaceDetail = ({ params }: Props) => {
         });
         return;
       }
+
       const data = {
         startTime: startTime,
         endTime: endTime,
@@ -108,6 +141,7 @@ const SpaceDetail = ({ params }: Props) => {
         (session as any).data?.user.token
       );
       setIsReserve((prev) => !prev);
+      setIsSubmit(!isSubmit);
       if (!reservation) {
         throw new Error("cannot create.!!");
       }
@@ -118,14 +152,19 @@ const SpaceDetail = ({ params }: Props) => {
 
   const handleDateChange: DatePickerProps["onChange"] = (date, dateString) => {
     setDate(date);
-    // if (date) {
-    //   setStartTime(
-    //     date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
-    //   );
-    //   setEndTime(
-    //     date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0)
-    //   );
-    // }
+
+    if (date) {
+      if (startTime) {
+        setStartTime(
+          date.hour(startTime?.hour() || 0).minute(startTime?.minute() || 0)
+        );
+      }
+      if (endTime) {
+        setEndTime(
+          date.hour(endTime?.hour() || 0).minute(endTime?.minute() || 0)
+        );
+      }
+    }
   };
 
   const handleTimeChange = (time: Dayjs | null, timeType: string) => {
@@ -243,7 +282,7 @@ const SpaceDetail = ({ params }: Props) => {
             }
           }
         }
-        
+
         if (selectedHour === openHour) {
           for (let i = 0; i < Math.ceil(openMinute / 30); i++) {
             arrayOfMinute.push(i * 30);
@@ -367,47 +406,99 @@ const SpaceDetail = ({ params }: Props) => {
                 <div>
                   {space ? (
                     <DatePicker
-                      className="border-[#979797]"
+                      className="border-[#979797] min-w-[150px]"
                       onChange={handleDateChange}
+                      data-testid="spaceDatePicker"
                     />
                   ) : (
                     <Skeleton className="h-[32px] w-[138px] bg-[#E5E7EB] shadow-lg" />
                   )}
                 </div>
-                Quota: <UserQuota selectedDate={date} />
+                <div className="flex items-center gap-1">
+                  <span>Reservation Quota: </span>
+                  <span
+                    className={clsx(
+                      "font-bold",
+                      quota !== 0 ? "text-sky-500" : "text-gray-300"
+                    )}
+                  >
+                    {quota}
+                  </span>
+                  <HoverCard>
+                    <HoverCardTrigger>
+                      <CiCircleQuestion
+                        className="text-gray-500"
+                        size={16}
+                        strokeWidth={0.75}
+                      />
+                    </HoverCardTrigger>
 
+                    <HoverCardContent>
+                      <h2 className="font-bold text-sky-500">
+                        What's Reservation Quota?
+                      </h2>
+                      <p className="text-gray-500 font-sm">
+                        You can make 3 reservations per day for co-working
+                        spaces. Once you exceeded your quota you can find
+                        another free days Hope you productive! 🌟
+                      </p>
+                      <hr className="my-3" />
+                      <div className="flex-col w-full text-sm text-gray-800">
+                        <div className="flex justify-between">
+                          <span>Selected Date</span>
+                          <span className="font-bold">
+                            {date ? date.format("YYYY-MM-DD") : "Today"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Remaining</span>
+                          <span className="font-bold">
+                            {quota !== null ? quota : "Loading"}
+                          </span>
+                        </div>
+                      </div>
+
+                      <span className="text-gray-400 text-xs">
+                        Max Quota/Day: 3
+                      </span>
+                    </HoverCardContent>
+                  </HoverCard>
+                </div>
               </div>
               <div className="flex items-center">
                 <label className="mr-5 text-[#736868] font-semibold text-base">
                   Time
                 </label>
                 <div className="col-span-3 flex gap-3">
-                  {space ? (
-                    <TimeSelection
-                      handleTimeChange={handleTimeChange}
-                      disabledTime={disabledStartTime}
-                      typeTime="start"
-
-                    />
-                  ) : (
-                    <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
-                  )}
+                  <div data-testid="spaceStartTime">
+                    {space ? (
+                      <TimeSelection
+                        handleTimeChange={handleTimeChange}
+                        disabledTime={disabledStartTime}
+                        typeTime="start"
+                      />
+                    ) : (
+                      <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
+                    )}
+                  </div>
                   <div className="text-center self-center text-[#736868] font-semibold text-base">
                     To
                   </div>
-                  {space ? (
-                    <TimeSelection
-                      handleTimeChange={handleTimeChange}
-                      disabledTime={disabledEndTime}
-                      typeTime="end"
-                    />
-                  ) : (
-                    <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
-                  )}
+                  <div data-testid="spaceEndTime">
+                    {space ? (
+                      <TimeSelection
+                        handleTimeChange={handleTimeChange}
+                        disabledTime={disabledEndTime}
+                        typeTime="end"
+                      />
+                    ) : (
+                      <Skeleton className="h-[32px] w-[150px] bg-[#E5E7EB] shadow-lg" />
+                    )}
+                  </div>
                 </div>
               </div>
               {startTime && endTime && date && (
-                <div className="my-4">
+                <div className="my-4" data-testid="availableSeat">
                   <div className="flex text-[#0043CE] font-bold text-base">
                     Available Seat
                   </div>
@@ -436,7 +527,11 @@ const SpaceDetail = ({ params }: Props) => {
               <div className="flex justify-end mt-4">
                 <button
                   onClick={handleReserve}
-                  className="bg-black px-5 py-2 rounded-full text-white max-w-max "
+                  disabled={quota === 0}
+                  className={clsx(
+                    "bg-black px-5 py-2 rounded-full text-white max-w-max",
+                    quota === 0 && "bg-gray-300"
+                  )}
                 >
                   Reserve
                 </button>

@@ -14,6 +14,9 @@ import getAllUser from "@/libs/getUsers";
 interface Props {
   params: { id: string };
 }
+type SortOrder = {
+  [key: string]: number;
+};
 
 export default function ModeratorPage() {
   const session = useSession();

@@ -28,7 +28,7 @@ export default function page() {
   return (
     <div className="p-10">
       <div className="flex justify-center mt-10 mb-5 text-5xl font-bold">
-          <span className="bg-gradient-to-b from-blue-700 to-blue-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-b pb-14 from-blue-700 to-blue-400 bg-clip-text text-transparent">
             Manage Co-working Space
           </span>
       </div>
@@ -37,7 +37,7 @@ export default function page() {
             href="/adminpage/create"
             className="align-middle select-none text-lg font-semibold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none py-2 px-12 rounded-full bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
           >
-            เพิ่ม
+            Add
           </Link>
         </div>
       {spaces ? (
