@@ -431,7 +431,7 @@ export default function ReservationDetail({ params }: Props) {
               )}
               <hr />
               {space ? (
-                <div>
+                <div className="max-w-lg">
                   <p>{space?.address}</p>
                   <p>{space?.tel}</p>
                 </div>
