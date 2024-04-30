@@ -2,7 +2,12 @@ const Reservation = require("../models/Reservation");
 const WorkingSpace = require("../models/WorkingSpace");
 const ReservasionLog = require("../models/ReservasionLog");
 const { getAvailableSeat } = require("./workingspace");
+const dayjs = require('dayjs')
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
 
+dayjs.extend(utc)
+dayjs.extend(timezone);
 exports.getAllReservation = async (req, res, next) => {
   let query;
 
@@ -376,30 +381,26 @@ exports.getUserReservationQuota = async (req, res, next) => {
 const getUserAvailableQuota = async (selectedDate, userId) => {
   let existedReservation;
   if (!selectedDate) {
-    const today = new Date();
-    //  set the utc time to 17:00 according to the Thai timezone 24:00
-    today.setUTCHours(17, 0, 0, 0);
-    const tomorrow = new Date();
-    tomorrow.setUTCHours(17, 0, 0, 0)
-    tomorrow.setDate(today.getDate() + 1)
-    console.log("searching quota for today:", today.toISOString() + " till " + tomorrow.toISOString())
+
+    const today = dayjs().utc().startOf('day').toDate()
+    const till = dayjs().utc().endOf('day').toDate()
+
+    console.log("searching quota for today:", today.toISOString + " till " + till.toISOString())
     existedReservation = await Reservation.find({
       user: userId,
       // find the match startingdate
-      startTime: { $gte: today, $lt: tomorrow },
+      startTime: { $gte: today, $lte: till },
     });
   } else {
     console.log("receive dt string:", selectedDate);
-    const selectedDate_ = new Date(selectedDate);
-    selectedDate_.setUTCHours(17, 0, 0, 0)
-    const till = new Date(selectedDate);
-    till.setUTCHours(17, 0, 0, 0)
-    till.setDate(selectedDate_.getDate() + 1)
+    const selectedDate_ = dayjs(selectedDate).utc().startOf('day').toDate()
+    const till = dayjs(selectedDate).utc().endOf('day').toDate()
+
     console.log("searching quota for  date:", selectedDate_.toISOString() + " till " + till.toISOString())
     existedReservation = await Reservation.find({
       user: userId,
       // find the match startingdate
-      startTime: { $gte: selectedDate_, $lt: till },
+      startTime: { $gte: selectedDate_, $lte: till },
     });
   }
 
