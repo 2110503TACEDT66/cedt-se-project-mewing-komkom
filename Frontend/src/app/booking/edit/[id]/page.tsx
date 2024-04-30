@@ -46,6 +46,29 @@ export default function ReservationDetail({ params }: Props) {
   const [timeData, setTimeData] = useState<DateProps>();
   const [percent, setPercent] = useState(0);
 
+  const [dataPreFetch, setDataPreFetch] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchAvailable = async () => {
+      try {
+        const data = await getReservation(params.id, session.data.user.token);
+        const startTime = dayjs(data.data.startTime);
+        const endTime = dayjs(data.data.endTime);
+        const availableseatha = await checkAvailableSeat(space?._id as any, {
+          startTime,
+          endTime,
+        });
+        if (!availableseatha) {
+          throw new Error("cannot fetch");
+        }
+        setDataPreFetch(availableseatha.availableSeats);
+      } catch (error) {
+        console.error("error ja", error);
+      }
+    };
+    fetchAvailable();
+  });
+
   useEffect(() => {
     const fetchReserve = async () => {
       try {
@@ -124,7 +147,7 @@ export default function ReservationDetail({ params }: Props) {
         });
         return;
       }
-      if(!startTime || !endTime){
+      if (!startTime || !endTime) {
         Swal.fire({
           title: "Error!",
           text: "Please provide time ",
@@ -337,7 +360,15 @@ export default function ReservationDetail({ params }: Props) {
     };
   };
 
+  const [DataPercent, setDataPercent] = useState(0);
+
+  useEffect(() => {
+    if (space?.maxSeat)
+      setDataPercent(Math.floor((dataPreFetch / space?.maxSeat) * 100));
+  }, [dataPreFetch]);
+
   const debug = () => {
+    console.log(dataPreFetch);
     console.log(availableSeat);
     console.log(timeData?.startTime);
     console.log(startTime);
@@ -345,6 +376,7 @@ export default function ReservationDetail({ params }: Props) {
 
   return (
     <div className="flex justify-center my-20 flex-col gap-5 items-center">
+      <button onClick={debug}>hi</button>
       <h1 className="text-center text-4xl font-bold">
         {space ? (
           <div>
@@ -467,7 +499,7 @@ export default function ReservationDetail({ params }: Props) {
                 Available Seat
               </div>
 
-              {space && timeData ? (
+              {availableSeat ? (
                 <div className="flex flex-col gap-2">
                   <div className="flex gap-2 items-end">
                     <div className="font-bold text-base">{percent}%</div>
@@ -477,6 +509,18 @@ export default function ReservationDetail({ params }: Props) {
                   </div>
                   <div>
                     <Progress className="h-3" value={percent} />
+                  </div>
+                </div>
+              ) : dataPreFetch ? (
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-2 items-end">
+                    <div className="font-bold text-base">{DataPercent}%</div>
+                    <div className="text-xs pb-[3px] text-[#6F6F6F]">
+                      {dataPreFetch} seat left
+                    </div>
+                  </div>
+                  <div>
+                    <Progress className="h-3" value={DataPercent} />
                   </div>
                 </div>
               ) : (
