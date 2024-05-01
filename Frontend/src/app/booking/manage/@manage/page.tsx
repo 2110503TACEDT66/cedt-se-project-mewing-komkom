@@ -14,7 +14,14 @@ export default async function managePage() {
     <main>
       <div className="p-10">
         <div className="flex justify-between items-center">
-          <div className="text-3xl ">All Reservation</div>
+          <div className="flex gap-10">
+            <div className="text-3xl ">All Reservation</div>
+            <div className="flex gap-5">
+
+              <button className="px-5 py-2 bg-slate-300 ">In the Past</button>
+
+            </div>
+          </div>
           <Link
             href={"/booking/history"}
             className="py-2 px-5 flex items-center justify-center bg-slate-300 text-base font-medium rounded-[10px] duration-200 hover:bg-slate-400"

@@ -38,6 +38,51 @@ exports.getAllReservation = async (req, res, next) => {
           path: "user",
           select: "name email",
         });
+    } else if (req.query.filter) {
+
+      if (req.query.filter === "today") {
+        const today = dayjs().utc().startOf('day').toDate()
+        const till = dayjs().utc().endOf('day').toDate()
+        query = Reservation.find({
+          startTime: { $gte: today, $lte: till },
+        })
+          .populate({
+            path: "workingSpace",
+            select: "name address tel",
+          })
+          .populate({
+            path: "user",
+            select: "name email",
+          });
+
+      } else if (req.query.filter === "future") {
+        // get all reservation from torrow
+        const tomorrow = dayjs().add(1, 'day').utc().startOf('day').toDate()
+        query = Reservation.find({
+          startTime: { $gte: tomorrow },
+        })
+          .populate({
+            path: "workingSpace",
+            select: "name address tel",
+          })
+          .populate({
+            path: "user",
+            select: "name email",
+          });
+      } else if (req.query.filter === "past") {
+        const past = dayjs().subtract(1, 'day').utc().startOf('day').toDate()
+        query = Reservation.find({
+          startTime: { $lte: past },
+        })
+          .populate({
+            path: "workingSpace",
+            select: "name address tel",
+          })
+          .populate({
+            path: "user",
+            select: "name email",
+          });
+      }
     } else {
       query = Reservation.find()
         .populate({
@@ -63,7 +108,7 @@ exports.getAllReservation = async (req, res, next) => {
     console.log(error);
     return res
       .status(500)
-      .json({ success: false, message: "Cannot find Appointment" });
+      .json({ success: false, message: "Cannot find Reservation" });
   }
 };
 
