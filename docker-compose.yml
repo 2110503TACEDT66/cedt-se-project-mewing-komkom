@@ -5,19 +5,10 @@ services:
     build: ./Backend
     ports:
       - "1200:1200"
-    environment:
-      - PORT=1200
-      - NODE_ENV=production
-      - MONGO_URI=mongodb+srv://whitemalt:jangratchanon@workingreservation.09hfldw.mongodb.net/
-      - JWT_SECRET=asdfjkl;;lkjfdsa
-      - JWT_EXPIRE=30d
-      - JWT_COOKIE_EXPIRE=30
+    env_file: ./Backend/config/config.env
 
   frontend:
     build: ./Frontend
     ports:
       - "3000:3000"
-    environment:
-      - NEXTAUTH_URL=http://localhost:3000
-      - NEXTAUTH_SECRET='Ey7nTKnggBc0bRN8WUjyShw2qzOZ6KW4fUyqcKBePxY='
-      - NEXT_PUBLIC_BACKEND_URI=https://cedt-se-project-mewing-komkom-nq7g.vercel.app/api/v1
+    env_file: ./Frontend/config/config.env
