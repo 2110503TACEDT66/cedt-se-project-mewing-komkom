@@ -13,18 +13,18 @@ describe('US2-1 User should make a reservation with valid time', () => {
     cy.wait(5000)
   });
 
-  it('No date and time provided', () => {
+  it('TC18 No date and time provided', () => {
     cy.contains('button', 'Reserve').click();
     cy.contains('Please provide date').should('be.visible');
   });
 
-  it('Provide date but no time provided', () => {
+  it('TC19 Provide date but no time provided', () => {
     cy.get('[data-testid="spaceDatePicker"]').type("2024-08-29").type('{enter}');
     cy.contains('button', 'Reserve').click();
     cy.contains('Please provide time').should('be.visible');
   });
 
-  it('Provide date and time which endDate is less than startDate', () => {
+  it('TC20 Provide date and time which endDate is less than startDate', () => {
     cy.get('[data-testid="spaceDatePicker"]').type("2024-08-29").type('{enter}');
     cy.wait(2000);
     cy.get('[data-testid="spaceEndTime"]').type("09:00").type('{enter}');
@@ -35,7 +35,7 @@ describe('US2-1 User should make a reservation with valid time', () => {
     cy.contains('Please provide time').should('be.visible');
   });
 
-  it('Provide date and time which endDate is equal to startDate', () => {
+  it('TC21 Provide date and time which endDate is equal to startDate', () => {
     cy.get('[data-testid="spaceDatePicker"]').type("2024-08-29").type('{enter}');
     cy.wait(2000);
     cy.get('[data-testid="spaceStartTime"]').type("10:00").type('{enter}');
@@ -45,7 +45,7 @@ describe('US2-1 User should make a reservation with valid time', () => {
     cy.contains('Please provide time').should('be.visible');
   });
 
-  it('Provide date and time which endDate is greater than startDate', () => {
+  it('TC22 Provide date and time which endDate is greater than startDate', () => {
     cy.get('[data-testid="spaceDatePicker"]').type("2024-08-29").type('{enter}');
     cy.wait(2000);
     cy.get('[data-testid="spaceStartTime"]').type("11:00").type('{enter}');
@@ -69,12 +69,12 @@ describe('US2-2 User can view amount of available seats of selected time', () =>
     cy.wait(3000)
   });
 
-  it('TC45 logged in user can see the available time', () => {
+  it('TC23 logged in user can see the available time', () => {
     cy.get('[data-testid="spaceStartTime"]').should('exist');
     cy.get('[data-testid="spaceStartTime"]').should('exist');
     cy.get('[data-testid="availableSeat"]').should('not.exist');
   })
-  it('TC46 logged in user with time provided can see the amount of available seat', () => {
+  it('TC24 logged in user with time provided can see the amount of available seat', () => {
     cy.get('[data-testid="spaceDatePicker"]').type("2024-09-29").type('{enter}');
     cy.get('[data-testid="spaceStartTime"]').type("11:00").type('{enter}');
     cy.get('[data-testid="spaceEndTime"]').type("12:00").type('{enter}');
@@ -165,7 +165,7 @@ it('TC27 start time is after end time', () => {
 })
 
 describe('US2-4 User should be able to view reservation history', () => {
-  it('User who has already edited at least 1 reservation can view history', () => {
+  it('TC31 User who has already edited at least 1 reservation can view history', () => {
     // Visit the login page and login
     cy.visit('/login');
     cy.get('input[name="email"]').type('fortesting@gmail.com');
@@ -182,7 +182,7 @@ describe('US2-4 User should be able to view reservation history', () => {
     cy.get('[data-testid="reservationLog"]').should('be.visible');
   })
 
-  it('User who have not edited any reervation yet', () => {
+  it('TC32 User who have not edited any reervation yet', () => {
     // Visit the login page and login
     cy.visit('/login');
     cy.get('input[name="email"]').type('fornohistorytesting@gmail.com');

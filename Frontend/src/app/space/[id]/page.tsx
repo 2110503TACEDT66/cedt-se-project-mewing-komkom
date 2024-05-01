@@ -258,7 +258,7 @@ const SpaceDetail = ({ params }: Props) => {
           { length: Math.max(0, timeLength) },
           (_, i) => i
         );
-        if ((date?.date() === dayjs().date()) {
+        if (date?.date() === dayjs().date()) {
           for (let i = 0; i < currentTimeHour; i++) {
             arrayOfHours.push(i);
           }
