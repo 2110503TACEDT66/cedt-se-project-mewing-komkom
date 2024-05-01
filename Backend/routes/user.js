@@ -5,27 +5,18 @@ const router = express.Router();
 
 const { protect, authorize } = require("../middleware/auth");
 
-/**
- * @swagger
- * tags:
- *   name: User
- *   description: API endpoints for managing users
- */
+router.put("/ban", protect, authorize("admin", "moderator"), banUser);
+router.put("/unban", protect, authorize("admin", "moderator"), unbanUser);
+
+module.exports = router;
 
 /**
  * @swagger
- * /user/ban/{id}:
+ * /user/ban:
  *   put:
  *     summary: Ban a user
  *     description: Bans a user by setting their 'banUntil' and 'banReason' properties.
  *     tags: [User]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID of the user to ban
  *     requestBody:
  *       required: true
  *       content:
@@ -33,6 +24,9 @@ const { protect, authorize } = require("../middleware/auth");
  *           schema:
  *             type: object
  *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: ID of the user to ban
  *               banUntil:
  *                 type: string
  *                 format: date-time
@@ -62,22 +56,24 @@ const { protect, authorize } = require("../middleware/auth");
  *         description: User not found
  */
 
-router.put("/ban/:id", protect, authorize("admin", "moderator"), banUser);
 
 /**
  * @swagger
- * /user/unban/{id}:
+ * /user/unban:
  *   put:
  *     summary: Unban a user
  *     description: Removes the ban on a user by setting 'banUntil' to null.
  *     tags: [User]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID of the user to unban
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: ID of the user to unban
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -97,6 +93,3 @@ router.put("/ban/:id", protect, authorize("admin", "moderator"), banUser);
  *         description: User not found
  */
 
-router.put("/unban/:id", protect, authorize("admin", "moderator"), unbanUser);
-
-module.exports = router;
