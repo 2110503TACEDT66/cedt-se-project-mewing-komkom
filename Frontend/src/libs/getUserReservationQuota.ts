@@ -1,7 +1,15 @@
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 export default async function getUserReservationQuota(
   token: string,
   date?: string
 ) {
+  if (!date) {
+    date = dayjs().tz("Asia/Bangkok").toString();
+  }
   const requestBody = date ? { selectedDate: date } : {};
 
   const response = await fetch(

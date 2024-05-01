@@ -382,8 +382,8 @@ const getUserAvailableQuota = async (selectedDate, userId) => {
   let existedReservation;
   if (!selectedDate) {
 
-    const today = dayjs().utc().startOf('day').toDate()
-    const till = dayjs().utc().endOf('day').toDate()
+    const today = dayjs().startOf('day').toDate()
+    const till = dayjs().endOf('day').toDate()
 
     console.log("searching quota for today:", today.toISOString + " till " + till.toISOString())
     existedReservation = await Reservation.find({
@@ -393,8 +393,8 @@ const getUserAvailableQuota = async (selectedDate, userId) => {
     });
   } else {
     console.log("receive dt string:", selectedDate);
-    const selectedDate_ = dayjs(selectedDate).utc().startOf('day').toDate()
-    const till = dayjs(selectedDate).utc().endOf('day').toDate()
+    const selectedDate_ = dayjs(selectedDate).startOf('day').toDate()
+    const till = dayjs(selectedDate).endOf('day').toDate()
 
     console.log("searching quota for  date:", selectedDate_.toISOString() + " till " + till.toISOString())
     existedReservation = await Reservation.find({
